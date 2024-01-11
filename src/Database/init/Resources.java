@@ -1,9 +1,7 @@
 package Database.init;
 
 import Database.tables.EditCarTable;
-import model.Car;
-import model.Customer;
-import model.Order;
+import model.*;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -44,7 +42,7 @@ public class Resources {
     );
 
     // Cars
-    public void addCars() throws SQLException, ClassNotFoundException {
+    public static void addCars() throws SQLException, ClassNotFoundException {
         Car car1 = new Car(1, "Toyota", "Corolla", "Red", 20000, "Available", 1500, 12345, "Sedan", 5, 50000);
         Car car2 = new Car(2, "Honda", "Civic", "Blue", 22000, "Available", 1600, 12346, "Coupe", 4, 30000);
         Car car3 = new Car(3, "Ford", "Focus", "White", 18000, "Available", 1400, 12347, "Hatchback", 5, 25000);
@@ -80,10 +78,26 @@ public class Resources {
     }
 
     // Motorcycles
+    static MotorBike motorBike1 = new MotorBike(6, "Yamaha", "MT-07", "Black", 20000, "Available", 1000, 12350, 5000);
+    static MotorBike motorBike2 = new MotorBike(7, "Honda", "CB500F", "Red", 18000, "Available", 950, 12351, 8000);
+    static MotorBike motorBike3 = new MotorBike(8, "Kawasaki", "Z650", "Green", 19000, "Available", 990, 12352, 6000);
+    static MotorBike motorBike4 = new MotorBike(9, "Suzuki", "GSX-S750", "Blue", 21000, "Available", 1050, 12353, 3000);
+    static MotorBike motorBike5 = new MotorBike(10, "Ducati", "Monster 821", "Yellow", 22000, "Available", 1100, 12354, 4000);
 
     // Scooters
+    static Scooter scooter1 = new Scooter(11, "Vespa", "GTS Super", "White", 5000, "Available", 200, 1000);
+    static Scooter scooter2 = new Scooter(12, "Honda", "PCX150", "Black", 4500, "Available", 180, 1500);
+    static Scooter scooter3 = new Scooter(13, "Yamaha", "NMAX", "Red", 4800, "Available", 190, 1200);
+    static Scooter scooter4 = new Scooter(14, "Suzuki", "Burgman 400", "Blue", 5500, "Available", 210, 900);
+    static Scooter scooter5 = new Scooter(15, "Kymco", "Like 150i", "Grey", 4600, "Available", 185, 1100);
 
     // Bicycles
+    static Bicycle bike1 = new Bicycle(1, "Giant", "Escape 3", "Blue", 100, "Available", 500, 0);
+    static Bicycle bike2 = new Bicycle(2, "Trek", "Marlin 5", "Red", 120, "Available", 550, 10);
+    static Bicycle bike3 = new Bicycle(3, "Specialized", "Rockhopper", "Black", 150, "Available", 600, 20);
+    static Bicycle bike4 = new Bicycle(4, "Cannondale", "Trail 7", "Green", 130, "Available", 570, 5);
+    static Bicycle bike5 = new Bicycle(5, "Scott", "Aspect 950", "Grey", 140, "Available", 580, 15);
+
 
     // Orders
     static Order order1 = new Order(0, 1, 100, LocalTime.of(10, 0), LocalDate.of(2024, 5, 15), LocalTime.of(18, 0), LocalDate.of(2024, 5, 20));

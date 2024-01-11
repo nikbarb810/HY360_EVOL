@@ -113,6 +113,30 @@ public class InitDatabase {
 //        resources.updateCarStatus(cars.get(3).getVehicleId(), "Rented");
 //        resources.updateCarStatus(cars.get(4).getVehicleId(), "Rented");
 //        cars = resources.getAllCars();
+//        EditBicycleTable editBicycleTable = new EditBicycleTable();
+//        Resources.addCars();
+//        editBicycleTable.insertBicycle(Resources.bike1);
+//        editBicycleTable.insertBicycle(Resources.bike2);
+//        editBicycleTable.insertBicycle(Resources.bike3);
+//        editBicycleTable.insertBicycle(Resources.bike4);
+//        editBicycleTable.insertBicycle(Resources.bike5);
+
+//        EditMotorBikeTable editMotorBikeTable = new EditMotorBikeTable();
+//
+//        editMotorBikeTable.insertMotorBikeTable(Resources.motorBike1);
+//        editMotorBikeTable.insertMotorBikeTable(Resources.motorBike2);
+//        editMotorBikeTable.insertMotorBikeTable(Resources.motorBike3);
+//        editMotorBikeTable.insertMotorBikeTable(Resources.motorBike4);
+//        editMotorBikeTable.insertMotorBikeTable(Resources.motorBike5);
+
+//        EditScooterTable editScooterTable = new EditScooterTable();
+//
+//        editScooterTable.insertScooter(Resources.scooter1);
+//        editScooterTable.insertScooter(Resources.scooter2);
+//        editScooterTable.insertScooter(Resources.scooter3);
+//        editScooterTable.insertScooter(Resources.scooter4);
+//        editScooterTable.insertScooter(Resources.scooter5);
+
 
 
     }

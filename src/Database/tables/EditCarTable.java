@@ -36,9 +36,8 @@ public class EditCarTable {
     public void insertCarTable(Car toBeAdded) throws SQLException, ClassNotFoundException {
         Connection conn = DB_Connection.getConnection();
         Statement stmt = conn.createStatement();
-        String insertQuery = "INSERT INTO Car (vehicleID, model, brand, color, mileage, type, numPassengers, regNumber, rentalPrice, insurPrice, status) " +
-                "VALUES (" + toBeAdded.getVehicleId() +
-                ", '" + toBeAdded.getModel() +
+        String insertQuery = "INSERT INTO Car (model, brand, color, mileage, type, numPassengers, regNumber, rentalPrice, insurPrice, status) " +
+                "VALUES ('" + toBeAdded.getModel() +
                 "', '" + toBeAdded.getBrand() +
                 "', '" + toBeAdded.getColor() +
                 "', " + toBeAdded.getMileage() +
@@ -48,6 +47,7 @@ public class EditCarTable {
                 ", " + toBeAdded.getRentalPrice() +
                 ", " + toBeAdded.getInsurPrice() +
                 ", '" + toBeAdded.getStatus() + "')";
+
         stmt.execute(insertQuery);
         stmt.close();
         conn.close();

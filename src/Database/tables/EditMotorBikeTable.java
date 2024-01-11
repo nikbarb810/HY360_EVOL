@@ -34,16 +34,19 @@ public class EditMotorBikeTable {
     public void insertMotorBikeTable(MotorBike toBeAdded) throws SQLException, ClassNotFoundException {
         Connection conn = DB_Connection.getConnection();
         Statement stmt = conn.createStatement();
-        String insertQuery = "INSERT INTO Motorbike (vehicleID, model, brand, color, mileage, regNumber, rentalPrice, insurPrice, status) " +
-                "VALUES ('" + toBeAdded.getVehicleId() +
-                "', '" + toBeAdded.getModel() +
+        String insertQuery = "INSERT INTO Motorbike (model, brand, color, mileage, regNumber, rentalPrice, insurPrice, status) " +
+                "VALUES ('" + toBeAdded.getModel() +
                 "', '" + toBeAdded.getBrand() +
                 "', '" + toBeAdded.getColor() +
-                "', '" + toBeAdded.getMileage() +
-                "', '" + toBeAdded.getRegNum() +
-                "', '" + toBeAdded.getRentalPrice() +
-                "', '" + toBeAdded.getInsurPrice() +
-                "', '" + toBeAdded.getStatus() + "')";
+                "', " + toBeAdded.getMileage() +
+                ", " + toBeAdded.getRegNum() +
+                ", " + toBeAdded.getRentalPrice() +
+                ", " + toBeAdded.getInsurPrice() +
+                ", '" + toBeAdded.getStatus() + "')";
+
+        stmt.execute(insertQuery);
+        stmt.close();
+        conn.close();
     }
 
     public ArrayList<MotorBike> getAllMotorBikes() throws SQLException, ClassNotFoundException {
