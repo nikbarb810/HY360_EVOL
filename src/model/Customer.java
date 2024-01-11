@@ -1,30 +1,34 @@
 package model;
 import java.time.LocalDate;
 public class Customer {
+	String Email;
 	String Username;
 	String Password;
 	String FirstName;
-    String LastName;
-    String Email;
+	String LastName;
 	LocalDate Dob;
 	int NumberCC;
-	int BicCC;
-	LocalDate YearCC;
+	int CvvCC;
+    int monthCC;
+	int YearCC;
 	String LicenceId;
-	
-	public Customer(String username, String password, String email, String firstName, String lastName, LocalDate dob, int numberCC, int bicCC, LocalDate yearCC, String licenceId) {
-        this.Username = username;
+
+	public Customer(String Email,String username, String password, String firstName,String LastName, LocalDate dob, int numberCC, int cvvCC, int monthCC, int yearCC, String licenceId) {
+        this.Email =Email;
+		this.Username = username;
         this.Password = password;
-        this.Email = email;
         this.FirstName = firstName;
-        this.LastName = lastName;
         this.Dob = dob;
         this.NumberCC = numberCC;
-        this.BicCC = bicCC;
+        this.CvvCC = cvvCC;
+        this.monthCC = monthCC;
         this.YearCC = yearCC;
         this.LicenceId = licenceId;
+        this.LastName = LastName;
     }
-	
+	public String getEmail() {
+        return Username;
+    }
 	public String getUsername() {
         return Username;
     }
@@ -36,6 +40,9 @@ public class Customer {
     public String getFirstName() {
         return FirstName;
     }
+    public String getLastName() {
+        return LastName;
+    }
 
     public LocalDate getDob() {
         return Dob;
@@ -45,11 +52,23 @@ public class Customer {
         return NumberCC;
     }
 
-    public int getBicCC() {
-        return BicCC;
+    public int getCvvCC() {
+        return CvvCC;
     }
 
-    public LocalDate getYearCC() {
+    public void setCvvCC(int cvvCC) {
+        CvvCC = cvvCC;
+    }
+
+    public int getMonthCC() {
+        return monthCC;
+    }
+
+    public void setMonthCC(int monthCC) {
+        this.monthCC = monthCC;
+    }
+
+    public int getYearCC() {
         return YearCC;
     }
 
@@ -58,6 +77,9 @@ public class Customer {
     }
 
     // Setter methods
+    public void setEmail(String Email) {
+        this.Email = Email;
+    }
     public void setUsername(String username) {
         Username = username;
     }
@@ -69,6 +91,9 @@ public class Customer {
     public void setFirstName(String firstName) {
         FirstName = firstName;
     }
+    public void setLastName(String lastName) {
+        LastName = lastName;
+    }
 
     public void setDob(LocalDate dob) {
         Dob = dob;
@@ -79,10 +104,10 @@ public class Customer {
     }
 
     public void setBicCC(int bicCC) {
-        BicCC = bicCC;
+        CvvCC = bicCC;
     }
 
-    public void setYearCC(LocalDate yearCC) {
+    public void setYearCC(int yearCC) {
         YearCC = yearCC;
     }
 

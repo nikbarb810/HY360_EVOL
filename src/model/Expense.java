@@ -19,4 +19,52 @@ public class Expense {
         this.type = type1;
         this.description= description;
     }
+
+	public int getExpenseId() {
+		return ExpenseId;
+	}
+
+	public void setExpenseId(int expenseId) {
+		ExpenseId = expenseId;
+	}
+
+	public int getBookingId() {
+		return BookingId;
+	}
+
+	public void setBookingId(int bookingId) {
+		BookingId = bookingId;
+	}
+
+	public LocalDate getStartDate() {
+		return StartDate;
+	}
+
+	public void setStartDate(LocalDate startDate) {
+		StartDate = startDate;
+	}
+
+	public LocalDate getEndDate() {
+		return EndDate;
+	}
+
+	public void setEndDate(LocalDate endDate) {
+		EndDate = endDate;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public TYPE getType() {
+		return type;
+	}
+
+	public void setType(TYPE type) {
+		this.type = type;
+	}
 }

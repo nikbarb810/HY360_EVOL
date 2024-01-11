@@ -70,7 +70,9 @@ public class InitDatabase {
 
         EditExpenseTable emaintt = new EditExpenseTable();
         emaintt.createMaintenanceExpenseTable();
+    }
 
+    public void addEntries() {
 
     }
 

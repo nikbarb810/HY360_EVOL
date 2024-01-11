@@ -1,6 +1,7 @@
 package Database.tables;
 
 import Database.DB_Connection;
+import model.Customer;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -34,4 +35,21 @@ public class EditCustomerTable {
         stmt.close();
         conn.close();
     }
+
+    public void insertCustomer(Customer c) {
+        try {
+          Connection conn = DB_Connection.getConnection();
+          Statement stmt = conn.createStatement();
+
+          String sql = "INSERT INTO Customer (username, password, email, firstname, lastname, dayDOB, monthDOB, yearDOB, numberCC, monthCC, yearCC, cvvCC, licenseID) VALUES ('" + c.getUsername() + "', '" + c.getPassword() + "', '" + c.getEmail() + "', '" + c.getFirstName() + "', '" + c.getLastName() + "', " + c.getDob().getDayOfMonth() + ", " + c.getDob().getMonthValue() + ", " + c.getDob().getYear() + ", " + c.getNumberCC() + ", " + c.getMonthCC() + ", " + c.getYearCC() + ", " + c.getCvvCC() + ", " + c.getLicenceId() + ");";
+
+
+
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
 }

@@ -1,6 +1,7 @@
 package Database.tables;
 
 import Database.DB_Connection;
+import model.Driver;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -24,5 +25,22 @@ public class EditDriverTable {
         stmt.execute(sqlCreateLicensedDriverTable);
         stmt.close();
         conn.close();
+    }
+
+    public void insertDriver(Driver d) {
+        try {
+            Connection conn = DB_Connection.getConnection();
+            Statement stmt = conn.createStatement();
+
+            String sql = "INSERT INTO Driver (customerID, firstName, lastName, licenseID) VALUES (" + d.getCustomerId() + ", '" + d.getFirstName() + "', '" + d.getLastName() + "', '" + d.getLicenseId() + "');";
+
+            stmt.executeUpdate(sql);
+
+            stmt.close();
+            conn.close();
+
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }
