@@ -1,31 +1,29 @@
 package model;
 import java.time.LocalDate;
-enum TYPE{
-	CRASH,
-	MAINTENANCE
-};
-public class Expense {
-	int ExpenseId;
+
+public class Repair {
+	int RepairId;
 	int BookingId;
 	LocalDate StartDate;
 	LocalDate EndDate;
 	String description;
-	TYPE type;
-	public Expense(int expenseId, int bookingId, LocalDate startDate, LocalDate endDate, String type,String description,TYPE type1) {
-        this.ExpenseId = expenseId;
+	String Type;
+
+	public Repair(int repairId, int bookingId, LocalDate startDate, LocalDate endDate, String type, String description) {
+        this.RepairId = repairId;
         this.BookingId = bookingId;
         this.StartDate = startDate;
         this.EndDate = endDate;
-        this.type = type1;
+        this.Type = type;
         this.description= description;
     }
 
-	public int getExpenseId() {
-		return ExpenseId;
+	public int getRepairId() {
+		return RepairId;
 	}
 
-	public void setExpenseId(int expenseId) {
-		ExpenseId = expenseId;
+	public void setRepairId(int repairId) {
+		RepairId = repairId;
 	}
 
 	public int getBookingId() {
@@ -60,11 +58,11 @@ public class Expense {
 		this.description = description;
 	}
 
-	public TYPE getType() {
-		return type;
+	public String getType() {
+		return Type;
 	}
 
-	public void setType(TYPE type) {
-		this.type = type;
+	public void setType(String type) {
+		Type = type;
 	}
 }

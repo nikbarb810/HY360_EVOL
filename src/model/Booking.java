@@ -7,6 +7,15 @@ public class Booking {
 	int DriverId;
 	int BookingCost;
 	boolean CoveredInsur;
+    String Status;
+
+    public String getStatus() {
+        return Status;
+    }
+
+    public void setStatus(String status) {
+        Status = status;
+    }
 
     public int getBookingId() {
         return BookingId;
@@ -56,12 +65,13 @@ public class Booking {
         CoveredInsur = coveredInsur;
     }
 
-    public Booking(int bookingId, int orderId, int vehicleId, int driverId, int bookingCost, boolean coveredInsur) {
+    public Booking(int bookingId, int orderId, int vehicleId, int driverId, int bookingCost, boolean coveredInsur, String status) {
         this.BookingId = bookingId;
         this.OrderId = orderId;
         this.VehicleId = vehicleId;
         this.DriverId = driverId;
         this.BookingCost = bookingCost;
         this.CoveredInsur = coveredInsur;
+        this.Status = status;
     }
 }
