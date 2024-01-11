@@ -83,10 +83,26 @@ public class EditCarTable {
         Connection conn = DB_Connection.getConnection();
         Statement stmt = conn.createStatement();
         String sql = "SELECT * FROM Car WHERE status = 'Available'";
-        stmt.execute(sql);
+        ResultSet rs = stmt.executeQuery(sql);
+        ArrayList<Car> cars = new ArrayList<>();
+        while (rs.next()) {
+            // Create a Car object using the constructor with the correct order of parameters
+            Car car = new Car(rs.getInt("vehicleID"),
+                    rs.getString("brand"),
+                    rs.getString("model"),
+                    rs.getString("color"),
+                    rs.getInt("rentalPrice"),
+                    rs.getString("status"),
+                    rs.getInt("insurPrice"),
+                    rs.getInt("regNumber"),
+                    rs.getString("type"),
+                    rs.getInt("numPassengers"),
+                    rs.getInt("mileage"));
+            cars.add(car);
+        }
         stmt.close();
         conn.close();
-        return null;
+        return cars;
     }
     public void updateCarStatus(int vehicleID, String status) throws SQLException, ClassNotFoundException {
         Connection conn = DB_Connection.getConnection();
