@@ -18,7 +18,7 @@ public class EditDriverTable {
                 + "customerID INT NOT NULL, "
                 + "firstName VARCHAR(255) NOT NULL, "
                 + "lastName VARCHAR(255) NOT NULL, "
-                + "licenseID VARCHAR(255) NOT NULL, "
+                + "licenseID VARCHAR(255), "
                 + "FOREIGN KEY (customerID) REFERENCES Customer(customerID)"
                 + ");";
 

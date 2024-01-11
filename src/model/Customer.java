@@ -1,6 +1,7 @@
 package model;
 import java.time.LocalDate;
 public class Customer {
+    int CustomerId;
 	String Email;
 	String Username;
 	String Password;
@@ -14,7 +15,7 @@ public class Customer {
 	String LicenceId;
 
 	public Customer(String Email,String username, String password, String firstName,String LastName, LocalDate dob, int numberCC, int cvvCC, int monthCC, int yearCC, String licenceId) {
-        this.Email =Email;
+        this.Email = Email;
 		this.Username = username;
         this.Password = password;
         this.FirstName = firstName;
@@ -26,6 +27,11 @@ public class Customer {
         this.LicenceId = licenceId;
         this.LastName = LastName;
     }
+
+    public int getCustomerId() {
+        return CustomerId;
+    }
+
 	public String getEmail() {
         return Username;
     }

@@ -1,10 +1,10 @@
 package Database.tables;
 
 import Database.DB_Connection;
+import model.Order;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.math.BigDecimal;
+import java.sql.*;
 
 public class EditOrderTable {
 
@@ -29,5 +29,58 @@ public class EditOrderTable {
         stmt.execute(sqlCreateOrderTable);
         stmt.close();
         conn.close();
+    }
+
+    public int insertOrder(Order order) {
+        int orderId = -1; // Default to -1 to indicate failure
+
+        String sql = "INSERT INTO `Order` (customerID, cost, startHour, startDay, startMonth, startYear, endHour, endDay, endMonth, endYear) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+
+        try (Connection conn = DB_Connection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            pstmt.setInt(1, order.getCustomerId());
+            pstmt.setInt(2, order.getCost());
+            pstmt.setInt(3, order.getStartTime().getHour());
+            pstmt.setInt(4, order.getStartDate().getDayOfMonth());
+            pstmt.setInt(5, order.getStartDate().getMonthValue());
+            pstmt.setInt(6, order.getStartDate().getYear());
+            pstmt.setInt(7, order.getEndTime().getHour());
+            pstmt.setInt(8, order.getEndDate().getDayOfMonth());
+            pstmt.setInt(9, order.getEndDate().getMonthValue());
+            pstmt.setInt(10, order.getEndDate().getYear());
+
+            int affectedRows = pstmt.executeUpdate();
+
+            if (affectedRows > 0) {
+                try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        orderId = rs.getInt(1);
+                    }
+                }
+            }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return orderId;
+    }
+
+    public void updateOrder(int orderId, int cost) {
+        String sql = "UPDATE `Order` SET cost = ? WHERE orderID = ?;";
+
+        try (Connection conn = DB_Connection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, cost);
+            pstmt.setInt(2, orderId);
+
+            pstmt.executeUpdate();
+
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }

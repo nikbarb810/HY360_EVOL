@@ -24,7 +24,7 @@ public class EditCarTable {
                 + "    mileage INT NOT NULL,\n"
                 + "    type VARCHAR(255) NOT NULL,\n"
                 + "    numPassengers INT NOT NULL,\n"
-                + "    regNumber INT NOT NULL,\n"
+                + "    regNumber VARCHAR(255) NOT NULL,\n"
                 + "    rentalPrice INT NOT NULL,\n"
                 + "    insurPrice INT NOT NULL,\n"
                 + "    status ENUM('Available', 'Rented', 'Maintenance', 'Crashed') NOT NULL\n"

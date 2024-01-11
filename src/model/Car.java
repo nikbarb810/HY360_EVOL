@@ -8,7 +8,7 @@ public class Car extends Vehicle{
 	
 	public Car(int vehicleId,String Brand,String Model,String Color,int RentalPrice,String Status,int InsurPrice,int RegNum,String Type,int NumPassengers,int mileage) {
 		super(vehicleId,Brand,Model,Color,RentalPrice,Status,InsurPrice, mileage);
-		this.NumPassengers = NumPassengers;
+
 		this.Type = Type;
 		this.RegNum = RegNum;
 		this.NumPassengers = NumPassengers;

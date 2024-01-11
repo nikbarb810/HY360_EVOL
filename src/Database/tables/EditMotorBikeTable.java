@@ -19,7 +19,7 @@ public class EditMotorBikeTable {
                 + "    brand VARCHAR(255) NOT NULL,\n"
                 + "    color VARCHAR(255) NOT NULL,\n"
                 + "    mileage INT NOT NULL,\n"
-                + "    regNumber INT NOT NULL,\n"
+                + "    regNumber VARCHAR(255) NOT NULL,\n"
                 + "    rentalPrice INT NOT NULL,\n"
                 + "    insurPrice INT NOT NULL,\n"
                 + "    status ENUM('Available', 'Rented', 'Maintenance', 'Crashed') NOT NULL\n"
