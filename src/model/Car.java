@@ -10,6 +10,7 @@ public class Car extends Vehicle{
 		super(vehicleId,Brand,Model,Color,RentalPrice,Status,InsurPrice, mileage);
 		this.NumPassengers = NumPassengers;
 		this.Type = Type;
+		this.RegNum = RegNum;
 		this.NumPassengers = NumPassengers;
 	}
 
