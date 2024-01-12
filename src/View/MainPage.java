@@ -2,10 +2,12 @@ package View;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.ImageIO;
-
+import Controller.*;
 public class MainPage extends JFrame {
 
     public MainPage() {
@@ -40,18 +42,19 @@ public class MainPage extends JFrame {
 
         // Top panel with label
         JPanel topPanel = new JPanel();
-        JLabel label = new JLabel("evol");
+        JLabel label = new JLabel("EVOL");
+        Font labelFont = new Font("Helvetica", Font.BOLD, 26); // Change to your desired font, style, and size
+        label.setFont(labelFont);
         label.setForeground(Color.BLACK);
         topPanel.add(label);
-        topPanel.setBounds(0, 0, layeredPane.getPreferredSize().width, 100);
+        topPanel.setBounds(0, 20, layeredPane.getPreferredSize().width, 100);
         topPanel.setOpaque(false);
 
         // Center panel for buttons
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
-        JButton button1 = new JButton("Button 1");
-        JButton button2 = new JButton("Button 2");
-        JButton button3 = new JButton("Button 3");
+        JButton button1 = new JButton("SignUp");
+        JButton button2 = new JButton("LogIn");
 
         // Modify buttons
         Color buttonColor = Color.BLACK;
@@ -64,22 +67,34 @@ public class MainPage extends JFrame {
         button1.setMaximumSize(buttonSize); // To ensure button size is respected in BoxLayout
         button1.setAlignmentX(Component.CENTER_ALIGNMENT); // To center the button
 
+        button1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Code to execute when Button 1 is pressed
+                Controller.LoadSignUpPage();
+                dispose();
+                // Add any other actions you want to perform here
+            }
+        });
+
+        
         button2.setBackground(buttonColor);
         button2.setForeground(textColor);
         button2.setPreferredSize(buttonSize);
         button2.setMaximumSize(buttonSize);
         button2.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        button3.setBackground(buttonColor);
-        button3.setForeground(textColor);
-        button3.setPreferredSize(buttonSize);
-        button3.setMaximumSize(buttonSize);
-        button3.setAlignmentX(Component.CENTER_ALIGNMENT);
+        button2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Code to execute when Button 1 is pressed
+                Controller.LoadLogInPage();
+                dispose();
+                // Add any other actions you want to perform here
+            }
+        });
         buttonPanel.add(button1);
         buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         buttonPanel.add(button2);
-        buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        buttonPanel.add(button3);
         buttonPanel.setBounds(layeredPane.getPreferredSize().width / 2 - 100, layeredPane.getPreferredSize().height / 2 - 75, 200, 150);
         buttonPanel.setOpaque(false);
 

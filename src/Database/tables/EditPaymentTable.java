@@ -13,7 +13,7 @@ public class EditPaymentTable {
         try (Connection conn = DB_Connection.getConnection();
              Statement stmt = conn.createStatement()) {
 
-            String sqlCreatePaymentTable = "CREATE TABLE IF NOT EXISTS payment ("
+            String sqlCreatePaymentTable = "CREATE TABLE IF NOT EXISTS Payment ("
                     + "paymentID INT AUTO_INCREMENT PRIMARY KEY, "
                     + "orderID INT NOT NULL, "
                     + "amount INT NOT NULL, "

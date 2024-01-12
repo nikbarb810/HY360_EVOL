@@ -156,4 +156,41 @@ public class EditCustomerTable {
         return customerID;
     }
 
+    public Customer authenticateUser(String username, String password) {
+        Customer customer = null;
+
+        String sql = "SELECT * FROM Customer WHERE username = ? AND password = ?";
+
+        try (Connection conn = DB_Connection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, username);
+            pstmt.setString(2, password);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                int customerId = rs.getInt("customerID");
+                String email = rs.getString("email");
+                String firstName = rs.getString("firstname");
+                String lastName = rs.getString("lastname");
+                int dayDOB = rs.getInt("dayDOB");
+                int monthDOB = rs.getInt("monthDOB");
+                int yearDOB = rs.getInt("yearDOB");
+                LocalDate dob = LocalDate.of(yearDOB, monthDOB, dayDOB);
+                int numberCC = rs.getInt("numberCC");
+                int cvvCC = rs.getInt("cvvCC");
+                int monthCC = rs.getInt("monthCC");
+                int yearCC = rs.getInt("yearCC");
+                String licenceId = rs.getString("licenseID");
+
+                customer = new Customer(email, username, password, firstName, lastName, dob, numberCC, cvvCC, monthCC, yearCC, licenceId);
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return customer;
+    }
+
 }
