@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import model.Booking;
 import model.Car;
 
 import static Database.DB_Connection.getInitialConnection;
@@ -95,11 +96,6 @@ public class InitDatabase {
         ect.insertCustomer(Resources.customer4);
         ect.insertCustomer(Resources.customer5);
         ect.insertCustomer(Resources.customer6);
-        EditOrderTable eot = new EditOrderTable();
-        int order_id = eot.insertOrder(Resources.order1);
-        System.out.println("order_id: " + order_id);
-        eot.updateOrder(order_id, 1000);
-
 
         Resources resources = new Resources();
         Resources.addCars();
@@ -133,6 +129,20 @@ public class InitDatabase {
         editScooterTable.insertScooter(Resources.scooter3);
         editScooterTable.insertScooter(Resources.scooter4);
         editScooterTable.insertScooter(Resources.scooter5);
+
+        EditOrderTable editOrderTable = new EditOrderTable();
+        int order_id = editOrderTable.insertOrder(Resources.order2);
+
+        EditBookingTable editBookingTable = new EditBookingTable();
+        Booking booking1 = new Booking(0, order_id, 1, 1, 150, true, "Active");
+        Booking booking2 = new Booking(0, order_id, 14, 2, 200, false, "Active");
+        Booking booking3 = new Booking(0, order_id, 8, 3, 250, true, "Active");
+
+        editBookingTable.insertBooking(booking1);
+        editBookingTable.insertBooking(booking2);
+        editBookingTable.insertBooking(booking3);
+
+
 
     }
 
