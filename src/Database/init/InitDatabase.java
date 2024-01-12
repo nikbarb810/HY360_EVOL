@@ -69,8 +69,8 @@ public class InitDatabase {
 
 //        init.dropDatabase();
 //
-//
-//
+
+
 
     }
 
@@ -203,6 +203,10 @@ public class InitDatabase {
         editOrderTable.calculateMotorBikeStatistics();
         editOrderTable.calculateScooterStatistics();
 
+        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Car",LocalDate.of(2024, 9, 1));
+        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Motorbike",LocalDate.of(2024, 9, 1));
+        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Scooter",LocalDate.of(2024, 9, 1));
+        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Bicycle",LocalDate.of(2024, 9, 1));
     }
 
 }

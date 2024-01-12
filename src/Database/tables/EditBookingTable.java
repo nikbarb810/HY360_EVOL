@@ -4,6 +4,7 @@ import Database.DB_Connection;
 import model.Booking;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class EditBookingTable {
@@ -215,6 +216,38 @@ public class EditBookingTable {
 
         return orderId;
     }
+    public void calculateRentalIncomeByCategoryAndTimePeriod(String vehicleType, LocalDate startDate) {
+        int startYear = startDate.getYear();
+        int startMonth = startDate.getMonthValue();
+
+        String sql = "SELECT CONCAT(`Order`.startYear, '-', LPAD(`Order`.startMonth, 2, '0')) AS TimePeriod, " +
+                "SUM(Booking.bookingCost + CASE WHEN Booking.coveredInsur THEN Vehicle.insurPrice ELSE 0 END) AS TotalIncome " +
+                "FROM Booking " +
+                "JOIN `Order` ON Booking.orderID = `Order`.orderID " +
+                "JOIN " + vehicleType + " Vehicle ON Booking.vehicleID = Vehicle.vehicleID " +
+                "WHERE `Order`.startYear = ? AND `Order`.startMonth = ? " +
+                "GROUP BY TimePeriod";
+
+        try (Connection conn = DB_Connection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, startYear);
+            pstmt.setInt(2, startMonth);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                String timePeriod = rs.getString("TimePeriod");
+                int totalIncome = rs.getInt("TotalIncome");
+
+                System.out.println("Vehicle Type: " + vehicleType + ", Time Period: " + timePeriod + ", Total Income: " + totalIncome);
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
 //    //function that updates the status of a booking and the vehicles availability
 //    public void updateBookingStatus(int bookingId, String status) {
