@@ -113,4 +113,28 @@ public class EditCarTable {
         conn.close();
     }
 
+    public Car getCarByVehicleID(int vehicleID) throws SQLException, ClassNotFoundException {
+        Connection conn = DB_Connection.getConnection();
+        Statement stmt = conn.createStatement();
+        String sql = "SELECT * FROM Car WHERE vehicleID = " + vehicleID;
+        ResultSet rs = stmt.executeQuery(sql);
+        Car car = null;
+        while (rs.next()) {
+            car = new Car(rs.getInt("vehicleID"),
+                    rs.getString("brand"),
+                    rs.getString("model"),
+                    rs.getString("color"),
+                    rs.getInt("rentalPrice"),
+                    rs.getString("status"),
+                    rs.getInt("insurPrice"),
+                    rs.getInt("regNumber"),
+                    rs.getString("type"),
+                    rs.getInt("numPassengers"),
+                    rs.getInt("mileage"));
+        }
+        stmt.close();
+        conn.close();
+        return car;
+    }
+
 }

@@ -100,5 +100,25 @@ public class EditBicycleTable {
         stmt.close();
         conn.close();
     }
+    public Bicycle getBicycleByVehicleID(int vehicleID) throws SQLException, ClassNotFoundException {
+        Connection conn = DB_Connection.getConnection();
+        Statement stmt = conn.createStatement();
+        String sql = "SELECT * FROM Bicycle WHERE vehicleID = " + vehicleID;
+        ResultSet rs = stmt.executeQuery(sql);
+        Bicycle bc = null;
+        while (rs.next()) {
+            String model = rs.getString("model");
+            String brand = rs.getString("brand");
+            String color = rs.getString("color");
+            int mileage = rs.getInt("mileage");
+            int rentalPrice = rs.getInt("rentalPrice");
+            int insurPrice = rs.getInt("insurPrice");
+            String status = rs.getString("status");
+            bc = new Bicycle(vehicleID, brand, model, color, rentalPrice, status, insurPrice, mileage);
+        }
+        stmt.close();
+        conn.close();
+        return bc;
+    }
 
 }

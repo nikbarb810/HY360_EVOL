@@ -105,4 +105,27 @@ public class EditMotorBikeTable {
         conn.close();
     }
 
+    public MotorBike getMotorBikeByVehicleID(int vehicleID) throws SQLException, ClassNotFoundException {
+        Connection conn = DB_Connection.getConnection();
+        Statement stmt = conn.createStatement();
+        String sql = "SELECT * FROM Motorbike WHERE vehicleID = " + vehicleID;
+        ResultSet rs = stmt.executeQuery(sql);
+        MotorBike mb = null;
+        while (rs.next()) {
+            String model = rs.getString("model");
+            String brand = rs.getString("brand");
+            String color = rs.getString("color");
+            int mileage = rs.getInt("mileage");
+            int regNumber = rs.getInt("regNumber");
+            int rentalPrice = rs.getInt("rentalPrice");
+            int insurPrice = rs.getInt("insurPrice");
+            String status = rs.getString("status");
+            mb = new MotorBike(vehicleID, brand, model, color, rentalPrice, status, insurPrice, regNumber, mileage);
+        }
+        stmt.close();
+        conn.close();
+        return mb;
+    }
+
+
 }
