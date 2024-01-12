@@ -31,6 +31,7 @@ public class EditCarTable {
         stmt.close();
         conn.close();
     }
+
     public void insertCarTable(Car toBeAdded) throws SQLException, ClassNotFoundException {
         Connection conn = DB_Connection.getConnection();
         Statement stmt = conn.createStatement();
@@ -50,6 +51,7 @@ public class EditCarTable {
         stmt.close();
         conn.close();
     }
+
     public ArrayList<Car> getAllCars() throws SQLException, ClassNotFoundException {
         Connection conn = DB_Connection.getConnection();
         Statement stmt = conn.createStatement();

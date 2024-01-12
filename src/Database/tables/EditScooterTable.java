@@ -112,26 +112,6 @@ public class EditScooterTable {
         return scs;
     }
 
-    public ArrayList<Scooter> getAllAvailableScooters() throws SQLException, ClassNotFoundException {
-        Connection conn = DB_Connection.getConnection();
-        Statement stmt = conn.createStatement();
-        String sql = "SELECT * FROM Scooter WHERE status = 'Available'";
-        ArrayList<Scooter> scooters = new ArrayList<>();
-        ResultSet rs = stmt.executeQuery(sql);
-        while (rs.next()) {
-            int vehicleID = rs.getInt("vehicleID");
-            String model = rs.getString("model");
-            String brand = rs.getString("brand");
-            String color = rs.getString("color");
-            int mileage = rs.getInt("mileage");
-            int rentalPrice = rs.getInt("rentalPrice");
-            int insurPrice = rs.getInt("insurPrice");
-            String status = rs.getString("status");
-            Scooter sc = new Scooter(vehicleID, brand, model, color, rentalPrice, status, insurPrice, mileage);
-            scooters.add(sc);
-        }
-        return scooters;
-    }
 
     public void updateScooterStatus(int vehicleId, String status) throws SQLException, ClassNotFoundException {
         Connection conn = DB_Connection.getConnection();

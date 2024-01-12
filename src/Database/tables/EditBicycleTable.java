@@ -111,28 +111,7 @@ public class EditBicycleTable {
     }
 
 
-    public ArrayList<Bicycle> getAllAvailableBicycles() throws SQLException, ClassNotFoundException {
-        Connection conn = DB_Connection.getConnection();
-        Statement stmt = conn.createStatement();
-        String sql = "SELECT * FROM Bicycle WHERE status = 'Available'";
-        ArrayList<Bicycle> bicycles = new ArrayList<>();
-        ResultSet rs = stmt.executeQuery(sql);
-        while (rs.next()) {
-            int vehicleID = rs.getInt("vehicleID");
-            String model = rs.getString("model");
-            String brand = rs.getString("brand");
-            String color = rs.getString("color");
-            int mileage = rs.getInt("mileage");
-            int rentalPrice = rs.getInt("rentalPrice");
-            int insurPrice = rs.getInt("insurPrice");
-            String status = rs.getString("status");
-            Bicycle bc = new Bicycle(vehicleID, brand, model, color, rentalPrice, status, insurPrice, mileage);
-            bicycles.add(bc);
-        }
-        stmt.close();
-        conn.close();
-        return bicycles;
-    }
+
 
     public void updateBicycleStatus(int vehicleId, String status) throws SQLException, ClassNotFoundException {
         Connection conn = DB_Connection.getConnection();

@@ -1,7 +1,17 @@
 package View;
 
+import Database.tables.EditBicycleTable;
+import Database.tables.EditCarTable;
+import Database.tables.EditMotorBikeTable;
+import Database.tables.EditScooterTable;
+import model.Bicycle;
+import model.Car;
+import model.MotorBike;
+import model.Scooter;
+
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.SQLException;
 import javax.swing.*;
 
 public class AdminPage extends JFrame {
@@ -77,154 +87,209 @@ public class AdminPage extends JFrame {
     }
 
     protected void createAddScooterDialog() {
-		// TODO Auto-generated method stub
-    	JDialog addVehicleDialog = new JDialog(this, "Add Scooter", true);
-	    addVehicleDialog.setSize(400, 300); // Adjusted for additional space
-	    addVehicleDialog.setResizable(true);
+        JDialog addVehicleDialog = new JDialog(this, "Add Scooter", true);
+        addVehicleDialog.setResizable(true);
 
-	    // Use BoxLayout for vertical stacking
-	    Container contentPane = addVehicleDialog.getContentPane();
-	    contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
+        Container contentPane = addVehicleDialog.getContentPane();
+        contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
 
-	    // Add fields and labels to the dialog
-	    contentPane.add(createLabelFieldPair("Vehicle Brand:", 15));
-	    contentPane.add(createLabelFieldPair("Vehicle Model:", 15));
-	    contentPane.add(createLabelFieldPair("Color:", 15));
-	    contentPane.add(createLabelFieldPair("Rental Price:", 15));
-	    contentPane.add(createLabelFieldPair("Insur Price:", 15));
-	    contentPane.add(createLabelFieldPair("Mileage:", 15));
+        JTextField brandField = createLabelFieldPair("Vehicle Brand:", 15, contentPane);
+        JTextField modelField = createLabelFieldPair("Vehicle Model:", 15, contentPane);
+        JTextField colorField = createLabelFieldPair("Color:", 15, contentPane);
+        JTextField rentalPriceField = createLabelFieldPair("Rental Price:", 15, contentPane);
+        JTextField insurPriceField = createLabelFieldPair("Insur Price:", 15, contentPane);
+        JTextField mileageField = createLabelFieldPair("Mileage:", 15, contentPane);
 
-	    // Add submit button
-	    JButton submitButton = new JButton("Submit");
-	    submitButton.addActionListener(e -> {
-	        // Process the vehicle data here
-	        // ...
-	        addVehicleDialog.dispose(); // Close the dialog
-	    });
-	    contentPane.add(submitButton);
+        JButton submitButton = new JButton("Submit");
+        submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        submitButton.addActionListener(e -> {
+            try {
+                String brand = brandField.getText();
+                String model = modelField.getText();
+                String color = colorField.getText();
+                int rentalPrice = Integer.parseInt(rentalPriceField.getText());
+                int insurPrice = Integer.parseInt(insurPriceField.getText());
+                int mileage = Integer.parseInt(mileageField.getText());
 
-	    // Set dialog location relative to the parent window
-	    addVehicleDialog.setLocationRelativeTo(this);
+                Scooter newScooter = new Scooter(0, brand, model, color, rentalPrice,"Available", insurPrice, mileage);
 
-	    // Make the dialog visible
-	    addVehicleDialog.setVisible(true);
-		
+                EditScooterTable est = new EditScooterTable();
+                est.insertScooter(newScooter);
+
+                addVehicleDialog.dispose();
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(addVehicleDialog, "Please enter valid numbers.");
+            }
+        });
+        contentPane.add(submitButton);
+
+        addVehicleDialog.pack();
+        addVehicleDialog.setLocationRelativeTo(this);
+        addVehicleDialog.setVisible(true);
+    }
+
+    protected void createAddBicycleDialog() {
+        JDialog addVehicleDialog = new JDialog(this, "Add Bicycle", true);
+        addVehicleDialog.setResizable(true);
+
+        Container contentPane = addVehicleDialog.getContentPane();
+        contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
+
+        JTextField brandField = createLabelFieldPair("Vehicle Brand:", 15, contentPane);
+        JTextField modelField = createLabelFieldPair("Vehicle Model:", 15, contentPane);
+        JTextField colorField = createLabelFieldPair("Color:", 15, contentPane);
+        JTextField rentalPriceField = createLabelFieldPair("Rental Price:", 15, contentPane);
+        JTextField insurPriceField = createLabelFieldPair("Insur Price:", 15, contentPane);
+        JTextField mileageField = createLabelFieldPair("Mileage:", 15, contentPane);
+
+        JButton submitButton = new JButton("Submit");
+        submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        submitButton.addActionListener(e -> {
+            try {
+                String brand = brandField.getText();
+                String model = modelField.getText();
+                String color = colorField.getText();
+                int rentalPrice = Integer.parseInt(rentalPriceField.getText());
+                int insurPrice = Integer.parseInt(insurPriceField.getText());
+                int mileage = Integer.parseInt(mileageField.getText());
+
+                Bicycle newBicycle = new Bicycle(0, brand, model, color, rentalPrice, "Available", insurPrice, mileage);
+
+                EditBicycleTable ebt = new EditBicycleTable();
+                ebt.insertBicycle(newBicycle);
+
+                addVehicleDialog.dispose();
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(addVehicleDialog, "Please enter valid numbers.");
+            }
+        });
+        contentPane.add(submitButton);
+
+        addVehicleDialog.pack();
+        addVehicleDialog.setLocationRelativeTo(this);
+        addVehicleDialog.setVisible(true);
+    }
+    protected void createAddMotorBikeDialog() {
+        JDialog addVehicleDialog = new JDialog(this, "Add Motorbike", true);
+        addVehicleDialog.setResizable(true);
+
+        Container contentPane = addVehicleDialog.getContentPane();
+        contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
+
+        JTextField brandField = createLabelFieldPair("Vehicle Brand:", 15, contentPane);
+        JTextField modelField = createLabelFieldPair("Vehicle Model:", 15, contentPane);
+        JTextField colorField = createLabelFieldPair("Color:", 15, contentPane);
+        JTextField rentalPriceField = createLabelFieldPair("Rental Price:", 15, contentPane);
+        JTextField insurPriceField = createLabelFieldPair("Insur Price:", 15, contentPane);
+        JTextField regNumberField = createLabelFieldPair("Registration Number:", 15, contentPane);
+        JTextField mileageField = createLabelFieldPair("Mileage:", 15, contentPane);
+
+        JButton submitButton = new JButton("Submit");
+        submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        submitButton.addActionListener(e -> {
+            try {
+                String brand = brandField.getText();
+                String model = modelField.getText();
+                String color = colorField.getText();
+                int rentalPrice = Integer.parseInt(rentalPriceField.getText());
+                int insurPrice = Integer.parseInt(insurPriceField.getText());
+                int regNumber = Integer.parseInt(regNumberField.getText());
+                int mileage = Integer.parseInt(mileageField.getText());
+
+                MotorBike newMotorBike = new MotorBike(0, brand, model, color, rentalPrice, "Available", insurPrice, regNumber, mileage);
+
+                EditMotorBikeTable emt = new EditMotorBikeTable();
+                emt.insertMotorBikeTable(newMotorBike);
+
+                addVehicleDialog.dispose();
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(addVehicleDialog, "Please enter valid numbers.");
+            } catch (SQLException | ClassNotFoundException ex) {
+                JOptionPane.showMessageDialog(addVehicleDialog, "Error adding motorbike to database.");
+            }
+        });
+        contentPane.add(submitButton);
+
+        addVehicleDialog.pack();
+        addVehicleDialog.setLocationRelativeTo(this);
+        addVehicleDialog.setVisible(true);
+    }
+
+
+    private void createAddCarDialog() {
+		// Create and display the pop-up dialog for adding a vehicle
+		JDialog addVehicleDialog = new JDialog(this, "Add Car", true);
+		addVehicleDialog.setSize(400, 300); // Adjusted for additional space
+		addVehicleDialog.setResizable(true);
+
+		// Use BoxLayout for vertical stacking
+		Container contentPane = addVehicleDialog.getContentPane();
+		contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
+
+		// Fields declarations
+		JTextField brandField = createLabelFieldPair("Vehicle Brand:", 15, contentPane);
+		JTextField modelField = createLabelFieldPair("Vehicle Model:", 15, contentPane);
+		JTextField colorField = createLabelFieldPair("Color:", 15, contentPane);
+		JTextField rentalPriceField = createLabelFieldPair("Rental Price:", 15, contentPane);
+		JTextField insurPriceField = createLabelFieldPair("Insur Price:", 15, contentPane);
+		JTextField regNumberField = createLabelFieldPair("Registration Number:", 15, contentPane);
+		JTextField typeField = createLabelFieldPair("Type of car:", 15, contentPane);
+		JTextField numPassengersField = createLabelFieldPair("Num of Passengers:", 15, contentPane);
+		JTextField mileageField = createLabelFieldPair("Mileage:", 15, contentPane);
+
+		// Add submit button
+		JButton submitButton = new JButton("Submit");
+        submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		submitButton.addActionListener(e -> {
+			try {
+				// Retrieve values from fields and parse integer values
+				String brand = brandField.getText();
+				String model = modelField.getText();
+				String color = colorField.getText();
+				int rentalPrice = Integer.parseInt(rentalPriceField.getText());
+				int insurPrice = Integer.parseInt(insurPriceField.getText());
+				int regNumber = Integer.parseInt(regNumberField.getText());
+				String type = typeField.getText();
+				int numPassengers = Integer.parseInt(numPassengersField.getText());
+				int mileage = Integer.parseInt(mileageField.getText());
+
+				// Assuming vehicleID is auto-generated or not needed for this operation
+				Car newCar = new Car(0, brand, model, color, rentalPrice, "Available", insurPrice, regNumber,type, numPassengers, mileage);
+
+				// Insert the new car into the database
+				EditCarTable ect = new EditCarTable();
+				ect.insertCarTable(newCar);
+
+				// Dispose the dialog
+				addVehicleDialog.dispose();
+			} catch (NumberFormatException ex) {
+				// Handle invalid number format
+				JOptionPane.showMessageDialog(addVehicleDialog, "Please enter valid numbers.");
+			} catch (SQLException | ClassNotFoundException ex) {
+				// Handle SQL and ClassNotFound exceptions
+				JOptionPane.showMessageDialog(addVehicleDialog, "Error adding car to database.");
+			}
+		});
+		contentPane.add(submitButton);
+
+        // Pack the components within the dialog
+        addVehicleDialog.pack();
+
+		// Set dialog location relative to the parent window
+		addVehicleDialog.setLocationRelativeTo(this);
+
+		// Make the dialog visible
+		addVehicleDialog.setVisible(true);
 	}
 
-	protected void createAddBicycleDialog() {
-		// TODO Auto-generated method stub
-		JDialog addVehicleDialog = new JDialog(this, "Add Bicycle", true);
-	    addVehicleDialog.setSize(400, 300); // Adjusted for additional space
-	    addVehicleDialog.setResizable(true);
-
-	    // Use BoxLayout for vertical stacking
-	    Container contentPane = addVehicleDialog.getContentPane();
-	    contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
-
-	    // Add fields and labels to the dialog
-	    contentPane.add(createLabelFieldPair("Vehicle Brand:", 15));
-	    contentPane.add(createLabelFieldPair("Vehicle Model:", 15));
-	    contentPane.add(createLabelFieldPair("Color:", 15));
-	    contentPane.add(createLabelFieldPair("Rental Price:", 15));
-	    contentPane.add(createLabelFieldPair("Insur Price:", 15));
-	    contentPane.add(createLabelFieldPair("Mileage:", 15));
-
-	    // Add submit button
-	    JButton submitButton = new JButton("Submit");
-	    submitButton.addActionListener(e -> {
-	        // Process the vehicle data here
-	        // ...
-	        addVehicleDialog.dispose(); // Close the dialog
-	    });
-	    contentPane.add(submitButton);
-
-	    // Set dialog location relative to the parent window
-	    addVehicleDialog.setLocationRelativeTo(this);
-
-	    // Make the dialog visible
-	    addVehicleDialog.setVisible(true);
-	}
-
-	protected void createAddMotorBikeDialog() {
-		// TODO Auto-generated method stub
-		JDialog addVehicleDialog = new JDialog(this, "Add Motorbike", true);
-	    addVehicleDialog.setSize(400, 300); // Adjusted for additional space
-	    addVehicleDialog.setResizable(true);
-
-	    // Use BoxLayout for vertical stacking
-	    Container contentPane = addVehicleDialog.getContentPane();
-	    contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
-
-	    // Add fields and labels to the dialog
-	    contentPane.add(createLabelFieldPair("Vehicle Brand:", 15));
-	    contentPane.add(createLabelFieldPair("Vehicle Model:", 15));
-	    contentPane.add(createLabelFieldPair("Color:", 15));
-	    contentPane.add(createLabelFieldPair("Rental Price:", 15));
-	    contentPane.add(createLabelFieldPair("Insur Price:", 15));
-	    contentPane.add(createLabelFieldPair("Registration Number:", 15));
-	    contentPane.add(createLabelFieldPair("Mileage:", 15));
-
-	    // Add submit button
-	    JButton submitButton = new JButton("Submit");
-	    submitButton.addActionListener(e -> {
-	        // Process the vehicle data here
-	        // ...
-	        addVehicleDialog.dispose(); // Close the dialog
-	    });
-	    contentPane.add(submitButton);
-
-	    // Set dialog location relative to the parent window
-	    addVehicleDialog.setLocationRelativeTo(this);
-
-	    // Make the dialog visible
-	    addVehicleDialog.setVisible(true);
-		
-	}
-
-	private void createAddCarDialog() {
-	    // Create and display the pop-up dialog for adding a vehicle
-	    JDialog addVehicleDialog = new JDialog(this, "Add Car", true);
-	    addVehicleDialog.setSize(400, 300); // Adjusted for additional space
-	    addVehicleDialog.setResizable(true);
-
-	    // Use BoxLayout for vertical stacking
-	    Container contentPane = addVehicleDialog.getContentPane();
-	    contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
-
-	    // Add fields and labels to the dialog
-	    contentPane.add(createLabelFieldPair("Vehicle Brand:", 15));
-	    contentPane.add(createLabelFieldPair("Vehicle Model:", 15));
-	    contentPane.add(createLabelFieldPair("Color:", 15));
-	    contentPane.add(createLabelFieldPair("Rental Price:", 15));
-	    contentPane.add(createLabelFieldPair("Insur Price:", 15));
-	    contentPane.add(createLabelFieldPair("Registration Number:", 15));
-	    contentPane.add(createLabelFieldPair("Type of car:", 15));
-	    contentPane.add(createLabelFieldPair("Num of Passengers:", 15));
-	    contentPane.add(createLabelFieldPair("Mileage:", 15));
-
-	    // Add submit button
-	    JButton submitButton = new JButton("Submit");
-	    submitButton.addActionListener(e -> {
-	        // Process the vehicle data here
-	        // ...
-	        addVehicleDialog.dispose(); // Close the dialog
-	    });
-	    contentPane.add(submitButton);
-
-	    // Set dialog location relative to the parent window
-	    addVehicleDialog.setLocationRelativeTo(this);
-
-	    // Make the dialog visible
-	    addVehicleDialog.setVisible(true);
-	}
-
-	private JPanel createLabelFieldPair(String labelText, int textFieldSize) {
-	    JPanel panel = new JPanel();
-	    panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-	    panel.add(new JLabel(labelText));
-	    panel.add(Box.createRigidArea(new Dimension(5, 0))); // Space between label and text field
-	    panel.add(new JTextField(textFieldSize));
-	    return panel;
+	private JTextField createLabelFieldPair(String labelText, int fieldSize, Container contentPane) {
+		JLabel label = new JLabel(labelText);
+		JTextField textField = new JTextField(fieldSize);
+		JPanel panel = new JPanel();
+		panel.add(label);
+		panel.add(textField);
+		contentPane.add(panel);
+		return textField;
 	}
 
 }
