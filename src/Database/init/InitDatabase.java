@@ -8,8 +8,10 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+import model.Bicycle;
 import model.Booking;
 import model.Car;
+import model.MotorBike;
 
 import static Database.DB_Connection.getInitialConnection;
 
@@ -20,6 +22,36 @@ public class InitDatabase {
 //        init.initDatabase();
 //        init.initTables();
 //        init.addEntries();
+
+//        EditBookingTable ebt = new EditBookingTable();
+//        ebt.updateBookingStatus(3, "Crashed");
+//
+//        EditRepairTable ert = new EditRepairTable();
+//        ert.insertRepair(3, 100, "Crash", 15, 9, 2024, "Xalase h alysida");
+
+//        EditBicycleTable ebict = new EditBicycleTable();
+//        for(Bicycle bicycle : ebict.getAllAvailableBicycles(LocalDate.of(2024,9,17))){
+//            System.out.println(bicycle.getVehicleId());
+//        }
+//
+//        System.out.println("__________________________");
+//
+//        for(Bicycle bicycle : ebict.getAllAvailableBicycles(LocalDate.of(2024,9,20))){
+//            System.out.println(bicycle.getVehicleId());
+//        }
+
+        EditMotorBikeTable embt = new EditMotorBikeTable();
+        for(MotorBike motorBike : embt.getAllAvailableMotorbikes(LocalDate.of(2024,9,14))){
+            System.out.println(motorBike.getVehicleId());
+        }
+
+        System.out.println("__________________________");
+
+        for(MotorBike motorBike : embt.getAllAvailableMotorbikes(LocalDate.of(2024,9,16))){
+            System.out.println(motorBike.getVehicleId());
+        }
+
+
 
         EditCarTable ect = new EditCarTable();
 
@@ -32,15 +64,6 @@ public class InitDatabase {
         for(Car car : ect.getAllAvailableCars(LocalDate.of(2024,9,17))){
             System.out.println(car.getRegNum());
         }
-
-
-
-
-
-        EditBookingTable ebt = new EditBookingTable();
-        ebt.updateBookingStatus(1, "Crashed");
-        ebt.updateBookingStatus(2, "Crashed");
-
 
 
 

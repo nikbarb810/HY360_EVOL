@@ -1,12 +1,11 @@
 package Database.tables;
 
 import Database.DB_Connection;
+import model.Bicycle;
 import model.Scooter;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class EditScooterTable {
@@ -69,6 +68,48 @@ public class EditScooterTable {
             scooters.add(sc);
         }
         return scooters;
+    }
+
+    // Get all cars that are available or will be available by the booking date
+    public ArrayList<Scooter> getAllAvailableScooters(LocalDate bookingDate) throws SQLException, ClassNotFoundException {
+        ArrayList<Scooter> scs = new ArrayList<>();
+
+        String sql = "SELECT Scooter.* FROM Scotter " +
+                "LEFT JOIN Booking ON Scooter.vehicleID = Booking.vehicleID " +
+                "LEFT JOIN Repair ON Booking.bookingID = Repair.bookingID " +
+                "WHERE Scooter.status = 'Available' OR " +
+                "((Scooter.status = 'Crashed' OR Scooter.status = 'Maintenance') AND Repair.endYear IS NOT NULL AND " +
+                "(Repair.endYear < ? OR (Repair.endYear = ? AND Repair.endMonth < ?) OR (Repair.endYear = ? AND Repair.endMonth = ? AND Repair.endDay < ?)))";
+
+        try (Connection conn = DB_Connection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            // Set the booking date parameters for the prepared statement
+            pstmt.setInt(1, bookingDate.getYear());
+            pstmt.setInt(2, bookingDate.getYear());
+            pstmt.setInt(3, bookingDate.getMonthValue());
+            pstmt.setInt(4, bookingDate.getYear());
+            pstmt.setInt(5, bookingDate.getMonthValue());
+            pstmt.setInt(6, bookingDate.getDayOfMonth());
+
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                // Create a Car object using the constructor with the correct order of parameters
+                Scooter s = new Scooter(
+                        rs.getInt("vehicleID"),
+                        rs.getString("brand"),
+                        rs.getString("model"),
+                        rs.getString("color"),
+                        rs.getInt("rentalPrice"),
+                        rs.getString("status"),
+                        rs.getInt("insurPrice"),
+                        rs.getInt("mileage")
+                );
+                scs.add(s);
+            }
+        }
+        return scs;
     }
 
     public ArrayList<Scooter> getAllAvailableScooters() throws SQLException, ClassNotFoundException {
