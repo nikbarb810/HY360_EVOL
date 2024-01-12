@@ -164,4 +164,36 @@ public class EditBicycleTable {
         return bc;
     }
 
+    public Bicycle getMostPopularBicycle() throws SQLException, ClassNotFoundException {
+        Bicycle mostPopularBicycle = null;
+        String sql = "SELECT Bicycle.*, COUNT(Booking.vehicleID) as bookingCount " +
+                "FROM Bicycle " +
+                "JOIN Booking ON Bicycle.vehicleID = Booking.vehicleID " +
+                "GROUP BY Bicycle.vehicleID " +
+                "ORDER BY bookingCount DESC " +
+                "LIMIT 1;";
+
+        try (Connection conn = DB_Connection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            if (rs.next()) {
+                mostPopularBicycle = new Bicycle(
+                        rs.getInt("vehicleID"),
+                        rs.getString("model"),
+                        rs.getString("brand"),
+                        rs.getString("color"),
+                        rs.getInt("rentalPrice"),
+                        rs.getString("status"),
+                        rs.getInt("insurPrice"),
+                        rs.getInt("mileage")
+                        // Include other Bicycle attributes if necessary
+                );
+            }
+        }
+
+        return mostPopularBicycle;
+    }
+
+
 }

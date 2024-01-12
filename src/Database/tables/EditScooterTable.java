@@ -162,4 +162,37 @@ public class EditScooterTable {
         conn.close();
         return sc;
     }
+
+
+    public Scooter getMostPopularScooter() throws SQLException, ClassNotFoundException {
+        Scooter mostPopularScooter = null;
+        String sql = "SELECT Scooter.*, COUNT(Booking.vehicleID) as bookingCount " +
+                "FROM Scooter " +
+                "JOIN Booking ON Scooter.vehicleID = Booking.vehicleID " +
+                "GROUP BY Scooter.vehicleID " +
+                "ORDER BY bookingCount DESC " +
+                "LIMIT 1;";
+
+        try (Connection conn = DB_Connection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            if (rs.next()) {
+                mostPopularScooter = new Scooter(
+                        rs.getInt("vehicleID"),
+                        rs.getString("model"),
+                        rs.getString("brand"),
+                        rs.getString("color"),
+                        rs.getInt("rentalPrice"),
+                        rs.getString("status"),
+                        rs.getInt("mileage"),
+                        rs.getInt("insurPrice")
+                        // Include other Scooter attributes if necessary
+                );
+            }
+        }
+
+        return mostPopularScooter;
+    }
 }
+

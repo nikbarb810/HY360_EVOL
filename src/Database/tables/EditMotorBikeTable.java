@@ -21,7 +21,7 @@ public class EditMotorBikeTable {
                 + "    brand VARCHAR(255) NOT NULL,\n"
                 + "    color VARCHAR(255) NOT NULL,\n"
                 + "    mileage INT NOT NULL,\n"
-                + "    regNumber VARCHAR(255) NOT NULL,\n"
+                + "    regNumber INT NOT NULL,\n"
                 + "    rentalPrice INT NOT NULL,\n"
                 + "    insurPrice INT NOT NULL,\n"
                 + "    status ENUM('Available', 'Rented', 'Maintenance', 'Crashed') NOT NULL\n"
@@ -167,6 +167,37 @@ public class EditMotorBikeTable {
         stmt.close();
         conn.close();
         return mb;
+    }
+
+    public MotorBike getMostPopularMotorBike() throws SQLException, ClassNotFoundException {
+        MotorBike mostPopularMotorBike = null;
+        String sql = "SELECT Motorbike.*, COUNT(Booking.vehicleID) as bookingCount " +
+                "FROM Motorbike " +
+                "JOIN Booking ON Motorbike.vehicleID = Booking.vehicleID " +
+                "GROUP BY Motorbike.vehicleID " +
+                "ORDER BY bookingCount DESC " +
+                "LIMIT 1;";
+
+        try (Connection conn = DB_Connection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            if (rs.next()) {
+                mostPopularMotorBike = new MotorBike(
+                        rs.getInt("vehicleID"),
+                        rs.getString("brand"),
+                        rs.getString("model"),
+                        rs.getString("color"),
+                        rs.getInt("rentalPrice"),
+                        rs.getString("status"),
+                        rs.getInt("insurPrice"),
+                        rs.getInt("regNumber"),
+                        rs.getInt("mileage")
+                );
+            }
+        }
+
+        return mostPopularMotorBike;
     }
 
 
