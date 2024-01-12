@@ -3,7 +3,10 @@ package View;
 import javax.swing.*;
 
 import Controller.Controller;
+import Database.tables.EditBicycleTable;
 import Database.tables.EditCarTable;
+import Database.tables.EditMotorBikeTable;
+import Database.tables.EditScooterTable;
 import model.Bicycle;
 import model.Car;
 import model.Driver;
@@ -28,6 +31,7 @@ public  class RentPage extends JFrame {
     boolean scooter = false;
     RentPage myself = this;
     boolean pickdate = false;
+    ArrayList<Vehicle>rentlist = new ArrayList();
     ArrayList<Car>carlist = new ArrayList();
     ArrayList<MotorBike>mbikelist = new ArrayList();
     ArrayList<Bicycle>bikelist = new ArrayList();
@@ -86,11 +90,22 @@ public  class RentPage extends JFrame {
                         // Process payment information here
                         // Close the dialog
                         dialog.dispose();
-                        pickdate = true;
+                        if(pickdate ==true) {
+                        	try {
+								updateText(selectedTextArea);
+							} catch (ClassNotFoundException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							} catch (SQLException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+                        }
                         LocalDate from =  LocalDate.of((Integer)fromYear.getSelectedItem(),(Integer)fromMonth.getSelectedItem(),(Integer)fromDay.getSelectedItem());
                         LocalDate to =  LocalDate.of((Integer)toYear.getSelectedItem(),(Integer)toMonth.getSelectedItem(),(Integer)toDay.getSelectedItem());
                         Controller.cart.setStartDate(from);
                         Controller.cart.setEndDate(to);
+                        pickdate = true;
                     }
 					
                 });
@@ -328,26 +343,30 @@ public  class RentPage extends JFrame {
             ok += "Cars,";
            EditCarTable ec = new EditCarTable();
            carlist =  ec.getAllAvailableCars(Controller.cart.getStartDate());
+           PrintCars();
         }
         if (mbikes) {
             ok += "MotorBikes,";
+            EditMotorBikeTable ec = new EditMotorBikeTable();
+            mbikelist  = ec.getAllAvailableMotorbikes(Controller.cart.getStartDate());
+            PrintMbikes();
         }
         if (bikes) {
             ok += "Bicycles,";
+            EditBicycleTable ec = new EditBicycleTable();
+            bikelist = ec.getAllAvailableBicycles(Controller.cart.getStartDate());
+            PrintBikes();
         }
         if (scooter) {
             ok += "Scooter,";
+            EditScooterTable ec = new EditScooterTable();
+            scooterlist = ec.getAllAvailableScooters(Controller.cart.getStartDate());
+            PrintScooters();
         }
 
         // Remove the last comma if it exists
         if (!ok.isEmpty() && ok.charAt(ok.length() - 1) == ',') {
             ok = ok.substring(0, ok.length() - 1) + ' ';
-        }
-        for (Car haha : carlist) {
-        	String mama = haha.getBrand() +", " +haha.getModel() +", " +haha.getColor() +", Mileage: " +
-        			haha.getMileage() +",RegNum : " +haha.getRegNum() +",Total Passengers" +haha.getNumPassengers() 
-        			+",Insurance Cost: " +haha.getInsurPrice() +",Type : " +haha.getType();
-        	addVehicleRow(mama);
         }
 
         selectedLabel.setText(ok);
@@ -468,5 +487,37 @@ public  class RentPage extends JFrame {
         	months[i-1] =  i;
         }
         return months;
+    }
+    private void PrintCars() {
+    	for (Car haha : carlist) {
+        	String mama = haha.getBrand() +", " +haha.getModel() +", " +haha.getColor() +", Mileage: " +
+        			haha.getMileage() +",RegNum : " +haha.getRegNum() +",Total Passengers" +haha.getNumPassengers() 
+        			+",Insurance Cost: " +haha.getInsurPrice() +",Type : " +haha.getType();
+        	addVehicleRow(mama);
+        }
+    }
+    private void PrintMbikes() {
+    	for (MotorBike haha : mbikelist) {
+        	String mama = haha.getBrand() +", " +haha.getModel() +", " +haha.getColor() +", Mileage: " +
+        			haha.getMileage() +",RegNum : " +haha.getRegNum() + 
+        			",Insurance Cost: " +haha.getInsurPrice() ;
+        	addVehicleRow(mama);
+        }
+    }
+    private void  PrintBikes() {
+    	for (Bicycle haha : bikelist) {
+        	String mama = haha.getBrand() +", " +haha.getModel() +", " +haha.getColor() +", Mileage: " +
+        			haha.getMileage() + 
+        			",Insurance Cost: " +haha.getInsurPrice() ;
+        	addVehicleRow(mama);
+        }
+    }
+    private void  PrintScooters() {
+    	for (Scooter haha : scooterlist) {
+        	String mama = haha.getBrand() +", " +haha.getModel() +", " +haha.getColor() +", Mileage: " +
+        			haha.getMileage() + 
+        			",Insurance Cost: " +haha.getInsurPrice() ;
+        	addVehicleRow(mama);
+        }
     }
 }
