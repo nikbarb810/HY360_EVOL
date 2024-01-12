@@ -28,7 +28,11 @@ public class Customer {
         this.LastName = LastName;
     }
 
-    public int getCustomerId() {
+    public Customer() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public int getCustomerId() {
         return CustomerId;
     }
 

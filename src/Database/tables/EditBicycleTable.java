@@ -100,6 +100,7 @@ public class EditBicycleTable {
         stmt.close();
         conn.close();
     }
+
     public Bicycle getBicycleByVehicleID(int vehicleID) throws SQLException, ClassNotFoundException {
         Connection conn = DB_Connection.getConnection();
         Statement stmt = conn.createStatement();

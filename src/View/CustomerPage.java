@@ -101,6 +101,7 @@ public class CustomerPage extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 // Code to execute when Button 1 is pressed
                 dispose();
+                Controller.LoadInventory();
                 // Add any other actions you want to perform here
             }
         });

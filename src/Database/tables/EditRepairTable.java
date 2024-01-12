@@ -29,7 +29,7 @@ public class EditRepairTable {
                     + ");";
 
             stmt.execute(sqlCreateMaintenanceExpenseTable);
-        } // try-with-resources will auto close resources
+        }
     }
 
     public void insertRepair(int bookingId, int totalCost, String type, int startDay, int startMonth, int startYear, String description) {

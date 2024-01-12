@@ -3,9 +3,9 @@ package model;
 public class Driver {
 	int DriverId;
 	int CustomerId;
-	String FirstName;
-	String LastName;
-	int LicenseId;
+	public String FirstName;
+	public String LastName;
+	public int LicenseId;
 
     public int getDriverId() {
         return DriverId;
@@ -54,4 +54,13 @@ public class Driver {
         LastName = lastName;
         LicenseId = licenseId;
     }
+
+	public Driver() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public String getSurname() {
+		// TODO Auto-generated method stub
+		return this.LastName;
+	}
 }

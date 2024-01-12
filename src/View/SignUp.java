@@ -64,11 +64,11 @@ public class SignUp extends JFrame {
         signUpLabel.setBounds(layeredPane.getPreferredSize().width / 2 - 100, 50, 200, 50);
 
         // Input fields
-        JTextField emailField = new JTextField("Email");
-        JTextField usernameField = new JTextField("Username");
-        JTextField passwordField = new JTextField("Password");
-        JTextField FNameField = new JTextField("First Name");
-        JTextField LNameField = new JTextField("LastName");
+        JTextField emailField = new JTextField();
+        JTextField usernameField = new JTextField();
+        JTextField passwordField = new JTextField();
+        JTextField FNameField = new JTextField();
+        JTextField LNameField = new JTextField();
         
         // Set bounds and styling
         emailField.setBounds(layeredPane.getPreferredSize().width / 2 - 100, layeredPane.getPreferredSize().height / 2 -180, 200, 30);
@@ -135,7 +135,7 @@ public class SignUp extends JFrame {
         layeredPane.add(monthComboBox, Integer.valueOf(15));
         layeredPane.add(yearComboBox, Integer.valueOf(16));
         
-        JTextField LicenseField = new JTextField("License id");
+        JTextField LicenseField = new JTextField();
         LicenseField.setBounds(layeredPane.getPreferredSize().width / 2 - 100, layeredPane.getPreferredSize().height / 2 +60, 200, 30);
         layeredPane.add(LicenseField, Integer.valueOf(17));
         JLabel LicenceLabel = new JLabel("LicenceId :");
@@ -159,13 +159,22 @@ public class SignUp extends JFrame {
         BicLabel.setBounds(xPosition- 20, layeredPane.getPreferredSize().height / 2 - (yPositionOffset - 280), labelWidth-5, labelHeight);
         BicLabel.setForeground(Color.WHITE);
         layeredPane.add(BicLabel, Integer.valueOf(22));
+        
+        JComboBox<Integer> MOnth = new JComboBox<>(new Integer[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
+        MOnth.setBounds(dateXPosition, dateYPosition+160, 80, 30);
+        layeredPane.add(MOnth, Integer.valueOf(30));
+        JLabel MonthLabel = new JLabel("Expiry Month of Card:");
+        MonthLabel.setBounds(xPosition- 100, layeredPane.getPreferredSize().height / 2 - (yPositionOffset - 320), labelWidth-5, labelHeight);
+        MonthLabel.setForeground(Color.WHITE);
+        layeredPane.add(MonthLabel, Integer.valueOf(24));
+        
         JComboBox<Integer> YEAR = createYearComboBox2();
-        YEAR.setBounds(dateXPosition, dateYPosition+160, 80, 30);
+        YEAR.setBounds(dateXPosition, dateYPosition+200, 80, 30);
         layeredPane.add(YEAR, Integer.valueOf(23));
-        JLabel YearLabel = new JLabel("Expiry of Card:");
-        BicLabel.setBounds(xPosition- 20, layeredPane.getPreferredSize().height / 2 - (yPositionOffset - 320), labelWidth-5, labelHeight);
-        BicLabel.setForeground(Color.WHITE);
-        layeredPane.add(BicLabel, Integer.valueOf(24));
+        JLabel YearLabel = new JLabel("Expiry  Year of Card:");
+        YearLabel.setBounds(xPosition- 100, layeredPane.getPreferredSize().height / 2 - (yPositionOffset - 360), labelWidth-5, labelHeight);
+        YearLabel.setForeground(Color.WHITE);
+        layeredPane.add(YearLabel, Integer.valueOf(24));
         JButton SignUpbutton = new JButton("SignUp");
         Color buttonColor = Color.cyan;
         Color textColor = Color.BLACK;
@@ -176,7 +185,7 @@ public class SignUp extends JFrame {
         SignUpbutton.setMaximumSize(buttonSize); // To ensure button size is respected in BoxLayout
         SignUpbutton.setAlignmentX(Component.CENTER_ALIGNMENT); // To center the button
         int buttonX = 600; // X position
-        int buttonY = 600; // Y position
+        int buttonY = 650; // Y position
         int buttonWidth = 200; // Width
         int buttonHeight = 50; // Height
         SignUpbutton.setBounds(buttonX, buttonY, buttonWidth, buttonHeight);
@@ -199,10 +208,11 @@ public class SignUp extends JFrame {
                 LocalDate Dob =  LocalDate.of(year, month, day);
                 int numbercc = Integer.valueOf(CardNumber.getText());
                 int bic =Integer.valueOf(Bic.getText());
+                int CardMonth=(Integer) MOnth.getSelectedItem();
                 int CardYear=(Integer) YEAR.getSelectedItem();
                 String LicenceId= LicenseField.getText();
-                Customer ok = new Customer( email, username,  password,  FirstName, LastName,  Dob,  numbercc,  bic, 5,  CardYear,  LicenceId);
-                Controller.UploadAccount(ok);
+                Customer ok = new Customer( email, username,  password,  FirstName, LastName,  Dob,  numbercc,  bic,  CardMonth,CardYear,  LicenceId);
+               // Controller.UploadAccount(ok);
                 Controller.LoadMainPage();
                 // Add any other actions you want to perform here
             }
