@@ -24,7 +24,7 @@ public class EditRepairTable {
                     + "endMonth INT, "
                     + "endYear INT, "
                     + "description TEXT, "
-                    + "FOREIGN KEY (bookingID) REFERENCES booking(bookingID)"
+                    + "FOREIGN KEY (bookingID) REFERENCES Booking(bookingID)"
                     + ");";
 
             stmt.execute(sqlCreateMaintenanceExpenseTable);

@@ -13,7 +13,7 @@ public class EditPaymentTable {
         try (Connection conn = DB_Connection.getConnection();
              Statement stmt = conn.createStatement()) {
 
-            String sqlCreatePaymentTable = "CREATE TABLE IF NOT EXISTS payment ("
+            String sqlCreatePaymentTable = "CREATE TABLE IF NOT EXISTS Payment ("
                     + "paymentID INT AUTO_INCREMENT PRIMARY KEY, "
                     + "orderID INT NOT NULL, "
                     + "amount INT NOT NULL, "
@@ -22,7 +22,7 @@ public class EditPaymentTable {
                     + "paymentDay INT, "
                     + "paymentMonth INT, "
                     + "paymentYear INT, "
-                    + "FOREIGN KEY (orderID) REFERENCES `order`(orderID)"
+                    + "FOREIGN KEY (orderID) REFERENCES `Order`(orderID)"
                     + ");";
 
             stmt.execute(sqlCreatePaymentTable);

@@ -18,8 +18,8 @@ public class InitDatabase {
         init.initDatabase();
         init.initTables();
         init.addEntries();
-
-//        EditCustomerTable ect = new EditCustomerTable();
+//        init.dropDatabase();
+        EditCustomerTable ect = new EditCustomerTable();
 //        Customer c = ect.getCustomer("johndoe");
 //
 //
@@ -112,7 +112,6 @@ public class InitDatabase {
         resources.updateCarStatus(cars.get(4).getVehicleId(), "Rented");
         cars = resources.getAllCars();
         EditBicycleTable editBicycleTable = new EditBicycleTable();
-        Resources.addCars();
         editBicycleTable.insertBicycle(Resources.bike1);
         editBicycleTable.insertBicycle(Resources.bike2);
         editBicycleTable.insertBicycle(Resources.bike3);
