@@ -68,6 +68,31 @@ public class EditOrderTable {
         return orderId;
     }
 
+    //function that gets customerID from orderID
+    public int getCustomerId(int orderId) {
+        int customerId = -1;
+
+        String sql = "SELECT customerID FROM `Order` WHERE orderID = ?;";
+
+        try (Connection conn = DB_Connection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, orderId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    customerId = rs.getInt("customerID");
+                }
+            }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return customerId;
+    }
+
+
     public void updateOrder(int orderId, int cost) {
         String sql = "UPDATE `Order` SET cost = ? WHERE orderID = ?;";
 

@@ -22,7 +22,7 @@ public class EditPaymentTable {
                     + "paymentDay INT, "
                     + "paymentMonth INT, "
                     + "paymentYear INT, "
-                    + "FOREIGN KEY (orderID) REFERENCES `Order`(orderID)"
+                    + "FOREIGN KEY (OrderID) REFERENCES `Order`(OrderID)"
                     + ");";
 
             stmt.execute(sqlCreatePaymentTable);

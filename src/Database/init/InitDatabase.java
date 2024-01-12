@@ -142,7 +142,11 @@ public class InitDatabase {
         editBookingTable.insertBooking(booking2);
         editBookingTable.insertBooking(booking3);
 
+        ArrayList<Booking> bookings = editBookingTable.getCustomerBookings(2);
 
+        EditRepairTable editRepairTable = new EditRepairTable();
+        editRepairTable.insertRepair(bookings.get(0).getBookingId(), 100, "crash", 12, 9, 2024, "crashed");
+        editRepairTable.insertRepair(bookings.get(1).getBookingId(), 200, "maintenance", 14, 9, 2024, "maintenance");
 
     }
 

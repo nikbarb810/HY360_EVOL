@@ -3,9 +3,7 @@ package Database.tables;
 import Database.DB_Connection;
 import model.Booking;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 
 public class EditBookingTable {
@@ -59,7 +57,21 @@ public class EditBookingTable {
 
             String sql = "SELECT * FROM Booking WHERE orderID IN (SELECT orderID FROM `Order` WHERE customerID = " + customerId + ");";
 
-            stmt.executeQuery(sql);
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while(rs.next()){
+                int bookingId = rs.getInt("bookingID");
+                int orderId = rs.getInt("orderID");
+                int vehicleId = rs.getInt("vehicleID");
+                int driverId = rs.getInt("driverID");
+                int bookingCost = rs.getInt("bookingCost");
+                boolean coveredInsur = rs.getBoolean("coveredInsur");
+                String status = rs.getString("status");
+
+                Booking b = new Booking(bookingId, orderId, vehicleId, driverId, bookingCost, coveredInsur, status);
+                bookings.add(b);
+            }
+
 
             stmt.close();
             conn.close();
@@ -71,4 +83,29 @@ public class EditBookingTable {
         return bookings;
 
     }
+
+    //function that gets orderID from bookingID
+    public int getOrderId(int bookingId) {
+        int orderId = -1;
+
+        String sql = "SELECT orderID FROM Booking WHERE bookingID = ?;";
+
+        try (Connection conn = DB_Connection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, bookingId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    orderId = rs.getInt("orderID");
+                }
+            }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return orderId;
+    }
+
 }
