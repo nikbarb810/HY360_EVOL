@@ -143,5 +143,171 @@ public class EditOrderTable {
 
         return bookings;
     }
+    public ArrayList<Booking> getBookingsByDate(LocalDate startDate, LocalDate endDate) {
+        ArrayList<Booking> bookings = new ArrayList<>();
+        String sql = "SELECT Booking.* FROM Booking " +
+                "INNER JOIN `Order` ON Booking.orderID = `Order`.orderID " +
+                "WHERE (`Order`.startYear > ? OR (`Order`.startYear = ? AND (`Order`.startMonth > ? OR (`Order`.startMonth = ? AND `Order`.startDay >= ?)))) " +
+                "AND (`Order`.endYear < ? OR (`Order`.endYear = ? AND (`Order`.endMonth < ? OR (`Order`.endMonth = ? AND `Order`.endDay <= ?))));";
+
+        try (Connection conn = DB_Connection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            // Set start date parameters
+            pstmt.setInt(1, startDate.getYear());
+            pstmt.setInt(2, startDate.getYear());
+            pstmt.setInt(3, startDate.getMonthValue());
+            pstmt.setInt(4, startDate.getMonthValue());
+            pstmt.setInt(5, startDate.getDayOfMonth());
+
+            // Set end date parameters
+            pstmt.setInt(6, endDate.getYear());
+            pstmt.setInt(7, endDate.getYear());
+            pstmt.setInt(8, endDate.getMonthValue());
+            pstmt.setInt(9, endDate.getMonthValue());
+            pstmt.setInt(10, endDate.getDayOfMonth());
+
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                // Assuming you have a constructor or method to convert a ResultSet to a Booking object
+                bookings.add(new Booking(rs.getInt("bookingID"),
+                        rs.getInt("orderID"),
+                        rs.getInt("vehicleID"),
+                        rs.getInt("driverID"),
+                        rs.getInt("bookingCost"),
+                        rs.getBoolean("coveredInsur"),
+                        rs.getString("status")));
+
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return bookings;
+    }
+    public void calculateCarStatistics() {
+        String sql = "SELECT " +
+                "MAX(DATEDIFF(CONCAT(`Order`.endYear, '-', LPAD(`Order`.endMonth, 2, '0'), '-', LPAD(`Order`.endDay, 2, '0')), " +
+                "            CONCAT(`Order`.startYear, '-', LPAD(`Order`.startMonth, 2, '0'), '-', LPAD(`Order`.startDay, 2, '0')))) AS MaxDuration, " +
+                "MIN(DATEDIFF(CONCAT(`Order`.endYear, '-', LPAD(`Order`.endMonth, 2, '0'), '-', LPAD(`Order`.endDay, 2, '0')), " +
+                "            CONCAT(`Order`.startYear, '-', LPAD(`Order`.startMonth, 2, '0'), '-', LPAD(`Order`.startDay, 2, '0')))) AS MinDuration, " +
+                "AVG(DATEDIFF(CONCAT(`Order`.endYear, '-', LPAD(`Order`.endMonth, 2, '0'), '-', LPAD(`Order`.endDay, 2, '0')), " +
+                "            CONCAT(`Order`.startYear, '-', LPAD(`Order`.startMonth, 2, '0'), '-', LPAD(`Order`.startDay, 2, '0')))) AS AvgDuration " +
+                "FROM `Order` " +
+                "JOIN Booking ON `Order`.orderID = Booking.orderID " +
+                "JOIN Car ON Booking.vehicleID = Car.vehicleID;";
+
+        try (Connection conn = DB_Connection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            if (rs.next()) {
+                int maxDuration = rs.getInt("MaxDuration");
+                int minDuration = rs.getInt("MinDuration");
+                double avgDuration = rs.getDouble("AvgDuration");
+
+                System.out.println("Car Rental Duration Statistics:");
+                System.out.println("Max Duration: " + maxDuration + " days");
+                System.out.println("Min Duration: " + minDuration + " days");
+                System.out.println("Avg Duration: " + String.format("%.2f", avgDuration) + " days");
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void calculateMotorBikeStatistics(){
+        String sql = "SELECT " +
+                "MAX(DATEDIFF(CONCAT(`Order`.endYear, '-', LPAD(`Order`.endMonth, 2, '0'), '-', LPAD(`Order`.endDay, 2, '0')), " +
+                "            CONCAT(`Order`.startYear, '-', LPAD(`Order`.startMonth, 2, '0'), '-', LPAD(`Order`.startDay, 2, '0')))) AS MaxDuration, " +
+                "MIN(DATEDIFF(CONCAT(`Order`.endYear, '-', LPAD(`Order`.endMonth, 2, '0'), '-', LPAD(`Order`.endDay, 2, '0')), " +
+                "            CONCAT(`Order`.startYear, '-', LPAD(`Order`.startMonth, 2, '0'), '-', LPAD(`Order`.startDay, 2, '0')))) AS MinDuration, " +
+                "AVG(DATEDIFF(CONCAT(`Order`.endYear, '-', LPAD(`Order`.endMonth, 2, '0'), '-', LPAD(`Order`.endDay, 2, '0')), " +
+                "            CONCAT(`Order`.startYear, '-', LPAD(`Order`.startMonth, 2, '0'), '-', LPAD(`Order`.startDay, 2, '0')))) AS AvgDuration " +
+                "FROM `Order` " +
+                "JOIN Booking ON `Order`.orderID = Booking.orderID " +
+                "JOIN MotorBike ON Booking.vehicleID = MotorBike.vehicleID;";
+
+        try (Connection conn = DB_Connection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            if (rs.next()) {
+                int maxDuration = rs.getInt("MaxDuration");
+                int minDuration = rs.getInt("MinDuration");
+                double avgDuration = rs.getDouble("AvgDuration");
+
+                System.out.println("MotorBike Rental Duration Statistics:");
+                System.out.println("Max Duration: " + maxDuration + " days");
+                System.out.println("Min Duration: " + minDuration + " days");
+                System.out.println("Avg Duration: " + String.format("%.2f", avgDuration) + " days");
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void calculateBicycleStatistics(){
+        String sql = "SELECT " +
+                "MAX(DATEDIFF(CONCAT(`Order`.endYear, '-', LPAD(`Order`.endMonth, 2, '0'), '-', LPAD(`Order`.endDay, 2, '0')), " +
+                "            CONCAT(`Order`.startYear, '-', LPAD(`Order`.startMonth, 2, '0'), '-', LPAD(`Order`.startDay, 2, '0')))) AS MaxDuration, " +
+                "MIN(DATEDIFF(CONCAT(`Order`.endYear, '-', LPAD(`Order`.endMonth, 2, '0'), '-', LPAD(`Order`.endDay, 2, '0')), " +
+                "            CONCAT(`Order`.startYear, '-', LPAD(`Order`.startMonth, 2, '0'), '-', LPAD(`Order`.startDay, 2, '0')))) AS MinDuration, " +
+                "AVG(DATEDIFF(CONCAT(`Order`.endYear, '-', LPAD(`Order`.endMonth, 2, '0'), '-', LPAD(`Order`.endDay, 2, '0')), " +
+                "            CONCAT(`Order`.startYear, '-', LPAD(`Order`.startMonth, 2, '0'), '-', LPAD(`Order`.startDay, 2, '0')))) AS AvgDuration " +
+                "FROM `Order` " +
+                "JOIN Booking ON `Order`.orderID = Booking.orderID " +
+                "JOIN Bicycle ON Booking.vehicleID = Bicycle.vehicleID;";
+
+        try (Connection conn = DB_Connection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            if (rs.next()) {
+                int maxDuration = rs.getInt("MaxDuration");
+                int minDuration = rs.getInt("MinDuration");
+                double avgDuration = rs.getDouble("AvgDuration");
+
+                System.out.println("Bicycle Rental Duration Statistics:");
+                System.out.println("Max Duration: " + maxDuration + " days");
+                System.out.println("Min Duration: " + minDuration + " days");
+                System.out.println("Avg Duration: " + String.format("%.2f", avgDuration) + " days");
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void calculateScooterStatistics(){
+        String sql = "SELECT " +
+                "MAX(DATEDIFF(CONCAT(`Order`.endYear, '-', LPAD(`Order`.endMonth, 2, '0'), '-', LPAD(`Order`.endDay, 2, '0')), " +
+                "            CONCAT(`Order`.startYear, '-', LPAD(`Order`.startMonth, 2, '0'), '-', LPAD(`Order`.startDay, 2, '0')))) AS MaxDuration, " +
+                "MIN(DATEDIFF(CONCAT(`Order`.endYear, '-', LPAD(`Order`.endMonth, 2, '0'), '-', LPAD(`Order`.endDay, 2, '0')), " +
+                "            CONCAT(`Order`.startYear, '-', LPAD(`Order`.startMonth, 2, '0'), '-', LPAD(`Order`.startDay, 2, '0')))) AS MinDuration, " +
+                "AVG(DATEDIFF(CONCAT(`Order`.endYear, '-', LPAD(`Order`.endMonth, 2, '0'), '-', LPAD(`Order`.endDay, 2, '0')), " +
+                "            CONCAT(`Order`.startYear, '-', LPAD(`Order`.startMonth, 2, '0'), '-', LPAD(`Order`.startDay, 2, '0')))) AS AvgDuration " +
+                "FROM `Order` " +
+                "JOIN Booking ON `Order`.orderID = Booking.orderID " +
+                "JOIN Scooter ON Booking.vehicleID = Scooter.vehicleID;";
+
+        try (Connection conn = DB_Connection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            if (rs.next()) {
+                int maxDuration = rs.getInt("MaxDuration");
+                int minDuration = rs.getInt("MinDuration");
+                double avgDuration = rs.getDouble("AvgDuration");
+
+                System.out.println("Scooter Rental Duration Statistics:");
+                System.out.println("Max Duration: " + maxDuration + " days");
+                System.out.println("Min Duration: " + minDuration + " days");
+                System.out.println("Avg Duration: " + String.format("%.2f", avgDuration) + " days");
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
 }
