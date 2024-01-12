@@ -226,7 +226,7 @@ public class EditOrderTable {
                 "            CONCAT(`Order`.startYear, '-', LPAD(`Order`.startMonth, 2, '0'), '-', LPAD(`Order`.startDay, 2, '0')))) AS AvgDuration " +
                 "FROM `Order` " +
                 "JOIN Booking ON `Order`.orderID = Booking.orderID " +
-                "JOIN MotorBike ON Booking.vehicleID = MotorBike.vehicleID;";
+                "JOIN Motorbike ON Booking.vehicleID = Motorbike.vehicleID;";
 
         try (Connection conn = DB_Connection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql);
