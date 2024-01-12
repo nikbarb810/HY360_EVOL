@@ -1,10 +1,14 @@
 package Database.tables;
 
 import Database.DB_Connection;
+import model.Booking;
 import model.Order;
 
 import java.math.BigDecimal;
 import java.sql.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EditOrderTable {
 
@@ -90,6 +94,54 @@ public class EditOrderTable {
         }
 
         return customerId;
+    }
+
+    // Method to get all bookings within a given date range
+    public List<Booking> getBookingsBetweenDates(LocalDate fromDate, LocalDate toDate) throws SQLException, ClassNotFoundException {
+        List<Booking> bookings = new ArrayList<>();
+        String sql = "SELECT b.* FROM Booking b " +
+                "JOIN `Order` o ON b.orderID = o.orderID " +
+                "WHERE (o.startYear > ? OR (o.startYear = ? AND o.startMonth > ?) OR (o.startYear = ? AND o.startMonth = ? AND o.startDay >= ?)) " +
+                "AND (o.endYear < ? OR (o.endYear = ? AND o.endMonth < ?) OR (o.endYear = ? AND o.endMonth = ? AND o.endDay <= ?));";
+
+        try (Connection conn = DB_Connection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            // Set parameters for fromDate
+            pstmt.setInt(1, fromDate.getYear());
+            pstmt.setInt(2, fromDate.getYear());
+            pstmt.setInt(3, fromDate.getMonthValue());
+            pstmt.setInt(4, fromDate.getYear());
+            pstmt.setInt(5, fromDate.getMonthValue());
+            pstmt.setInt(6, fromDate.getDayOfMonth());
+
+            // Set parameters for toDate
+            pstmt.setInt(7, toDate.getYear());
+            pstmt.setInt(8, toDate.getYear());
+            pstmt.setInt(9, toDate.getMonthValue());
+            pstmt.setInt(10, toDate.getYear());
+            pstmt.setInt(11, toDate.getMonthValue());
+            pstmt.setInt(12, toDate.getDayOfMonth());
+
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                // Assuming Booking class has a constructor that matches the result set
+                Booking booking = new Booking(
+                        rs.getInt("bookingID"),
+                        rs.getInt("orderID"),
+                        rs.getInt("vehicleID"),
+                        rs.getInt("driverID"),
+                        rs.getInt("bookingCost"),
+                        rs.getBoolean("coveredInsur"),
+                        rs.getString("status")
+                        // Add other Booking fields if necessary
+                );
+                bookings.add(booking);
+            }
+        }
+
+        return bookings;
     }
 
 }

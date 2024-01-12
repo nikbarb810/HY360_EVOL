@@ -107,9 +107,12 @@ public class EditCarTable {
     public ArrayList<Car> getAllAvailableCars(LocalDate bookingDate) throws SQLException, ClassNotFoundException {
         ArrayList<Car> cars = new ArrayList<>();
         String sql = "SELECT Car.* FROM Car " +
-                "LEFT JOIN Repair ON Car.vehicleID = Repair.vehicleID AND Repair.status IN ('Maintenance', 'Crashed') " +
-                "WHERE Car.status = 'Available' OR (Repair.endYear IS NOT NULL AND " +
+                "LEFT JOIN Booking ON Car.vehicleID = Booking.vehicleID " +
+                "LEFT JOIN Repair ON Booking.bookingID = Repair.bookingID " +
+                "WHERE Car.status = 'Available' OR " +
+                "((Car.status = 'Crashed' OR Car.status = 'Maintenance') AND Repair.endYear IS NOT NULL AND " +
                 "(Repair.endYear < ? OR (Repair.endYear = ? AND Repair.endMonth < ?) OR (Repair.endYear = ? AND Repair.endMonth = ? AND Repair.endDay < ?)))";
+
 
         try (Connection conn = DB_Connection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -144,7 +147,6 @@ public class EditCarTable {
         }
         return cars;
     }
-
 
     public void updateCarStatus(int vehicleID, String status) throws SQLException, ClassNotFoundException {
         Connection conn = DB_Connection.getConnection();

@@ -212,7 +212,7 @@ public class SignUp extends JFrame {
                 int CardYear=(Integer) YEAR.getSelectedItem();
                 String LicenceId= LicenseField.getText();
                 Customer ok = new Customer( email, username,  password,  FirstName, LastName,  Dob,  numbercc,  bic,  CardMonth,CardYear,  LicenceId);
-               // Controller.UploadAccount(ok);
+                Controller.UploadAccount(ok);
                 Controller.LoadMainPage();
                 // Add any other actions you want to perform here
             }

@@ -5,6 +5,7 @@ import Database.tables.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import model.Booking;
@@ -19,6 +20,20 @@ public class InitDatabase {
 //        init.initDatabase();
 //        init.initTables();
 //        init.addEntries();
+
+        EditCarTable ect = new EditCarTable();
+
+        for(Car car : ect.getAllAvailableCars(LocalDate.of(2024,9,14))){
+            System.out.println(car.getRegNum());
+        }
+
+        System.out.println("__________________________");
+
+        for(Car car : ect.getAllAvailableCars(LocalDate.of(2024,9,17))){
+            System.out.println(car.getRegNum());
+        }
+
+
 
 
 
