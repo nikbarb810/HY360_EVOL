@@ -1,5 +1,6 @@
 package Controller;
 import java.util.ArrayList;
+import Database.tables.*;
 
 import javax.swing.SwingUtilities;
 
@@ -39,8 +40,15 @@ public class Controller {
             mainPage.setVisible(true);
         });
 	}
-	public static void UploadAccount(Customer ok) {
-
+	public static int UploadAccount(Customer ok) {
+		EditCustomerTable editCustomerTable = new EditCustomerTable();
+		Customer temp = editCustomerTable.getCustomer(ok.getUsername());
+		if(temp == null) {
+			editCustomerTable.insertCustomer(ok);
+			return 1;
+		}else {
+			return 0;
+		}
 	};
 	public static void LoadSignUpPage() {
 		SwingUtilities.invokeLater(() -> {

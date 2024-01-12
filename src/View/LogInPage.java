@@ -114,21 +114,25 @@ public class LogInPage extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Code to execute when Button 1 is pressed
-                dispose();
                 String username = usernameField.getText();
                 //username = String.valueOf("CSD4652");
                 String password=passwordField.getText();
-                //EditCustomerTable editCustomerTable = new EditCustomerTable();
-              // Customer papa = editCustomerTable.authenticateUser(username, password);
-                Customer papa = new Customer();
-               papa.setUsername(username);
-               papa.setPassword(password);
-                Controller.SetCustomer(papa);
-                if(username.equals(password)) {
+                if(username.equals("admin") && password.equals("admin")) {
+                	dispose();
                 	Controller.LoadAdminPage();
+                	
                 }else {
-                Controller.LoadCustomerPage();
+                	 EditCustomerTable editCustomerTable = new EditCustomerTable();
+                     Customer papa = editCustomerTable.authenticateUser(username, password);
+                     if(papa == null) {
+                    	 
+                     }else{
+                    	 dispose();
+                    	 Controller.SetCustomer(papa); 	
+                     	 Controller.LoadCustomerPage();	 
+                     }
                 }
+ 
             }
         });
      // Custom Close Button
