@@ -20,7 +20,11 @@ public class Order {
         this.EndDate = endDate;
     }
 
-    public int getOrderId() {
+    public Order() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public int getOrderId() {
         return OrderId;
     }
 

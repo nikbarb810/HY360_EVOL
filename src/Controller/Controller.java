@@ -15,14 +15,12 @@ import model.*;
 public class Controller {
 
 	public static Customer customer;
-	Order cart;
+	public static Order cart;
 	public static ArrayList<Booking> Bookings;
-	public static ArrayList<Vehicle> cars;
 
 	public Controller() {
-		this.cart = null;
+		this.cart =  new Order();
 		Bookings = null;
-		cars = null;
 	}
 
 	public void signup(String Username, String password) {

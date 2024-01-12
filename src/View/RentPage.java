@@ -3,12 +3,19 @@ package View;
 import javax.swing.*;
 
 import Controller.Controller;
+import Database.tables.EditCarTable;
+import model.Bicycle;
+import model.Car;
 import model.Driver;
+import model.MotorBike;
+import model.Scooter;
 import model.Vehicle;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public  class RentPage extends JFrame {
@@ -19,9 +26,12 @@ public  class RentPage extends JFrame {
     boolean mbikes = false;
     boolean bikes = false;
     boolean scooter = false;
-     RentPage myself = this;
-     ArrayList<Vehicle>mylist = new ArrayList();
-
+    RentPage myself = this;
+    boolean pickdate = false;
+    ArrayList<Car>carlist = new ArrayList();
+    ArrayList<MotorBike>mbikelist = new ArrayList();
+    ArrayList<Bicycle>bikelist = new ArrayList();
+    ArrayList<Scooter>scooterlist = new ArrayList();
     public RentPage() {
         setTitle("Rent Page");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -33,11 +43,71 @@ public  class RentPage extends JFrame {
         scootersCheckbox = new JCheckBox("Scooter");
         motorbikeCheckbox = new JCheckBox("Bicycle");
         motorcycleCheckbox = new JCheckBox("Scooter");
+        JButton date = new JButton("Dates");
+        date.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                JDialog dialog = new JDialog();
+                dialog.setTitle("Select Dates");
+                dialog.setLayout(new FlowLayout());
+                dialog.setSize(400, 200);
+
+                // From Date Panel
+                JPanel fromDatePanel = new JPanel();
+                fromDatePanel.add(new JLabel("From Date:"));
+                JComboBox<Integer> fromDay = new JComboBox<>(getDays());
+                JComboBox<Integer> fromMonth = new JComboBox<>(getMonths());
+                JComboBox<Integer> fromYear = new JComboBox<>(getYearRange());
+                JComboBox<Integer> fromHour = new JComboBox<>(getHourRange());
+                fromDatePanel.add(fromDay);
+                fromDatePanel.add(fromMonth);
+                fromDatePanel.add(fromYear);
+                fromDatePanel.add(fromHour);
+
+                // To Date Panel
+                JPanel toDatePanel = new JPanel();
+                toDatePanel.add(new JLabel("To Date:"));
+                JComboBox<Integer> toDay = new JComboBox<>(getDays());
+                JComboBox<Integer> toMonth = new JComboBox<>(getMonths());
+                JComboBox<Integer> toYear = new JComboBox<>(getYearRange());
+                JComboBox<Integer> toHour = new JComboBox<>(getHourRange());
+                toDatePanel.add(toDay);
+                toDatePanel.add(toMonth);
+                toDatePanel.add(toYear);
+                toDatePanel.add(toHour);
+                // Add panels to dialog
+                dialog.add(fromDatePanel);
+                dialog.add(toDatePanel);
+                JPanel submitButtonPanel = new JPanel();
+                JButton submitButton = new JButton("Confirm");
+                submitButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        // Process payment information here
+                        // Close the dialog
+                        dialog.dispose();
+                        pickdate = true;
+                        LocalDate from =  LocalDate.of((Integer)fromYear.getSelectedItem(),(Integer)fromMonth.getSelectedItem(),(Integer)fromDay.getSelectedItem());
+                        LocalDate to =  LocalDate.of((Integer)toYear.getSelectedItem(),(Integer)toMonth.getSelectedItem(),(Integer)toDay.getSelectedItem());
+                        Controller.cart.setStartDate(from);
+                        Controller.cart.setEndDate(to);
+                    }
+					
+                });
+                submitButtonPanel.add(submitButton);
+                dialog.add(submitButtonPanel);
+
+                // Display the dialog
+                dialog.setLocationRelativeTo(null);
+                dialog.setVisible(true);
+            }
+        });
         
         topPanel.add(carsCheckbox);
         topPanel.add(motorbikeCheckbox);
         topPanel.add(motorcycleCheckbox);
         topPanel.add(scootersCheckbox);
+        topPanel.add(date);
         
 
         // Middle panel for vehicle rows
@@ -104,16 +174,36 @@ public  class RentPage extends JFrame {
             @Override
             public void actionPerformed(ActionEvent event) {
                 JCheckBox cb = (JCheckBox) event.getSource();
+                if(pickdate ==true) {
                 if (cb.isSelected()) {
                 	cars = true;
-                	updateText(selectedTextArea);
+                	try {
+						updateText(selectedTextArea);
+					} catch (ClassNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
                 	 repaint();
                 } else {
                     // check box is unselected, do something else
                 	cars = false;
-                	updateText(selectedTextArea);
+                	try {
+						updateText(selectedTextArea);
+					} catch (ClassNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
                 	vehiclesPanel.removeAll();
                 	 repaint();
+                }
+                }else {
+                	cb.setSelected(false);
                 }
             }
         });
@@ -121,15 +211,35 @@ public  class RentPage extends JFrame {
             @Override
             public void actionPerformed(ActionEvent event) {
                 JCheckBox cb = (JCheckBox) event.getSource();
+                if(pickdate == true) {
                 if (cb.isSelected()) {
                 	mbikes = true;
-                	updateText(selectedTextArea);
+                	try {
+						updateText(selectedTextArea);
+					} catch (ClassNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
                 	 repaint();
                 } else {
                     // check box is unselected, do something else
                 	mbikes = false;
-                	updateText(selectedTextArea);
+                	try {
+						updateText(selectedTextArea);
+					} catch (ClassNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
                 	 repaint();
+                }
+                }else {
+                	cb.setSelected(false);
                 }
             }
         });
@@ -137,31 +247,68 @@ public  class RentPage extends JFrame {
             @Override
             public void actionPerformed(ActionEvent event) {
                 JCheckBox cb = (JCheckBox) event.getSource();
+                if(pickdate == true) {
                 if (cb.isSelected()) {
                 	bikes = true;
-                	updateText(selectedTextArea);
+                	try {
+						updateText(selectedTextArea);
+					} catch (ClassNotFoundException | SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
                 	 repaint();
                 } else {
                     // check box is unselected, do something else
                 	bikes = false;
-                	updateText(selectedTextArea);
+                	try {
+						updateText(selectedTextArea);
+					} catch (ClassNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
                 	 repaint();
                 }
+            }else {
+            	cb.setSelected(false);
+            }
             }
         });
         scootersCheckbox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event) {
                 JCheckBox cb = (JCheckBox) event.getSource();
+                if(pickdate == true) {
                 if (cb.isSelected()) {
                 	scooter = true;
-                	updateText(selectedTextArea);
+                	try {
+						updateText(selectedTextArea);
+					} catch (ClassNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
                 	 repaint();
                 } else {
                     // check box is unselected, do something else
                 	scooter = false;
-                	updateText(selectedTextArea);
+                	try {
+						updateText(selectedTextArea);
+					} catch (ClassNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
                 	 repaint();
+                }
+                }else {
+                	cb.setSelected(false);
                 }
             }
         });
@@ -169,13 +316,18 @@ public  class RentPage extends JFrame {
         pack();
         setLocationRelativeTo(null); // Center the frame
     }
-    private void updateText(JTextArea selectedLabel) {
+    private void updateText(JTextArea selectedLabel) throws ClassNotFoundException, SQLException {
     	vehiclesPanel.removeAll();
    	 	repaint();
     	String ok = "";
+    	carlist.clear();
+    	mbikelist.clear();
+    	bikelist.clear();
+    	scooterlist.clear();
         if (cars) {
             ok += "Cars,";
-           
+           EditCarTable ec = new EditCarTable();
+           carlist =  ec.getAllAvailableCars(Controller.cart.getStartDate());
         }
         if (mbikes) {
             ok += "MotorBikes,";
@@ -190,6 +342,12 @@ public  class RentPage extends JFrame {
         // Remove the last comma if it exists
         if (!ok.isEmpty() && ok.charAt(ok.length() - 1) == ',') {
             ok = ok.substring(0, ok.length() - 1) + ' ';
+        }
+        for (Car haha : carlist) {
+        	String mama = haha.getBrand() +", " +haha.getModel() +", " +haha.getColor() +", Mileage: " +
+        			haha.getMileage() +",RegNum : " +haha.getRegNum() +",Total Passengers" +haha.getNumPassengers() 
+        			+",Insurance Cost: " +haha.getInsurPrice() +",Type : " +haha.getType();
+        	addVehicleRow(mama);
         }
 
         selectedLabel.setText(ok);
@@ -289,5 +447,26 @@ public  class RentPage extends JFrame {
             years[i] = currentYear + i;
         }
         return years;
+    }
+    private Integer [] getDays() {
+    	Integer[] days = new Integer[30];
+        for (int i = 1; i < days.length; i++) {
+            days[i-1] =  i;
+        }
+        return days;
+    }
+    private Integer [] getMonths() {
+    	Integer[] months = new Integer[12];
+        for (int i = 1; i < months.length; i++) {
+        	months[i-1] =  i;
+        }
+        return months;
+    }
+    private Integer [] getHourRange() {
+    	Integer[] months = new Integer[24];
+        for (int i = 1; i < months.length; i++) {
+        	months[i-1] =  i;
+        }
+        return months;
     }
 }
