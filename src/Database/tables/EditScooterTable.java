@@ -101,4 +101,24 @@ public class EditScooterTable {
         conn.close();
     }
 
+    public Scooter getScooterByVehicleID(int vehicleID) throws SQLException, ClassNotFoundException {
+        Connection conn = DB_Connection.getConnection();
+        Statement stmt = conn.createStatement();
+        String sql = "SELECT * FROM Scooter WHERE vehicleID = " + vehicleID;
+        ResultSet rs = stmt.executeQuery(sql);
+        Scooter sc = null;
+        while (rs.next()) {
+            sc = new Scooter(rs.getInt("vehicleID"),
+                    rs.getString("brand"),
+                    rs.getString("model"),
+                    rs.getString("color"),
+                    rs.getInt("rentalPrice"),
+                    rs.getString("status"),
+                    rs.getInt("insurPrice"),
+                    rs.getInt("mileage"));
+        }
+        stmt.close();
+        conn.close();
+        return sc;
+    }
 }
