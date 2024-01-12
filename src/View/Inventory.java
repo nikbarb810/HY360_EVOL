@@ -169,31 +169,9 @@ public class Inventory extends JFrame{
 	    descriptionPanel.setLayout(new FlowLayout());
 	    descriptionPanel.add(new JLabel("Exta Costs : 100 $:"));
 	    contentPane.add(descriptionPanel);
-	    JPanel cardNumberPanel = new JPanel();
-        cardNumberPanel.add(new JLabel("Card Number:"));
-        JTextField cardNumberField = new JTextField(10);
-        cardNumberPanel.add(cardNumberField);
-        contentPane.add(cardNumberPanel);
-
-        // BIC number
-        JPanel bicNumberPanel = new JPanel();
-        bicNumberPanel.add(new JLabel("BIC Number:"));
-        JTextField bicNumberField = new JTextField(10);
-        bicNumberPanel.add(bicNumberField);
-        contentPane.add(bicNumberPanel);
-
-        // Expiration date with combo boxes next to each other
-        JPanel expirationDatePanel = new JPanel();
-        expirationDatePanel.add(new JLabel("Expiration Date:"));
-        JComboBox<Integer> monthComboBox = new JComboBox<>(new Integer[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-        JComboBox<Integer> yearComboBox = new JComboBox<>(getYearRange());
-        expirationDatePanel.add(monthComboBox);
-        expirationDatePanel.add(yearComboBox);
-        contentPane.add(expirationDatePanel);
-
         // Submit button
         JPanel submitButtonPanel = new JPanel();
-        JButton submitButton = new JButton("Submit");
+        JButton submitButton = new JButton("Pay extra expenses");
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
