@@ -4,6 +4,7 @@ import javax.swing.*;
 
 import Controller.Controller;
 import model.Driver;
+import model.Vehicle;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -19,6 +20,7 @@ public  class RentPage extends JFrame {
     boolean bikes = false;
     boolean scooter = false;
      RentPage myself = this;
+     ArrayList<Vehicle>mylist = new ArrayList();
 
     public RentPage() {
         setTitle("Rent Page");
@@ -173,8 +175,7 @@ public  class RentPage extends JFrame {
     	String ok = "";
         if (cars) {
             ok += "Cars,";
-            addVehicleRow("PORCHE F16");
-            addVehicleRow("Motorolla");
+           
         }
         if (mbikes) {
             ok += "MotorBikes,";

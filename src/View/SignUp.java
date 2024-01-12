@@ -1,13 +1,22 @@
 package View;
+import java.awt.FlowLayout;
+import java.awt.BorderLayout;
+import java.awt.LayoutManager;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -20,6 +29,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import javax.swing.JTextField;
@@ -212,8 +222,32 @@ public class SignUp extends JFrame {
                 int CardYear=(Integer) YEAR.getSelectedItem();
                 String LicenceId= LicenseField.getText();
                 Customer ok = new Customer( email, username,  password,  FirstName, LastName,  Dob,  numbercc,  bic,  CardMonth,CardYear,  LicenceId);
-                Controller.UploadAccount(ok);
+
+                int p = Controller.UploadAccount(ok);
+                if(p == 1) {
+
                 Controller.LoadMainPage();
+                }else {
+                	 JFrame frame = new JFrame("Swing Tester");
+                     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                     JPanel panel = new JPanel();
+                     LayoutManager layout = new FlowLayout();  
+                     panel.setLayout(layout);       
+                     JButton button = new JButton("Click Me!");
+                     button.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                           JOptionPane.showMessageDialog(frame, "USERNAME INVALID!",
+                              "Swing Tester", JOptionPane.ERROR_MESSAGE);
+                        }
+                     });
+
+                     panel.add(button);
+                     frame.getContentPane().add(panel, BorderLayout.CENTER); 
+                     frame.setSize(560, 200);      
+                     frame.setLocationRelativeTo(null);  
+                     frame.setVisible(true);
+                }
                 // Add any other actions you want to perform here
             }
         });

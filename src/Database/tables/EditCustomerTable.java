@@ -93,7 +93,7 @@ public class EditCustomerTable {
         Customer c = null;
         try {
             Connection conn = DB_Connection.getConnection();
-            String sql = "SELECT * FROM customer WHERE username = ?;";
+            String sql = "SELECT * FROM Customer WHERE username = ?;";
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
             pstmt.setString(1, username);
