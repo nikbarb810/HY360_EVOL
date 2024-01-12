@@ -101,7 +101,12 @@ public class Resources {
 
     // Orders
     static Order order1 = new Order(0, 1, 0, LocalTime.of(10, 0), LocalDate.of(2024, 5, 15), LocalTime.of(18, 0), LocalDate.of(2024, 5, 20));
-    static Order order2 = new Order(0, 2, 0, LocalTime.of(15, 0), LocalDate.of(2024, 9, 10), LocalTime.of(15, 0), LocalDate.of(2024, 9, 15));
+    static Order order2 = new Order(0, 2, 0, LocalTime.of(15, 0), LocalDate.of(2024, 9, 10), LocalTime.of(15, 0), LocalDate.of(2024, 9, 13));
+    static Order order3 = new Order(0, 3, 0, LocalTime.of(12, 0), LocalDate.of(2024, 3, 10), LocalTime.of(12, 0), LocalDate.of(2024, 3, 12));
+
+    static Order order4 = new Order(0, 4, 0, LocalTime.of(10, 0), LocalDate.of(2024, 5, 15), LocalTime.of(18, 0), LocalDate.of(2024, 5, 20));
+
+
     // Bookings
     static Booking booking1 = new Booking(0, 1, 1, 1, 150, true, "Active");
     static Booking booking2 = new Booking(0, 1, 7, 2, 200, false, "Active");
