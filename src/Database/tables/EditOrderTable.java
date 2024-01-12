@@ -92,20 +92,4 @@ public class EditOrderTable {
         return customerId;
     }
 
-
-    public void updateOrder(int orderId, int cost) {
-        String sql = "UPDATE `Order` SET cost = ? WHERE orderID = ?;";
-
-        try (Connection conn = DB_Connection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setInt(1, cost);
-            pstmt.setInt(2, orderId);
-
-            pstmt.executeUpdate();
-
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
 }

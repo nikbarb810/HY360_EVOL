@@ -39,6 +39,10 @@ public class EditBookingTable {
 
             stmt.executeUpdate(sql);
 
+            // update the order cost by the booking cost
+            sql = "UPDATE `Order` SET cost = cost + " + b.getBookingCost() + " WHERE orderID = " + b.getOrderId() + ";";
+            stmt.executeUpdate(sql);
+
             stmt.close();
             conn.close();
 
