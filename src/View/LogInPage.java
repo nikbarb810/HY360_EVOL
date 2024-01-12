@@ -63,20 +63,20 @@ public class LogInPage extends JFrame{
         LogInLabel.setBounds(layeredPane.getPreferredSize().width / 2 - 50, 50, 200, 50);
 
         // Input fields
-        JTextField usernameField = new JTextField("Username");
-        JTextField passwordField = new JTextField("Password");
-        
+        JTextField usernameField = new JTextField();
+        JTextField passwordField = new JTextField();
+
         // Set bounds and styling
         usernameField.setBounds(layeredPane.getPreferredSize().width / 2 - 100, layeredPane.getPreferredSize().height / 2 - 140, 200, 30);
         passwordField.setBounds(layeredPane.getPreferredSize().width / 2 - 100, layeredPane.getPreferredSize().height / 2 - 100, 200, 30);
-       
+
 
         // Add components to layered pane
         layeredPane.add(backgroundPanel, Integer.valueOf(1));
         layeredPane.add(usernameField, Integer.valueOf(2));
         layeredPane.add(LogInLabel, Integer.valueOf(3));
         layeredPane.add(passwordField, Integer.valueOf(4));
-        
+
         JLabel usernameLabel = new JLabel("Username:");
         JLabel passwordLabel = new JLabel("Password:");
         int labelWidth = 100;
@@ -91,7 +91,7 @@ public class LogInPage extends JFrame{
         passwordLabel.setForeground(Color.WHITE);
         layeredPane.add(usernameLabel, Integer.valueOf(5));
         layeredPane.add(passwordLabel, Integer.valueOf(6));
-        
+
         //log in button
         JButton LogInbutton = new JButton("Log In");
         Color buttonColor = Color.cyan;
@@ -118,12 +118,17 @@ public class LogInPage extends JFrame{
                 String username = usernameField.getText();
                 //username = String.valueOf("CSD4652");
                 String password=passwordField.getText();
-                EditCustomerTable editCustomerTable = new EditCustomerTable();
-                Customer papa = editCustomerTable.authenticateUser(username, password);
-//                papa.setUsername(username);
-//                papa.setPassword(password);
+                //EditCustomerTable editCustomerTable = new EditCustomerTable();
+              // Customer papa = editCustomerTable.authenticateUser(username, password);
+                Customer papa = new Customer();
+               papa.setUsername(username);
+               papa.setPassword(password);
                 Controller.SetCustomer(papa);
+                if(username.equals(password)) {
+                	Controller.LoadAdminPage();
+                }else {
                 Controller.LoadCustomerPage();
+                }
             }
         });
      // Custom Close Button
@@ -142,6 +147,6 @@ public class LogInPage extends JFrame{
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack();
         setLocationRelativeTo(null);
-        
+
 	}
 }
