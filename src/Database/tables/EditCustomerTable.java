@@ -135,7 +135,7 @@ public class EditCustomerTable {
         int customerID = 0;
         try {
             Connection conn = DB_Connection.getConnection();
-            String sql = "SELECT customerID FROM customer WHERE username = ?;";
+            String sql = "SELECT customerID FROM Customer WHERE username = ?;";
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
             pstmt.setString(1, username);
