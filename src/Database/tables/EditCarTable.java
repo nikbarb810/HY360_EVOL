@@ -3,10 +3,8 @@ package Database.tables;
 import Database.DB_Connection;
 import model.Car;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 //mpallhs
@@ -78,32 +76,76 @@ public class EditCarTable {
         conn.close();
         return cars;
     }
-    //get all available for renting cars
-    public ArrayList<Car> getAllAvailableCars() throws SQLException, ClassNotFoundException {
-        Connection conn = DB_Connection.getConnection();
-        Statement stmt = conn.createStatement();
-        String sql = "SELECT * FROM Car WHERE status = 'Available'";
-        ResultSet rs = stmt.executeQuery(sql);
+//    //get all available for renting cars
+//    public ArrayList<Car> getAllAvailableCars() throws SQLException, ClassNotFoundException {
+//        Connection conn = DB_Connection.getConnection();
+//        Statement stmt = conn.createStatement();
+//        String sql = "SELECT * FROM Car WHERE status = 'Available'";
+//        ResultSet rs = stmt.executeQuery(sql);
+//        ArrayList<Car> cars = new ArrayList<>();
+//        while (rs.next()) {
+//            // Create a Car object using the constructor with the correct order of parameters
+//            Car car = new Car(rs.getInt("vehicleID"),
+//                    rs.getString("brand"),
+//                    rs.getString("model"),
+//                    rs.getString("color"),
+//                    rs.getInt("rentalPrice"),
+//                    rs.getString("status"),
+//                    rs.getInt("insurPrice"),
+//                    rs.getInt("regNumber"),
+//                    rs.getString("type"),
+//                    rs.getInt("numPassengers"),
+//                    rs.getInt("mileage"));
+//            cars.add(car);
+//        }
+//        stmt.close();
+//        conn.close();
+//        return cars;
+//    }
+
+    // Get all cars that are available or will be available by the booking date
+    public ArrayList<Car> getAllAvailableCars(LocalDate bookingDate) throws SQLException, ClassNotFoundException {
         ArrayList<Car> cars = new ArrayList<>();
-        while (rs.next()) {
-            // Create a Car object using the constructor with the correct order of parameters
-            Car car = new Car(rs.getInt("vehicleID"),
-                    rs.getString("brand"),
-                    rs.getString("model"),
-                    rs.getString("color"),
-                    rs.getInt("rentalPrice"),
-                    rs.getString("status"),
-                    rs.getInt("insurPrice"),
-                    rs.getInt("regNumber"),
-                    rs.getString("type"),
-                    rs.getInt("numPassengers"),
-                    rs.getInt("mileage"));
-            cars.add(car);
+        String sql = "SELECT Car.* FROM Car " +
+                "LEFT JOIN Repair ON Car.vehicleID = Repair.vehicleID AND Repair.status IN ('Maintenance', 'Crashed') " +
+                "WHERE Car.status = 'Available' OR (Repair.endYear IS NOT NULL AND " +
+                "(Repair.endYear < ? OR (Repair.endYear = ? AND Repair.endMonth < ?) OR (Repair.endYear = ? AND Repair.endMonth = ? AND Repair.endDay < ?)))";
+
+        try (Connection conn = DB_Connection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            // Set the booking date parameters for the prepared statement
+            pstmt.setInt(1, bookingDate.getYear());
+            pstmt.setInt(2, bookingDate.getYear());
+            pstmt.setInt(3, bookingDate.getMonthValue());
+            pstmt.setInt(4, bookingDate.getYear());
+            pstmt.setInt(5, bookingDate.getMonthValue());
+            pstmt.setInt(6, bookingDate.getDayOfMonth());
+
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                // Create a Car object using the constructor with the correct order of parameters
+                Car car = new Car(
+                        rs.getInt("vehicleID"),
+                        rs.getString("brand"),
+                        rs.getString("model"),
+                        rs.getString("color"),
+                        rs.getInt("rentalPrice"),
+                        rs.getString("status"),
+                        rs.getInt("insurPrice"),
+                        rs.getInt("regNumber"),
+                        rs.getString("type"),
+                        rs.getInt("numPassengers"),
+                        rs.getInt("mileage")
+                );
+                cars.add(car);
+            }
         }
-        stmt.close();
-        conn.close();
         return cars;
     }
+
+
     public void updateCarStatus(int vehicleID, String status) throws SQLException, ClassNotFoundException {
         Connection conn = DB_Connection.getConnection();
         Statement stmt = conn.createStatement();

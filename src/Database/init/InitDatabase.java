@@ -16,17 +16,19 @@ public class InitDatabase {
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         InitDatabase init = new InitDatabase();
-        init.initDatabase();
-        init.initTables();
-        init.addEntries();
-//        init.dropDatabase();
-        EditCustomerTable ect = new EditCustomerTable();
-//        Customer c = ect.getCustomer("johndoe");
-//
-//
-//        System.out.println(c.getFirstName());
-//        System.out.println(c.getLastName());
-//        System.out.println(c.getEmail());
+//        init.initDatabase();
+//        init.initTables();
+//        init.addEntries();
+
+
+
+        EditBookingTable ebt = new EditBookingTable();
+        ebt.updateBookingStatus(1, "Crashed");
+        ebt.updateBookingStatus(2, "Crashed");
+
+
+
+
 //        init.dropDatabase();
 
 
@@ -104,8 +106,7 @@ public class InitDatabase {
             //print for every car everything
             resources.printCar(car);
         }
-        resources.updateCarStatus(cars.get(3).getVehicleId(), "Rented");
-        resources.updateCarStatus(cars.get(4).getVehicleId(), "Rented");
+
         cars = resources.getAllCars();
         EditBicycleTable editBicycleTable = new EditBicycleTable();
         editBicycleTable.insertBicycle(Resources.bike1);
@@ -145,8 +146,11 @@ public class InitDatabase {
         ArrayList<Booking> bookings = editBookingTable.getCustomerBookings(2);
 
         EditRepairTable editRepairTable = new EditRepairTable();
-        editRepairTable.insertRepair(bookings.get(0).getBookingId(), 100, "crash", 12, 9, 2024, "crashed");
-        editRepairTable.insertRepair(bookings.get(1).getBookingId(), 200, "maintenance", 14, 9, 2024, "maintenance");
+        editRepairTable.insertRepair(bookings.get(0).getBookingId(), 100, "Crash", 12, 9, 2024, "3 toympes ekane");
+
+        editRepairTable.insertRepair(bookings.get(1).getBookingId(), 200, "Maintenance", 14, 9, 2024, "mpouzi");
+
+
 
     }
 
