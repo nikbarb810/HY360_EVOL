@@ -6,6 +6,8 @@ import model.Booking;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EditBookingTable {
 
@@ -216,7 +218,26 @@ public class EditBookingTable {
 
         return orderId;
     }
-    public void calculateRentalIncomeByCategoryAndTimePeriod(String vehicleType, LocalDate startDate) {
+
+    /**
+     * Calculates the total rental income for a specified vehicle type and time period.
+     * This method returns a list of maps, with each map representing a record of income data.
+     *
+     * @param vehicleType The type of vehicle for which income data is calculated (e.g., "Car", "Motorbike", "Scooter").
+     * @param startDate   The start date from which to calculate income. Only the year and month of this date are used.
+     * @return An {@code ArrayList<Map<String, String>>} where each {@code Map} contains the following key-value pairs:
+     *         <ul>
+     *             <li>"VehicleType": The type of the vehicle as specified in the {@code vehicleType} parameter.</li>
+     *             <li>"Year": The year for which the income data is calculated.</li>
+     *             <li>"Month": The month for which the income data is calculated.</li>
+     *             <li>"TotalIncome": The total income for the given vehicle type, month, and year. This income
+     *                 is the sum of the booking cost and, if applicable, the insurance price.</li>
+     *         </ul>
+     *         Each {@code Map} in the list represents income data for a distinct month and year.
+     * @throws SQLException             If a database access error occurs or the method is called on a closed connection.
+     * @throws ClassNotFoundException   If the JDBC driver class is not found.
+     */
+    public ArrayList<Map<String, String>> calculateRentalIncomeByCategoryAndTimePeriod(String vehicleType, LocalDate startDate) {
         int startYear = startDate.getYear();
         int startMonth = startDate.getMonthValue();
 
@@ -227,6 +248,7 @@ public class EditBookingTable {
                 "JOIN " + vehicleType + " Vehicle ON Booking.vehicleID = Vehicle.vehicleID " +
                 "WHERE `Order`.startYear = ? AND `Order`.startMonth = ? " +
                 "GROUP BY TimePeriod";
+        ArrayList<Map<String,String>> results = new ArrayList<>();
 
         try (Connection conn = DB_Connection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -239,12 +261,21 @@ public class EditBookingTable {
             while (rs.next()) {
                 String timePeriod = rs.getString("TimePeriod");
                 int totalIncome = rs.getInt("TotalIncome");
+                int year = rs.getInt("startYear");
+                int month = rs.getInt("startMonth");
 
+                Map<String,String> record = new HashMap<>();
+                record.put("vehicleType", vehicleType);
+                record.put("year", String.valueOf(year));
+                record.put("month", String.valueOf(month));
+                record.put("totalIncome", String.valueOf(totalIncome));
+                results.add(record);
                 System.out.println("Vehicle Type: " + vehicleType + ", Time Period: " + timePeriod + ", Total Income: " + totalIncome);
             }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+        return results;
     }
 
 

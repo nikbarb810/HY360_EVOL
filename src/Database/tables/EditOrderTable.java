@@ -8,7 +8,9 @@ import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EditOrderTable {
 
@@ -185,7 +187,12 @@ public class EditOrderTable {
 
         return bookings;
     }
-    public void calculateCarStatistics() {
+
+    /**
+     * Calculates the statistics for car rentals
+     * @return a Map of Strings containing the max, min and avg duration of car rentals in format [max,max_val] [min,min_val] [avg, avg_val]
+     */
+    public Map<String,String> calculateCarStatistics() {
         String sql = "SELECT " +
                 "MAX(DATEDIFF(CONCAT(`Order`.endYear, '-', LPAD(`Order`.endMonth, 2, '0'), '-', LPAD(`Order`.endDay, 2, '0')), " +
                 "            CONCAT(`Order`.startYear, '-', LPAD(`Order`.startMonth, 2, '0'), '-', LPAD(`Order`.startDay, 2, '0')))) AS MaxDuration, " +
@@ -196,7 +203,7 @@ public class EditOrderTable {
                 "FROM `Order` " +
                 "JOIN Booking ON `Order`.orderID = Booking.orderID " +
                 "JOIN Car ON Booking.vehicleID = Car.vehicleID;";
-
+        Map<String,String> stats = new HashMap<>();
         try (Connection conn = DB_Connection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
@@ -205,6 +212,9 @@ public class EditOrderTable {
                 int maxDuration = rs.getInt("MaxDuration");
                 int minDuration = rs.getInt("MinDuration");
                 double avgDuration = rs.getDouble("AvgDuration");
+                stats.put("max",Integer.toString(maxDuration));
+                stats.put("min",Integer.toString(minDuration));
+                stats.put("avg",Double.toString(avgDuration));
 
                 System.out.println("Car Rental Duration Statistics:");
                 System.out.println("Max Duration: " + maxDuration + " days");
@@ -214,9 +224,14 @@ public class EditOrderTable {
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+        return stats;
     }
 
-    public void calculateMotorBikeStatistics(){
+    /**
+     * Calculates the statistics for motorbike rentals
+     * @return a Map of Strings containing the max, min and avg duration of motorbike rentals in format [max,max_val] [min,min_val] [avg, avg_val]
+     */
+    public Map<String,String> calculateMotorBikeStatistics(){
         String sql = "SELECT " +
                 "MAX(DATEDIFF(CONCAT(`Order`.endYear, '-', LPAD(`Order`.endMonth, 2, '0'), '-', LPAD(`Order`.endDay, 2, '0')), " +
                 "            CONCAT(`Order`.startYear, '-', LPAD(`Order`.startMonth, 2, '0'), '-', LPAD(`Order`.startDay, 2, '0')))) AS MaxDuration, " +
@@ -227,7 +242,7 @@ public class EditOrderTable {
                 "FROM `Order` " +
                 "JOIN Booking ON `Order`.orderID = Booking.orderID " +
                 "JOIN Motorbike ON Booking.vehicleID = Motorbike.vehicleID;";
-
+        Map<String,String> stats = new HashMap<>();
         try (Connection conn = DB_Connection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
@@ -236,6 +251,9 @@ public class EditOrderTable {
                 int maxDuration = rs.getInt("MaxDuration");
                 int minDuration = rs.getInt("MinDuration");
                 double avgDuration = rs.getDouble("AvgDuration");
+                stats.put("max",Integer.toString(maxDuration));
+                stats.put("min",Integer.toString(minDuration));
+                stats.put("avg",Double.toString(avgDuration));
 
                 System.out.println("MotorBike Rental Duration Statistics:");
                 System.out.println("Max Duration: " + maxDuration + " days");
@@ -245,9 +263,14 @@ public class EditOrderTable {
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+        return stats;
     }
 
-    public void calculateBicycleStatistics(){
+    /**
+     * Calculates the statistics for bicycle rentals
+     * @return a Map of Strings containing the max, min and avg duration of bicycle rentals in format [max,max_val] [min,min_val] [avg, avg_val]
+     */
+    public Map<String,String> calculateBicycleStatistics(){
         String sql = "SELECT " +
                 "MAX(DATEDIFF(CONCAT(`Order`.endYear, '-', LPAD(`Order`.endMonth, 2, '0'), '-', LPAD(`Order`.endDay, 2, '0')), " +
                 "            CONCAT(`Order`.startYear, '-', LPAD(`Order`.startMonth, 2, '0'), '-', LPAD(`Order`.startDay, 2, '0')))) AS MaxDuration, " +
@@ -258,7 +281,7 @@ public class EditOrderTable {
                 "FROM `Order` " +
                 "JOIN Booking ON `Order`.orderID = Booking.orderID " +
                 "JOIN Bicycle ON Booking.vehicleID = Bicycle.vehicleID;";
-
+        Map<String,String> stats = new HashMap<>();
         try (Connection conn = DB_Connection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
@@ -267,6 +290,10 @@ public class EditOrderTable {
                 int maxDuration = rs.getInt("MaxDuration");
                 int minDuration = rs.getInt("MinDuration");
                 double avgDuration = rs.getDouble("AvgDuration");
+                stats.put("max",Integer.toString(maxDuration));
+                stats.put("min",Integer.toString(minDuration));
+                stats.put("avg",Double.toString(avgDuration));
+
 
                 System.out.println("Bicycle Rental Duration Statistics:");
                 System.out.println("Max Duration: " + maxDuration + " days");
@@ -276,10 +303,14 @@ public class EditOrderTable {
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-
+        return stats;
     }
 
-    public void calculateScooterStatistics(){
+    /**
+     * Calculates the statistics for scooter rentals
+     * @return a Map of Strings containing the max, min and avg duration of scooter rentals in format [max,max_val] [min,min_val] [avg, avg_val]
+     */
+    public Map<String,String> calculateScooterStatistics(){
         String sql = "SELECT " +
                 "MAX(DATEDIFF(CONCAT(`Order`.endYear, '-', LPAD(`Order`.endMonth, 2, '0'), '-', LPAD(`Order`.endDay, 2, '0')), " +
                 "            CONCAT(`Order`.startYear, '-', LPAD(`Order`.startMonth, 2, '0'), '-', LPAD(`Order`.startDay, 2, '0')))) AS MaxDuration, " +
@@ -290,7 +321,7 @@ public class EditOrderTable {
                 "FROM `Order` " +
                 "JOIN Booking ON `Order`.orderID = Booking.orderID " +
                 "JOIN Scooter ON Booking.vehicleID = Scooter.vehicleID;";
-
+        Map<String,String> stats = new HashMap<>();
         try (Connection conn = DB_Connection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
@@ -299,6 +330,10 @@ public class EditOrderTable {
                 int maxDuration = rs.getInt("MaxDuration");
                 int minDuration = rs.getInt("MinDuration");
                 double avgDuration = rs.getDouble("AvgDuration");
+                stats.put("max",Integer.toString(maxDuration));
+                stats.put("min",Integer.toString(minDuration));
+                stats.put("avg",Double.toString(avgDuration));
+
 
                 System.out.println("Scooter Rental Duration Statistics:");
                 System.out.println("Max Duration: " + maxDuration + " days");
@@ -308,6 +343,8 @@ public class EditOrderTable {
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+        return stats;
     }
+
 
 }
