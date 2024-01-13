@@ -104,7 +104,7 @@ public class EditOrderTable {
         String sql = "SELECT b.* FROM Booking b " +
                 "JOIN `Order` o ON b.orderID = o.orderID " +
                 "WHERE (o.startYear > ? OR (o.startYear = ? AND o.startMonth > ?) OR (o.startYear = ? AND o.startMonth = ? AND o.startDay >= ?)) " +
-                "AND (o.endYear < ? OR (o.endYear = ? AND o.endMonth < ?) OR (o.endYear = ? AND o.endMonth = ? AND o.endDay <= ?));";
+                "AND (o.startYear < ? OR (o.startYear = ? AND o.startMonth < ?) OR (o.startYear = ? AND o.startMonth = ? AND o.startDay <= ?));";
 
         try (Connection conn = DB_Connection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -145,6 +145,7 @@ public class EditOrderTable {
 
         return bookings;
     }
+
     public ArrayList<Booking> getBookingsByDate(LocalDate startDate, LocalDate endDate) {
         ArrayList<Booking> bookings = new ArrayList<>();
         String sql = "SELECT Booking.* FROM Booking " +

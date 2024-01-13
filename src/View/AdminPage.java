@@ -1,24 +1,28 @@
 package View;
 
 import Database.tables.*;
-import model.Bicycle;
-import model.Car;
-import model.MotorBike;
-import model.Scooter;
+import model.*;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Array;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.IntStream;
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.MatteBorder;
 
 public class AdminPage extends JFrame {
     JPanel StatisticsPanel;
+
+
+    Color titleBackgroundColor = new Color(220, 220, 220);
+    Color optionsBackgroundColor = new Color(240, 240, 240);
+    Color contentBackgroundColor = new Color(255, 255, 255);
+
 
     public AdminPage() {
         setTitle("Admin Page");
@@ -39,24 +43,41 @@ public class AdminPage extends JFrame {
 
         // Upper row with 2 columns
         JPanel upperRow = new JPanel(new GridLayout(1, 2)); // 1 row, 2 columns
+
         JPanel upperLeftPanel = new JPanel();
         buildUpperLeftPanel(upperLeftPanel);
         upperLeftPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
         JPanel upperRightPanel = new JPanel();
         upperRightPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        buildUpperRightPanel(upperRightPanel);
+
+
         upperRow.add(upperLeftPanel);
         upperRow.add(upperRightPanel);
 
         // Lower row with 4 columns
         JPanel lowerRow = new JPanel(new GridLayout(1, 4)); // 1 row, 4 columns
+
         JPanel lowerLeftPanel = new JPanel();
         lowerLeftPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        buildLowerLeftPanel(lowerLeftPanel);
+        
+        
         JPanel lowerCenterLeftPanel = new JPanel();
         lowerCenterLeftPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        buildCenterLeftPanel(lowerCenterLeftPanel);
+        
+        
         JPanel lowerCenterRightPanel = new JPanel();
         lowerCenterRightPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        buildCenterRightPanel(lowerCenterRightPanel);
+        
+        
         JPanel lowerRightPanel = new JPanel();
         lowerRightPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        
+        
         lowerRow.add(lowerLeftPanel);
         lowerRow.add(lowerCenterLeftPanel);
         lowerRow.add(lowerCenterRightPanel);
@@ -132,43 +153,472 @@ public class AdminPage extends JFrame {
         setLocationRelativeTo(null); // Center the frame
     }
 
-    private void buildUpperLeftPanel(JPanel upperLeftPanel) {
-        // Set the layout manager for upperLeftPanel
-        upperLeftPanel.setLayout(new GridBagLayout());
+    JPanel CenterRightContentPanel; // Keep a reference to the content panel
+
+    private void buildCenterRightPanel(JPanel lowerCenterRightPanel) {
+
+    }
+
+    JPanel CenterLeftContentPanel; // Keep a reference to the content panel
+    String CenterLeftType;
+
+
+    private void buildCenterLeftPanel(JPanel lowerCenterLeftPanel) {
+        lowerCenterLeftPanel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
-
-        Color titleBackgroundColor = new Color(220, 220, 220);
-        Color optionsBackgroundColor = new Color(240, 240, 240);
-        Color contentBackgroundColor = new Color(255, 255, 255);
-
         // Title Panel with label
-        JPanel titlePanel = new JPanel();
-        titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.PAGE_AXIS));
-        titlePanel.setBackground(titleBackgroundColor);
-        JLabel titleLabel = new JLabel("View Vehicles");
+        JPanel titlePanel = new JPanel(new GridBagLayout()); // Center title in its panel
+        JLabel titleLabel = new JLabel("View Bookings Revenue");
         titleLabel.setFont(new Font("Helvetica", Font.BOLD, 18));
-        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        titlePanel.add(titleLabel);
+        GridBagConstraints titleGbc = new GridBagConstraints();
+        titleGbc.gridwidth = GridBagConstraints.REMAINDER;
+        titleGbc.anchor = GridBagConstraints.CENTER;
+        titlePanel.add(titleLabel, titleGbc); // Add the titleLabel to the titlePanel with constraints
 
-        // Options Panel with dropdown
-        JPanel optionsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER)); // Center the panel on the x-axis
-        optionsPanel.setBackground(optionsBackgroundColor);
-        String[] vehicleOptions = {"Select Vehicle", "Car", "Motorbike", "Bicycle", "Scooter"};
-        JComboBox<String> vehicleDropDown = new JComboBox<>(vehicleOptions);
-        optionsPanel.add(vehicleDropDown);
+        // Options Panel with dropdown AND date
+        JPanel optionsPanel = new JPanel(new FlowLayout()); // Use FlowLayout for side-by-side components
 
-        // Third Panel - Empty for now
-        emptyPanel = new JPanel();
-        emptyPanel.setLayout(new BoxLayout(emptyPanel, BoxLayout.Y_AXIS));
-        emptyPanel.setBackground(contentBackgroundColor);
+        String[] bookingOptions = {"Select Booking", "Car", "Motorbike", "Bicycle", "Scooter"};
+        JComboBox<String> bookingComboBox = new JComboBox<>(bookingOptions);
+        bookingComboBox.setSelectedIndex(0);
+
+        // Date picker
+        JButton datePickerButton = new JButton("Date");
+
+        // Add components to the optionsPanel
+        optionsPanel.add(bookingComboBox);
+        optionsPanel.add(datePickerButton);
+
+        // Content Panel
+        CenterLeftContentPanel = new JPanel();
+        CenterLeftContentPanel.setLayout(new BoxLayout(CenterLeftContentPanel, BoxLayout.Y_AXIS));
+
+        // Set common properties for gbc
+        gbc.gridx = 0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
 
         // Title Panel Constraints
-        gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weightx = 1;
         gbc.weighty = 0.1; // Allocate 10% of the space to the title panel
+        lowerCenterLeftPanel.add(titlePanel, gbc);
+
+        // Options Panel Constraints
+        gbc.gridy = 1;
+        gbc.weighty = 0.05; // Allocate 5% of the space to the options panel
+        lowerCenterLeftPanel.add(optionsPanel, gbc);
+
+        // UpperLeftContentPanel Constraints
+        gbc.gridy = 2;
+        gbc.weighty = 0.8; // Allocate 80% of the space to the content panel
+        lowerCenterLeftPanel.add(CenterLeftContentPanel, gbc);
+
+        // Apply background colors
+        titlePanel.setBackground(titleBackgroundColor);
+        optionsPanel.setBackground(optionsBackgroundColor);
+        CenterLeftContentPanel.setBackground(contentBackgroundColor);
+
+        // Add action listener to bookingComboBox
+        bookingComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                JComboBox<String> bookingComboBox = (JComboBox<String>) event.getSource();
+                CenterLeftType = (String) bookingComboBox.getSelectedItem();
+            }
+        });
+
+        // Add action listener to datePickerButton
+        datePickerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                showRevenueDateDialog();
+            }
+        });
+
+    }
+
+    // function creates a dialog for entering a single date
+    // fetches said date alongside the CenterLeftType
+    // Calls the database query function "calculateRentalIncomeByCategoryAndTimePeriod"
+    private void showRevenueDateDialog() {
+        JDialog dateDialog = new JDialog();
+        dateDialog.setTitle("Select Month and Year");
+        dateDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dateDialog.setLayout(new FlowLayout());
+
+        // Create combo boxes for year and month selection
+        JComboBox<Integer> yearComboBox = new JComboBox<>(getYearOptions());
+        JComboBox<Month> monthComboBox = new JComboBox<>(Month.values());
+
+        // Submit button
+        JButton submitButton = new JButton("Submit");
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedYear = (int) yearComboBox.getSelectedItem();
+                Month selectedMonth = (Month) monthComboBox.getSelectedItem();
+                LocalDate startDate = LocalDate.of(selectedYear, selectedMonth, 1);
+
+                System.out.println("startDate: " + startDate);
+                System.out.println("type: " + CenterLeftType);
+
+                // Call your database query function with the selected type and date
+                EditBookingTable ebt = new EditBookingTable();
+                ArrayList<Map<String,String>> results = ebt.calculateRentalIncomeByCategoryAndTimePeriod(CenterLeftType, startDate);
+
+                // Clear the content panel
+                CenterLeftContentPanel.removeAll();
+
+
+                // Add the results to the content panel
+                for (Map<String,String> result : results) {
+                    JPanel resultPanel = new JPanel(new FlowLayout());
+                    resultPanel.setBackground(contentBackgroundColor);
+                    // Create the string to be displayed
+                    String resultString = "Total Revenue for " + CenterLeftType + "s: " + result.get("totalIncome");
+                    System.out.println(resultString);
+                    resultPanel.add(new JLabel(resultString));
+                    CenterLeftContentPanel.add(resultPanel);
+                }
+
+                // Refresh the content panel
+                CenterLeftContentPanel.revalidate();
+                CenterLeftContentPanel.repaint();
+
+                dateDialog.dispose();
+            }
+        });
+
+        // Add components to the dialog
+        dateDialog.add(new JLabel("Year:"));
+        dateDialog.add(yearComboBox);
+        dateDialog.add(new JLabel("Month:"));
+        dateDialog.add(monthComboBox);
+        dateDialog.add(submitButton);
+
+        // Set dialog size and make it visible
+        dateDialog.pack();
+        dateDialog.setLocationRelativeTo(null);
+        dateDialog.setVisible(true);
+    }
+
+
+
+
+    private JPanel LowerLeftContentPanel; // Keep a reference to the content panel
+
+    private void buildLowerLeftPanel(JPanel lowerLeftPanel) {
+
+        lowerLeftPanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        // Title Panel with label
+        JPanel titlePanel = new JPanel(new GridBagLayout()); // Center title in its panel
+        JLabel titleLabel = new JLabel("View Vehicles");
+        titleLabel.setFont(new Font("Helvetica", Font.BOLD, 18));
+        GridBagConstraints titleGbc = new GridBagConstraints();
+        titleGbc.gridwidth = GridBagConstraints.REMAINDER;
+        titleGbc.anchor = GridBagConstraints.CENTER;
+        titlePanel.add(titleLabel, titleGbc); // Add the titleLabel to the titlePanel with constraints
+
+        // Options Panel with dropdown
+        JPanel optionsPanel = new JPanel(new GridBagLayout()); // Center combobox in its panel
+        String[] vehicleOptions = {"Select Vehicle", "Car", "Motorbike", "Bicycle", "Scooter"};
+        JComboBox<String> vehicleDropDown = new JComboBox<>(vehicleOptions);
+        GridBagConstraints optionsGbc = new GridBagConstraints();
+        optionsGbc.gridwidth = GridBagConstraints.REMAINDER;
+        optionsGbc.anchor = GridBagConstraints.CENTER;
+        optionsPanel.add(vehicleDropDown, optionsGbc); // Add the vehicleDropDown to the optionsPanel with constraints
+
+        // UpperLeftContentPanel for content
+        LowerLeftContentPanel = new JPanel();
+        LowerLeftContentPanel.setLayout(new BoxLayout(LowerLeftContentPanel, BoxLayout.Y_AXIS));
+
+        // Set common properties for gbc
+        gbc.gridx = 0;
         gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+
+        // Title Panel Constraints
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        gbc.weighty = 0.1; // Allocate 10% of the space to the title panel
+        lowerLeftPanel.add(titlePanel, gbc);
+
+        // Options Panel Constraints
+        gbc.gridy = 1;
+        gbc.weighty = 0.1; // Allocate 10% of the space to the options panel
+        lowerLeftPanel.add(optionsPanel, gbc);
+
+        // UpperLeftContentPanel Constraints
+        gbc.gridy = 2;
+        gbc.weighty = 0.8; // Allocate 80% of the space to the content panel
+        lowerLeftPanel.add(LowerLeftContentPanel, gbc);
+
+
+        // Apply background colors
+        titlePanel.setBackground(titleBackgroundColor);
+        optionsPanel.setBackground(optionsBackgroundColor);
+        LowerLeftContentPanel.setBackground(contentBackgroundColor);
+
+
+        // Add ActionListener to the JComboBox
+        vehicleDropDown.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedVehicle = (String) vehicleDropDown.getSelectedItem();
+                // Make sure "Select Vehicle" is not processed
+                if (!"Select Vehicle".equals(selectedVehicle)) {
+                    // Call a function to handle this selection (to be implemented)
+                    handleVehicleSelection(selectedVehicle);
+                }
+            }
+        });
+
+    }
+
+
+    private void handleVehicleSelection(String selectedVehicle) {
+        EditOrderTable eot = new EditOrderTable();
+
+        // Calculate and fetch the statistics based on the selected vehicle type
+        Map<String, String> vehicleStats;
+        if ("Car".equals(selectedVehicle)) {
+            vehicleStats = eot.calculateCarStatistics();
+        } else if ("Motorbike".equals(selectedVehicle)) {
+            vehicleStats = eot.calculateMotorBikeStatistics();
+        } else if ("Bicycle".equals(selectedVehicle)) {
+            vehicleStats = eot.calculateBicycleStatistics();
+        } else if ("Scooter".equals(selectedVehicle)) {
+            vehicleStats = eot.calculateScooterStatistics();
+        } else {
+            // Invalid selection or "Select Vehicle," do nothing
+            return;
+        }
+
+        // Clear the existing content panel
+        LowerLeftContentPanel.removeAll();
+        LowerLeftContentPanel.setLayout(new BoxLayout(LowerLeftContentPanel, BoxLayout.Y_AXIS));
+
+        // Create panels for each statistic and add them to the content panel
+        for (Map.Entry<String, String> entry : vehicleStats.entrySet()) {
+            JPanel statisticPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            statisticPanel.setBackground(contentBackgroundColor);
+            JLabel keyLabel = new JLabel(entry.getKey() + ":");
+            JLabel valueLabel = new JLabel(entry.getValue());
+            statisticPanel.add(keyLabel);
+            statisticPanel.add(valueLabel);
+            LowerLeftContentPanel.add(statisticPanel);
+        }
+
+        // Repaint the content panel to reflect changes
+        LowerLeftContentPanel.revalidate();
+        LowerLeftContentPanel.repaint();
+    }
+
+
+    private JPanel UpperRightContentPanel; // Keep a reference to the content panel
+    private LocalDate fromDate; // Local variable to store the selected "From Date"
+    private LocalDate toDate;   // Local variable to store the selected "To Date"
+
+
+
+    private void buildUpperRightPanel(JPanel upperRightPanel) {
+        upperRightPanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        // Title Panel with label
+        JPanel titlePanel = new JPanel(new GridBagLayout());
+        JLabel titleLabel = new JLabel("Booking Statistics");
+        titleLabel.setFont(new Font("Helvetica", Font.BOLD, 18));
+        GridBagConstraints titleGbc = new GridBagConstraints();
+        titleGbc.gridwidth = GridBagConstraints.REMAINDER;
+        titleGbc.anchor = GridBagConstraints.CENTER;
+        titlePanel.add(titleLabel, titleGbc);
+
+        // Options Panel with "Date" button
+        JPanel optionsPanel = new JPanel(new GridBagLayout());
+
+        JButton dateButton = new JButton("Date");
+        GridBagConstraints optionsGbc = new GridBagConstraints();
+        optionsGbc.gridwidth = GridBagConstraints.REMAINDER;
+        optionsGbc.anchor = GridBagConstraints.CENTER;
+        optionsPanel.add(dateButton, optionsGbc);
+
+        // Content Panel
+        UpperRightContentPanel = new JPanel();
+        UpperRightContentPanel.setLayout(new BoxLayout(UpperRightContentPanel, BoxLayout.Y_AXIS));
+
+        titlePanel.setBackground(titleBackgroundColor);
+        optionsPanel.setBackground(optionsBackgroundColor);
+        UpperRightContentPanel.setBackground(contentBackgroundColor);
+
+        // Common GridBagConstraints settings
+        gbc.gridx = 0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+
+        // Title Panel Constraints
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        gbc.weighty = 0.1; // Allocate 10% of the space to the title panel
+        upperRightPanel.add(titlePanel, gbc);
+
+        // Options Panel Constraints
+        gbc.gridy = 1;
+        gbc.weighty = 0.1; // Allocate 10% of the space to the options panel
+        upperRightPanel.add(optionsPanel, gbc);
+
+        // Content Panel Constraints
+        gbc.gridy = 2;
+        gbc.weighty = 0.8; // Allocate 80% of the space to the content panel
+        upperRightPanel.add(UpperRightContentPanel, gbc);
+
+        dateButton.addActionListener(e -> createDatePickerDialog(this::fetchAndDisplayBookings));
+    }
+
+    @FunctionalInterface
+    interface DateQueryFunction {
+        void query(LocalDate fromDate, LocalDate toDate);
+    }
+
+    private void createDatePickerDialog(DateQueryFunction dateQuery) {
+        // Create a dialog
+        JDialog dateDialog = new JDialog();
+        dateDialog.setTitle("Date Selection");
+        dateDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+        // Create a panel for date inputs
+        JPanel datePanel = new JPanel(new GridLayout(2, 3)); // 2 rows, 3 columns
+
+        // Add JComboBoxes for "From Date" and "To Date"
+        JComboBox<Integer> fromDayComboBox = new JComboBox<>(getDayOptions());
+        JComboBox<Month> fromMonthComboBox = new JComboBox<>(Month.values());
+        JComboBox<Integer> fromYearComboBox = new JComboBox<>(getYearOptions());
+        JComboBox<Integer> toDayComboBox = new JComboBox<>(getDayOptions());
+        JComboBox<Month> toMonthComboBox = new JComboBox<>(Month.values());
+        JComboBox<Integer> toYearComboBox = new JComboBox<>(getYearOptions());
+
+        datePanel.add(new JLabel("From Date:"));
+        datePanel.add(fromDayComboBox);
+        datePanel.add(fromMonthComboBox);
+        datePanel.add(fromYearComboBox);
+        datePanel.add(new JLabel("To Date:"));
+        datePanel.add(toDayComboBox);
+        datePanel.add(toMonthComboBox);
+        datePanel.add(toYearComboBox);
+
+        // Create a "Submit" button
+        JButton submitButton = new JButton("Submit");
+        submitButton.addActionListener(e -> {
+            int fromDay = (int) fromDayComboBox.getSelectedItem();
+            Month fromMonth = (Month) fromMonthComboBox.getSelectedItem();
+            int fromYear = (int) fromYearComboBox.getSelectedItem();
+            int toDay = (int) toDayComboBox.getSelectedItem();
+            Month toMonth = (Month) toMonthComboBox.getSelectedItem();
+            int toYear = (int) toYearComboBox.getSelectedItem();
+
+            LocalDate fromDate = LocalDate.of(fromYear, fromMonth, fromDay);
+            LocalDate toDate = LocalDate.of(toYear, toMonth, toDay);
+
+            dateQuery.query(fromDate, toDate);
+
+            dateDialog.dispose();
+        });
+
+        // Add components to the dialog
+        dateDialog.add(datePanel, BorderLayout.CENTER);
+        dateDialog.add(submitButton, BorderLayout.SOUTH);
+
+        // Set dialog size and make it visible
+        dateDialog.pack();
+        dateDialog.setLocationRelativeTo(null);
+        dateDialog.setVisible(true);
+    }
+
+    public void fetchAndDisplayBookings(LocalDate fromDate, LocalDate toDate) {
+        try {
+            EditOrderTable eot = new EditOrderTable();
+            List<Booking> bookings = eot.getBookingsBetweenDates(fromDate, toDate);
+            // Assume there's a method that takes a list of bookings and displays them
+            displayBookings(bookings);
+        } catch (SQLException | ClassNotFoundException ex) {
+            ex.printStackTrace(); // Handle exceptions properly
+        }
+    }
+
+
+    // Helper methods to get day and year options
+    private Integer[] getDayOptions() {
+        // Return an array of integers from 1 to 31
+        return IntStream.rangeClosed(1, 31).boxed().toArray(Integer[]::new);
+    }
+
+    private Integer[] getYearOptions() {
+        return IntStream.rangeClosed(2023, 2025).boxed().toArray(Integer[]::new);
+    }
+
+    private void displayBookings(List<Booking> bookings) {
+        // Clear the previous content
+        UpperRightContentPanel.removeAll();
+
+        if (bookings != null) {
+            for (Booking booking : bookings) {
+                JPanel bookingPanel = new JPanel();
+                bookingPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                bookingPanel.setBackground(contentBackgroundColor);
+                bookingPanel.add(new JLabel(booking.toString())); // Customize this to display booking details
+                UpperRightContentPanel.add(bookingPanel);
+            }
+        }
+
+        // Revalidate and repaint to update the UI
+        UpperRightContentPanel.revalidate();
+        UpperRightContentPanel.repaint();
+    }
+
+
+
+
+    JPanel UpperLeftContentPanel; // Declare the empty panel as a class variable
+
+    private void buildUpperLeftPanel(JPanel upperLeftPanel) {
+        upperLeftPanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        // Title Panel with label
+        JPanel titlePanel = new JPanel(new GridBagLayout()); // Center title in its panel
+        JLabel titleLabel = new JLabel("View Vehicles");
+        titleLabel.setFont(new Font("Helvetica", Font.BOLD, 18));
+        GridBagConstraints titleGbc = new GridBagConstraints();
+        titleGbc.gridwidth = GridBagConstraints.REMAINDER;
+        titleGbc.anchor = GridBagConstraints.CENTER;
+        titlePanel.add(titleLabel, titleGbc); // Add the titleLabel to the titlePanel with constraints
+
+        // Options Panel with dropdown
+        JPanel optionsPanel = new JPanel(new GridBagLayout()); // Center combobox in its panel
+        String[] vehicleOptions = {"Select Vehicle", "Car", "Motorbike", "Bicycle", "Scooter"};
+        JComboBox<String> vehicleDropDown = new JComboBox<>(vehicleOptions);
+        GridBagConstraints optionsGbc = new GridBagConstraints();
+        optionsGbc.gridwidth = GridBagConstraints.REMAINDER;
+        optionsGbc.anchor = GridBagConstraints.CENTER;
+        optionsPanel.add(vehicleDropDown, optionsGbc); // Add the vehicleDropDown to the optionsPanel with constraints
+
+        // UpperLeftContentPanel for content
+        UpperLeftContentPanel = new JPanel();
+        UpperLeftContentPanel.setLayout(new BoxLayout(UpperLeftContentPanel, BoxLayout.Y_AXIS));
+
+        // Set common properties for gbc
+        gbc.gridx = 0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+
+        // Title Panel Constraints
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        gbc.weighty = 0.1; // Allocate 10% of the space to the title panel
         upperLeftPanel.add(titlePanel, gbc);
 
         // Options Panel Constraints
@@ -176,10 +626,16 @@ public class AdminPage extends JFrame {
         gbc.weighty = 0.1; // Allocate 10% of the space to the options panel
         upperLeftPanel.add(optionsPanel, gbc);
 
-        // Empty Panel Constraints
+        // UpperLeftContentPanel Constraints
         gbc.gridy = 2;
-        gbc.weighty = 0.8; // Allocate 80% of the space to the empty panel
-        upperLeftPanel.add(emptyPanel, gbc);
+        gbc.weighty = 0.8; // Allocate 80% of the space to the content panel
+        upperLeftPanel.add(UpperLeftContentPanel, gbc);
+
+
+        // Apply background colors
+        titlePanel.setBackground(titleBackgroundColor);
+        optionsPanel.setBackground(optionsBackgroundColor);
+        UpperLeftContentPanel.setBackground(contentBackgroundColor);
 
         // Add ActionListener to the JComboBox
         vehicleDropDown.addActionListener(new ActionListener() {
@@ -195,12 +651,10 @@ public class AdminPage extends JFrame {
     }
 
 
-    JPanel emptyPanel; // Declare the empty panel as a class variable
-
     // Now let's define the populateVehiclePanel method
     private void populateVehiclePanel(String vehicleType) {
         // Clear the previous content
-        emptyPanel.removeAll();
+        UpperLeftContentPanel.removeAll();
 
         try {
             ArrayList<?> vehicles = null;
@@ -227,8 +681,9 @@ public class AdminPage extends JFrame {
                 for (Object vehicle : vehicles) {
                     JPanel vehiclePanel = new JPanel();
                     vehiclePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                    vehiclePanel.setBackground(contentBackgroundColor);
                     vehiclePanel.add(new JLabel(vehicle.toString())); // Customize this to display vehicle details
-                    emptyPanel.add(vehiclePanel);
+                    UpperLeftContentPanel.add(vehiclePanel);
                 }
             }
         } catch (SQLException | ClassNotFoundException ex) {
@@ -236,9 +691,11 @@ public class AdminPage extends JFrame {
         }
 
         // Revalidate and repaint to update the UI
-        emptyPanel.revalidate();
-        emptyPanel.repaint();
+        UpperLeftContentPanel.revalidate();
+        UpperLeftContentPanel.repaint();
     }
+
+
 
     private void createQueryDatabaseDialog() {
         // Create the dialog
@@ -322,22 +779,6 @@ public class AdminPage extends JFrame {
         resultsDialog.pack();
         resultsDialog.setLocationRelativeTo(null); // Center the results dialog
         resultsDialog.setVisible(true);
-    }
-
-    private void toggleFullScreen(JDialog dialog) {
-        GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-        if (dialog.isUndecorated()) {
-            dialog.dispose();
-            dialog.setUndecorated(false);
-            dialog.pack();
-            dialog.setLocationRelativeTo(null);
-            dialog.setVisible(true);
-        } else {
-            dialog.dispose();
-            dialog.setUndecorated(true);
-            device.setFullScreenWindow(dialog);
-            dialog.setVisible(true);
-        }
     }
 
 

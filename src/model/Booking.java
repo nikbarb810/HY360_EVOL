@@ -74,4 +74,9 @@ public class Booking {
         this.CoveredInsur = coveredInsur;
         this.Status = status;
     }
+
+    @Override
+    public String toString() {
+        return "ID: " + BookingId + " | Order ID: " + OrderId + " | Vehicle ID: " + VehicleId + " | Driver ID: " + DriverId + " | Booking Cost: " + BookingCost + " | Covered Insurance: " + CoveredInsur + " | Status: " + Status;
+    }
 }
