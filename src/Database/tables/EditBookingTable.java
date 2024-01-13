@@ -240,8 +240,8 @@ public class EditBookingTable {
             while (rs.next()) {
                 String timePeriod = rs.getString("TimePeriod");
                 int totalIncome = rs.getInt("TotalIncome");
-                int year = rs.getInt("startYear");
-                int month = rs.getInt("startMonth");
+                int year = startDate.getYear();
+                int month = startDate.getMonthValue();
 
                 Map<String,String> record = new HashMap<>();
                 record.put("vehicleType", vehicleType);

@@ -22,7 +22,13 @@ public class InitDatabase {
         init.initDatabase();
         init.initTables();
         init.addEntries();
+        performOtherActions(); // This is just for testing purposes
+//        init.dropDatabase();
 
+    }
+
+    // Define a new function to encapsulate the commands
+    private static void performOtherActions() throws SQLException, ClassNotFoundException {
         EditBookingTable ebt = new EditBookingTable();
         ebt.updateBookingStatus(3, "Crashed");
 
@@ -51,8 +57,6 @@ public class InitDatabase {
             System.out.println(motorBike.getVehicleId());
         }
 
-
-
         EditCarTable ect = new EditCarTable();
 
         for(Car car : ect.getAllAvailableCars(LocalDate.of(2024,9,14))){
@@ -64,14 +68,6 @@ public class InitDatabase {
         for(Car car : ect.getAllAvailableCars(LocalDate.of(2024,9,17))){
             System.out.println(car.getRegNum());
         }
-
-
-
-//        init.dropDatabase();
-//
-
-
-
     }
 
     public void initDatabase() throws SQLException, ClassNotFoundException {
@@ -207,6 +203,9 @@ public class InitDatabase {
         editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Motorbike",LocalDate.of(2024, 9, 1));
         editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Scooter",LocalDate.of(2024, 9, 1));
         editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Bicycle",LocalDate.of(2024, 9, 1));
+
+
+        editRepairTable. calculateMonthlyCostsByTypeFromStartDate(LocalDate.of(2024, 9, 1));
     }
 
 }
