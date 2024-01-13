@@ -445,7 +445,7 @@ public  class RentPage extends JFrame {
         selectedLabel.setText(ok);
     }
 
-    private void addVehicleRow(String vehicleInfo , int vehicleid, int cost,String type) {
+    private void addVehicleRow(String vehicleInfo , int vehicleid, int cost,String type,int insur) {
     	JPanel row = new JPanel();
         row.setLayout(new BoxLayout(row, BoxLayout.X_AXIS));
         row.setBackground(Color.BLACK);
@@ -498,6 +498,9 @@ public  class RentPage extends JFrame {
                             book.setVehicleId(vehicleid);
                             book.setBookingCost(daysDifference *cost);
                             totalcost = totalcost + daysDifference *cost;
+			    if(InsurBox.isSelected()) {
+				    totalcost = totalcost + insur;
+			    }
                             Controller.Bookings.add(book);
                             driverlist.add(driver.getDriverId());
                             try {
@@ -593,7 +596,7 @@ public  class RentPage extends JFrame {
         	String mama = haha.getBrand() +", " +haha.getModel() +", " +haha.getColor() +", Mileage: " +
         			haha.getMileage() +",RegNum : " +haha.getRegNum() +",Total Passengers" +haha.getNumPassengers() 
         			+",Insurance Cost: " +haha.getInsurPrice() +",Type : " +haha.getType();
-        	addVehicleRow(mama, haha.getVehicleId(),haha.getRentalPrice(),"Car");
+        	addVehicleRow(mama, haha.getVehicleId(),haha.getRentalPrice(),"Car",haha.getInsurPrice());
     		}
         }
     }
@@ -603,7 +606,7 @@ public  class RentPage extends JFrame {
         	String mama = haha.getBrand() +", " +haha.getModel() +", " +haha.getColor() +", Mileage: " +
         			haha.getMileage() +",RegNum : " +haha.getRegNum() + 
         			",Insurance Cost: " +haha.getInsurPrice() ;
-        	addVehicleRow(mama, haha.getVehicleId(),haha.getRentalPrice(),"MBike");
+        	addVehicleRow(mama, haha.getVehicleId(),haha.getRentalPrice(),"MBike",haha.getInsurPrice());
     		}
         }
     }
@@ -613,7 +616,7 @@ public  class RentPage extends JFrame {
         	String mama = haha.getBrand() +", " +haha.getModel() +", " +haha.getColor() +", Mileage: " +
         			haha.getMileage() + 
         			",Insurance Cost: " +haha.getInsurPrice() ;
-        	addVehicleRow(mama, haha.getVehicleId(),haha.getRentalPrice(),"Bike");
+        	addVehicleRow(mama, haha.getVehicleId(),haha.getRentalPrice(),"Bike",haha.getInsurPrice());
     		}
         }
     }
@@ -623,7 +626,7 @@ public  class RentPage extends JFrame {
         	String mama = haha.getBrand() +", " +haha.getModel() +", " +haha.getColor() +", Mileage: " +
         			haha.getMileage() + 
         			",Insurance Cost: " +haha.getInsurPrice() ;
-        	addVehicleRow(mama, haha.getVehicleId(),haha.getRentalPrice(),"Scooter");
+        	addVehicleRow(mama, haha.getVehicleId(),haha.getRentalPrice(),"Scooter",haha.getInsurPrice());
     		}
         }
     }
