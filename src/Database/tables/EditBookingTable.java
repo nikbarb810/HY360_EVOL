@@ -220,12 +220,20 @@ public class EditBookingTable {
         int startYear = startDate.getYear();
         int startMonth = startDate.getMonthValue();
 
+//        String sql = "SELECT CONCAT(`Order`.startYear, '-', LPAD(`Order`.startMonth, 2, '0')) AS TimePeriod, " +
+//                "SUM(Booking.bookingCost + CASE WHEN Booking.coveredInsur THEN Vehicle.insurPrice ELSE 0 END) AS TotalIncome " +
+//                "FROM Booking " +
+//                "JOIN `Order` ON Booking.orderID = `Order`.orderID " +
+//                "JOIN " + vehicleType + " Vehicle ON Booking.vehicleID = Vehicle.vehicleID " +
+//                "WHERE `Order`.startYear = ? AND `Order`.startMonth = ? " +
+//                "GROUP BY TimePeriod";
         String sql = "SELECT CONCAT(`Order`.startYear, '-', LPAD(`Order`.startMonth, 2, '0')) AS TimePeriod, " +
-                "SUM(Booking.bookingCost + CASE WHEN Booking.coveredInsur THEN Vehicle.insurPrice ELSE 0 END) AS TotalIncome " +
+                "SUM(Booking.bookingCost) AS TotalIncome " +
                 "FROM Booking " +
                 "JOIN `Order` ON Booking.orderID = `Order`.orderID " +
-                "JOIN " + vehicleType + " Vehicle ON Booking.vehicleID = Vehicle.vehicleID " +
-                "WHERE `Order`.startYear = ? AND `Order`.startMonth = ? " +
+                "JOIN " + vehicleType + " ON Booking.vehicleID = " + vehicleType + ".vehicleID " +
+                "WHERE `Order`.start" +
+                "Year = ? AND Order.startMonth = ? " +
                 "GROUP BY TimePeriod";
         ArrayList<Map<String,String>> results = new ArrayList<>();
 
@@ -240,8 +248,8 @@ public class EditBookingTable {
             while (rs.next()) {
                 String timePeriod = rs.getString("TimePeriod");
                 int totalIncome = rs.getInt("TotalIncome");
-                int year = rs.getInt("startYear");
-                int month = rs.getInt("startMonth");
+                int year = startDate.getYear();
+                int month = startDate.getMonthValue();
 
                 Map<String,String> record = new HashMap<>();
                 record.put("vehicleType", vehicleType);
