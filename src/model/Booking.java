@@ -64,6 +64,9 @@ public class Booking {
     public void setCoveredInsur(boolean coveredInsur) {
         CoveredInsur = coveredInsur;
     }
+    public boolean  getCoveredInsur() {
+        return CoveredInsur;
+    }
 
     public Booking(int bookingId, int orderId, int vehicleId, int driverId, int bookingCost, boolean coveredInsur, String status) {
         this.BookingId = bookingId;
@@ -74,4 +77,8 @@ public class Booking {
         this.CoveredInsur = coveredInsur;
         this.Status = status;
     }
+
+	public Booking() {
+		// TODO Auto-generated constructor stub
+	}
 }

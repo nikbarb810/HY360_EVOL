@@ -5,7 +5,7 @@ public class Driver {
 	int CustomerId;
 	public String FirstName;
 	public String LastName;
-	public int LicenseId;
+	public String LicenseId;
 
     public int getDriverId() {
         return DriverId;
@@ -39,15 +39,15 @@ public class Driver {
         LastName = lastName;
     }
 
-    public int getLicenseId() {
+    public String getLicenseId() {
         return LicenseId;
     }
 
-    public void setLicenseId(int licenseId) {
+    public void setLicenseId(String licenseId) {
         LicenseId = licenseId;
     }
 
-    public Driver(int driverId, int customerId, String firstName, String lastName, int licenseId) {
+    public Driver(int driverId, int customerId, String firstName, String lastName, String licenseId) {
         DriverId = driverId;
         CustomerId = customerId;
         FirstName = firstName;

@@ -74,7 +74,7 @@ public class EditScooterTable {
     public ArrayList<Scooter> getAllAvailableScooters(LocalDate bookingDate) throws SQLException, ClassNotFoundException {
         ArrayList<Scooter> scs = new ArrayList<>();
 
-        String sql = "SELECT Scooter.* FROM Scotter " +
+        String sql = "SELECT Scooter.* FROM Scooter " +
                 "LEFT JOIN Booking ON Scooter.vehicleID = Booking.vehicleID " +
                 "LEFT JOIN Repair ON Booking.bookingID = Repair.bookingID " +
                 "WHERE Scooter.status = 'Available' OR " +
@@ -162,4 +162,56 @@ public class EditScooterTable {
         conn.close();
         return sc;
     }
+    
+    public Scooter rentFirstAvailableScooter() throws SQLException, ClassNotFoundException {
+        Scooter scooter = null;
+
+        // SQL query to select the first available scooter
+        String selectSql = "SELECT * FROM Scooter WHERE status = 'Available' LIMIT 1;";
+
+        // SQL query to update the status of the scooter
+        String updateSql = "UPDATE Scooter SET status = 'Rented' WHERE vehicleID = ?;";
+
+        try (Connection conn = DB_Connection.getConnection()) {
+            // Start transaction
+            conn.setAutoCommit(false);
+
+            try (PreparedStatement selectStmt = conn.prepareStatement(selectSql);
+                 PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
+
+                // Select the first available scooter
+                ResultSet rs = selectStmt.executeQuery();
+                if (rs.next()) {
+                    int vehicleID = rs.getInt("vehicleID");
+
+                    scooter = new Scooter(
+                        vehicleID,
+                        rs.getString("brand"),
+                        rs.getString("model"),
+                        rs.getString("color"),
+                        rs.getInt("rentalPrice"),
+                        "Rented", // Setting the status as 'Rented' directly here
+                        rs.getInt("insurPrice"),
+                        rs.getInt("mileage")
+                    );
+
+                    // Update the status of the scooter to 'Rented'
+                    updateStmt.setInt(1, vehicleID);
+                    updateStmt.executeUpdate();
+                }
+
+                // Commit transaction
+                conn.commit();
+            } catch (SQLException e) {
+                // Rollback transaction in case of error
+                conn.rollback();
+                throw e;
+            } finally {
+                conn.setAutoCommit(true);
+            }
+        }
+
+        return scooter; // Return the scooter (null if no available scooters)
+    }
+
 }

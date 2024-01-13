@@ -35,7 +35,7 @@ public class EditPaymentTable {
             Connection conn = DB_Connection.getConnection();
             Statement stmt = conn.createStatement();
 
-            String sql = "INSERT INTO payment (orderID, amount, type, paymentHour, paymentDay, paymentMonth, paymentYear) VALUES (" + p.getOrderId() + ", " + p.getAmount() + ", '" + p.getType() + "', " + p.getTime().getHour() + ", " + p.getDate().getDayOfMonth() + ", " + p.getDate().getMonthValue() + ", " + p.getDate().getYear() + ");";
+            String sql = "INSERT INTO Payment (orderID, amount, type, paymentHour, paymentDay, paymentMonth, paymentYear) VALUES (" + p.getOrderId() + ", " + p.getAmount() + ", '" + p.getType() + "', " + p.getTime().getHour() + ", " + p.getDate().getDayOfMonth() + ", " + p.getDate().getMonthValue() + ", " + p.getDate().getYear() + ");";
 
             stmt.executeUpdate(sql);
 
