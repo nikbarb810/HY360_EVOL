@@ -200,9 +200,17 @@ public class InitDatabase {
         editOrderTable.calculateScooterStatistics();
 
         editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Car",LocalDate.of(2024, 9, 1));
+        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Car",LocalDate.of(2024, 3, 1));
+        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Car",LocalDate.of(2024, 5, 1));
         editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Motorbike",LocalDate.of(2024, 9, 1));
+        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Motorbike",LocalDate.of(2024, 3, 1));
+        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Motorbike",LocalDate.of(2024, 5, 1));
         editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Scooter",LocalDate.of(2024, 9, 1));
+        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Scooter",LocalDate.of(2024, 3, 1));
+        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Scooter",LocalDate.of(2024, 5, 1));
         editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Bicycle",LocalDate.of(2024, 9, 1));
+        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Bicycle",LocalDate.of(2024, 3, 1));
+        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Bicycle",LocalDate.of(2024, 5, 1));
 
 
         editRepairTable. calculateMonthlyCostsByTypeFromStartDate(LocalDate.of(2024, 9, 1));
