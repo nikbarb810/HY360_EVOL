@@ -22,7 +22,7 @@ public class InitDatabase {
         init.initDatabase();
         init.initTables();
         init.addEntries();
-//
+
         EditBookingTable ebt = new EditBookingTable();
         ebt.updateBookingStatus(3, "Crashed");
 

@@ -7,4 +7,9 @@ public class Bicycle extends Vehicle{
 		super(vehicleId,brand,model,color,rentalPrice,status,insurPrice, mileage);
 	}
 
+	@Override
+	public String toString() {
+		return super.toString();
+	}
+
 }

@@ -17,4 +17,10 @@ public class MotorBike extends Vehicle{
 		RegNum = regNum;
 	}
 
+	@Override
+	public String toString() {
+		return "ID:" + vehicleId + " | " + Brand + " " + Model + " , " + Color +  " | RegNum: " + getRegNum() + " | " +
+				" Status: " + Status + " | Rental Price: " + RentalPrice + " | Mileage: " + mileage ;
+	}
+
 }

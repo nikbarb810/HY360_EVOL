@@ -5,7 +5,20 @@ public class Driver {
 	int CustomerId;
 	public String FirstName;
 	public String LastName;
-	public int LicenseId;
+	public String LicenseId;
+
+    public Driver(int driverId, int customerId, String firstName, String lastName, String licenseId) {
+        DriverId = driverId;
+        CustomerId = customerId;
+        FirstName = firstName;
+        LastName = lastName;
+        LicenseId = licenseId;
+    }
+
+
+    public Driver() {
+        // TODO Auto-generated constructor stub
+    }
 
     public int getDriverId() {
         return DriverId;
@@ -39,25 +52,14 @@ public class Driver {
         LastName = lastName;
     }
 
-    public int getLicenseId() {
+    public String getLicenseId() {
         return LicenseId;
     }
 
-    public void setLicenseId(int licenseId) {
+    public void setLicenseId(String licenseId) {
         LicenseId = licenseId;
     }
 
-    public Driver(int driverId, int customerId, String firstName, String lastName, int licenseId) {
-        DriverId = driverId;
-        CustomerId = customerId;
-        FirstName = firstName;
-        LastName = lastName;
-        LicenseId = licenseId;
-    }
-
-	public Driver() {
-		// TODO Auto-generated constructor stub
-	}
 
 	public String getSurname() {
 		// TODO Auto-generated method stub

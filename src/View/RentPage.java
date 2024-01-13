@@ -453,7 +453,7 @@ public  class RentPage extends JFrame {
     	Driver me = new Driver();
     	me.FirstName = "Ilias";
     	me.LastName = "Kapsis";
-    	me.LicenseId = 1833;
+    	me.LicenseId = "1833";
     	ArrayList<Driver> mama  = new ArrayList();
     	mama.add(me);
 		return mama;

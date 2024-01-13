@@ -32,27 +32,6 @@ public class EditBookingTable {
         conn.close();
     }
 
-//    public void insertBooking(Booking b) {
-//
-//        try {
-//            Connection conn = DB_Connection.getConnection();
-//            Statement stmt = conn.createStatement();
-//
-//            String sql = "INSERT INTO Booking (orderID, vehicleID, driverID, bookingCost, coveredInsur, status) VALUES (" + b.getOrderId() + ", " + b.getVehicleId() + ", " + b.getDriverId() + ", " + b.getBookingCost() + ", " + b.isCoveredInsur() + ", '" + b.getStatus() + "');";
-//
-//            stmt.executeUpdate(sql);
-//
-//            // update the order cost by the booking cost
-//            sql = "UPDATE `Order` SET cost = cost + " + b.getBookingCost() + " WHERE orderID = " + b.getOrderId() + ";";
-//            stmt.executeUpdate(sql);
-//
-//            stmt.close();
-//            conn.close();
-//
-//        } catch (SQLException | ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     public void insertBooking(Booking b) {
 

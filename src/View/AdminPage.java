@@ -10,9 +10,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.MatteBorder;
 
 public class AdminPage extends JFrame {
     JPanel StatisticsPanel;
@@ -30,9 +33,38 @@ public class AdminPage extends JFrame {
         text.setForeground(Color.BLACK);
         topPanel.add(text);
 
-        // Middle panel for vehicle rows
+        // Configure the StatisticsPanel to use BorderLayout
         StatisticsPanel = new JPanel();
-        StatisticsPanel.setLayout(new BoxLayout(StatisticsPanel, BoxLayout.Y_AXIS));
+        StatisticsPanel.setLayout(new GridLayout(2, 1)); // 2 rows, 1 column
+
+        // Upper row with 2 columns
+        JPanel upperRow = new JPanel(new GridLayout(1, 2)); // 1 row, 2 columns
+        JPanel upperLeftPanel = new JPanel();
+        buildUpperLeftPanel(upperLeftPanel);
+        upperLeftPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        JPanel upperRightPanel = new JPanel();
+        upperRightPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        upperRow.add(upperLeftPanel);
+        upperRow.add(upperRightPanel);
+
+        // Lower row with 4 columns
+        JPanel lowerRow = new JPanel(new GridLayout(1, 4)); // 1 row, 4 columns
+        JPanel lowerLeftPanel = new JPanel();
+        lowerLeftPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        JPanel lowerCenterLeftPanel = new JPanel();
+        lowerCenterLeftPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        JPanel lowerCenterRightPanel = new JPanel();
+        lowerCenterRightPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        JPanel lowerRightPanel = new JPanel();
+        lowerRightPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        lowerRow.add(lowerLeftPanel);
+        lowerRow.add(lowerCenterLeftPanel);
+        lowerRow.add(lowerCenterRightPanel);
+        lowerRow.add(lowerRightPanel);
+
+        // Add the upper and lower rows to the StatisticsPanel
+        StatisticsPanel.add(upperRow);
+        StatisticsPanel.add(lowerRow);
 
         // Bottom panel with button
         JPanel bottomPanel = new JPanel();
@@ -98,6 +130,114 @@ public class AdminPage extends JFrame {
 
         pack();
         setLocationRelativeTo(null); // Center the frame
+    }
+
+    private void buildUpperLeftPanel(JPanel upperLeftPanel) {
+        // Set the layout manager for upperLeftPanel
+        upperLeftPanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
+
+        Color titleBackgroundColor = new Color(220, 220, 220);
+        Color optionsBackgroundColor = new Color(240, 240, 240);
+        Color contentBackgroundColor = new Color(255, 255, 255);
+
+        // Title Panel with label
+        JPanel titlePanel = new JPanel();
+        titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.PAGE_AXIS));
+        titlePanel.setBackground(titleBackgroundColor);
+        JLabel titleLabel = new JLabel("View Vehicles");
+        titleLabel.setFont(new Font("Helvetica", Font.BOLD, 18));
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        titlePanel.add(titleLabel);
+
+        // Options Panel with dropdown
+        JPanel optionsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER)); // Center the panel on the x-axis
+        optionsPanel.setBackground(optionsBackgroundColor);
+        String[] vehicleOptions = {"Select Vehicle", "Car", "Motorbike", "Bicycle", "Scooter"};
+        JComboBox<String> vehicleDropDown = new JComboBox<>(vehicleOptions);
+        optionsPanel.add(vehicleDropDown);
+
+        // Third Panel - Empty for now
+        emptyPanel = new JPanel();
+        emptyPanel.setLayout(new BoxLayout(emptyPanel, BoxLayout.Y_AXIS));
+        emptyPanel.setBackground(contentBackgroundColor);
+
+        // Title Panel Constraints
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        gbc.weighty = 0.1; // Allocate 10% of the space to the title panel
+        gbc.fill = GridBagConstraints.BOTH;
+        upperLeftPanel.add(titlePanel, gbc);
+
+        // Options Panel Constraints
+        gbc.gridy = 1;
+        gbc.weighty = 0.1; // Allocate 10% of the space to the options panel
+        upperLeftPanel.add(optionsPanel, gbc);
+
+        // Empty Panel Constraints
+        gbc.gridy = 2;
+        gbc.weighty = 0.8; // Allocate 80% of the space to the empty panel
+        upperLeftPanel.add(emptyPanel, gbc);
+
+        // Add ActionListener to the JComboBox
+        vehicleDropDown.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedVehicle = (String) vehicleDropDown.getSelectedItem();
+                // Make sure "Select Vehicle" is not processed
+                if (!"Select Vehicle".equals(selectedVehicle)) {
+                    populateVehiclePanel(selectedVehicle);
+                }
+            }
+        });
+    }
+
+
+    JPanel emptyPanel; // Declare the empty panel as a class variable
+
+    // Now let's define the populateVehiclePanel method
+    private void populateVehiclePanel(String vehicleType) {
+        // Clear the previous content
+        emptyPanel.removeAll();
+
+        try {
+            ArrayList<?> vehicles = null;
+            switch (vehicleType) {
+                case "Car":
+                    EditCarTable ect = new EditCarTable();
+                    vehicles = ect.getAllCars();
+                    break;
+                case "Motorbike":
+                    EditMotorBikeTable emt = new EditMotorBikeTable();
+                    vehicles = emt.getAllMotorBikes();
+                    break;
+                case "Bicycle":
+                    EditBicycleTable ebt = new EditBicycleTable();
+                    vehicles = ebt.getAllBicycles();
+                    break;
+                case "Scooter":
+                    EditScooterTable est = new EditScooterTable();
+                    vehicles = est.getAllScooters();
+                    break;
+            }
+
+            if (vehicles != null) {
+                for (Object vehicle : vehicles) {
+                    JPanel vehiclePanel = new JPanel();
+                    vehiclePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                    vehiclePanel.add(new JLabel(vehicle.toString())); // Customize this to display vehicle details
+                    emptyPanel.add(vehiclePanel);
+                }
+            }
+        } catch (SQLException | ClassNotFoundException ex) {
+            ex.printStackTrace(); // Handle exceptions properly
+        }
+
+        // Revalidate and repaint to update the UI
+        emptyPanel.revalidate();
+        emptyPanel.repaint();
     }
 
     private void createQueryDatabaseDialog() {

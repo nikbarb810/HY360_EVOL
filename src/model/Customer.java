@@ -36,6 +36,10 @@ public class Customer {
         return CustomerId;
     }
 
+    public void setCustomerId(int customerId) {
+        CustomerId = customerId;
+    }
+
 	public String getEmail() {
         return Username;
     }
