@@ -1,17 +1,17 @@
 package View;
 
-import Database.tables.EditBicycleTable;
-import Database.tables.EditCarTable;
-import Database.tables.EditMotorBikeTable;
-import Database.tables.EditScooterTable;
+import Database.tables.*;
 import model.Bicycle;
 import model.Car;
 import model.MotorBike;
 import model.Scooter;
 
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 import javax.swing.*;
 
 public class AdminPage extends JFrame {
@@ -77,6 +77,20 @@ public class AdminPage extends JFrame {
         });
         bottomPanel.add(sub4);
 
+        // New button for querying the database
+        JButton queryButton = new JButton("Query");
+        queryButton.setBackground(Color.green);
+        queryButton.setForeground(Color.black);
+        queryButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                createQueryDatabaseDialog();
+            }
+        });
+        bottomPanel.add(queryButton);
+
+
+
         // Adding panels to the frame
         add(topPanel, BorderLayout.NORTH);
         add(new JScrollPane(StatisticsPanel), BorderLayout.CENTER);
@@ -85,6 +99,107 @@ public class AdminPage extends JFrame {
         pack();
         setLocationRelativeTo(null); // Center the frame
     }
+
+    private void createQueryDatabaseDialog() {
+        // Create the dialog
+        JDialog dialog = new JDialog();
+        dialog.setTitle("Query Database");
+        dialog.setLayout(new BorderLayout());
+        dialog.setPreferredSize(new Dimension(400, 100));
+
+        // Create input field
+        JTextField inputField = new JTextField(30);
+
+        // Create a panel for the input field and add it to the dialog
+        JPanel inputPanel = new JPanel();
+        inputPanel.add(inputField);
+        dialog.add(inputPanel, BorderLayout.CENTER);
+
+        // Create a submit button
+        JButton submitQuery = new JButton("Submit Query");
+        submitQuery.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String query = inputField.getText();
+                // Execute the query and get the results
+                EditVehicleSequenceTable evt = new EditVehicleSequenceTable();
+                try {
+                    List<Map<String, Object>> results = evt.executeSelectQuery(query);
+                    // Show the results in a new dialog
+                    showResultsInDialog(results);
+                } catch (SQLException | ClassNotFoundException ex) {
+                    ex.printStackTrace();
+                    // Show error message
+                    JOptionPane.showMessageDialog(dialog, "Error executing query: " + ex.getMessage(), "Query Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        // Add the submit button to the dialog
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(submitQuery);
+        dialog.add(buttonPanel, BorderLayout.SOUTH);
+
+        // Finalize and display the dialog
+        dialog.pack();
+        dialog.setLocationRelativeTo(null); // Center the dialog
+        dialog.setVisible(true);
+    }
+
+    private void showResultsInDialog(List<Map<String, Object>> results) {
+        // Create a new dialog to show the results
+        JDialog resultsDialog = new JDialog();
+        resultsDialog.setTitle("Query Results");
+        resultsDialog.setLayout(new BorderLayout());
+
+        // Set the dialog resizable and maximizable
+        resultsDialog.setResizable(true);
+        resultsDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+        // Create the main panel with BoxLayout for vertical stacking
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+
+        // ScrollPane for mainPanel
+        JScrollPane scrollPane = new JScrollPane(mainPanel);
+        resultsDialog.add(scrollPane, BorderLayout.CENTER);
+
+        // Format and append the results to the main panel
+        for (Map<String, Object> row : results) {
+            JPanel rowPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            rowPanel.setBorder(BorderFactory.createEtchedBorder());
+
+            for (Map.Entry<String, Object> entry : row.entrySet()) {
+                JTextArea textArea = new JTextArea(entry.getKey() + ": " + entry.getValue());
+                textArea.setEditable(false);
+                rowPanel.add(textArea);
+            }
+            mainPanel.add(rowPanel);
+        }
+
+
+        // Finalize and display the results dialog
+        resultsDialog.pack();
+        resultsDialog.setLocationRelativeTo(null); // Center the results dialog
+        resultsDialog.setVisible(true);
+    }
+
+    private void toggleFullScreen(JDialog dialog) {
+        GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        if (dialog.isUndecorated()) {
+            dialog.dispose();
+            dialog.setUndecorated(false);
+            dialog.pack();
+            dialog.setLocationRelativeTo(null);
+            dialog.setVisible(true);
+        } else {
+            dialog.dispose();
+            dialog.setUndecorated(true);
+            device.setFullScreenWindow(dialog);
+            dialog.setVisible(true);
+        }
+    }
+
 
     protected void createAddScooterDialog() {
         JDialog addVehicleDialog = new JDialog(this, "Add Scooter", true);
