@@ -151,7 +151,7 @@ public class EditOrderTable {
         String sql = "SELECT Booking.* FROM Booking " +
                 "INNER JOIN `Order` ON Booking.orderID = `Order`.orderID " +
                 "WHERE (`Order`.startYear > ? OR (`Order`.startYear = ? AND (`Order`.startMonth > ? OR (`Order`.startMonth = ? AND `Order`.startDay >= ?)))) " +
-                "AND (`Order`.endYear < ? OR (`Order`.endYear = ? AND (`Order`.endMonth < ? OR (`Order`.endMonth = ? AND `Order`.endDay <= ?))));";
+                "AND (`Order`.startYear < ? OR (`Order`.startYear = ? AND (`Order`.startMonth < ? OR (`Order`.startMonth = ? AND `Order`.startDay <= ?))));";
 
         try (Connection conn = DB_Connection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {

@@ -6,7 +6,6 @@ import model.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Array;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Month;
@@ -76,6 +75,7 @@ public class AdminPage extends JFrame {
         
         JPanel lowerRightPanel = new JPanel();
         lowerRightPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        buildLowerRightPanel(lowerRightPanel);
         
         
         lowerRow.add(lowerLeftPanel);
@@ -153,9 +153,270 @@ public class AdminPage extends JFrame {
         setLocationRelativeTo(null); // Center the frame
     }
 
+    JPanel LowerRightContentPanel; // Keep a reference to the panel
+
+    private void buildLowerRightPanel(JPanel lowerRightPanel) {
+        lowerRightPanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        // Title Panel with label
+        JPanel titlePanel = new JPanel(new GridBagLayout()); // Center title in its panel
+        JLabel titleLabel = new JLabel("View Most Popular Vehicle");
+        titleLabel.setFont(new Font("Helvetica", Font.BOLD, 18));
+        GridBagConstraints titleGbc = new GridBagConstraints();
+        titleGbc.gridwidth = GridBagConstraints.REMAINDER;
+        titleGbc.anchor = GridBagConstraints.CENTER;
+        titlePanel.add(titleLabel, titleGbc); // Add the titleLabel to the titlePanel with constraints
+
+        // Options Panel with date
+        JPanel optionsPanel = new JPanel(new GridBagLayout());
+        String[] options = {"Select Vehicle", "Car", "MotorBike", "Bicycle", "Scooter"};
+        JComboBox<String> comboBox = new JComboBox<>(options);
+        comboBox.setSelectedIndex(0);
+        GridBagConstraints optionsGbc = new GridBagConstraints();
+        optionsGbc.gridwidth = GridBagConstraints.REMAINDER;
+        optionsGbc.anchor = GridBagConstraints.CENTER;
+        optionsPanel.add(comboBox, optionsGbc);
+
+        // content
+        LowerRightContentPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints contentGbc = new GridBagConstraints();
+        contentGbc.gridwidth = GridBagConstraints.REMAINDER;
+        contentGbc.anchor = GridBagConstraints.CENTER;
+
+        // set common properties for gbc
+        gbc.gridx = 0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+
+        // Title Panel Constraints
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        gbc.weighty = 0.1; // Allocate 10% of the space to the title panel
+        lowerRightPanel.add(titlePanel, gbc);
+
+        // Options Panel Constraints
+        gbc.gridy = 1;
+        gbc.weighty = 0.1; // Allocate 10% of the space to the options panel
+        lowerRightPanel.add(optionsPanel, gbc);
+
+        // UpperLeftContentPanel Constraints
+        gbc.gridy = 2;
+        gbc.weighty = 0.8; // Allocate 80% of the space to the content panel
+        lowerRightPanel.add(LowerRightContentPanel, gbc);
+
+
+        // Apply background colors
+        titlePanel.setBackground(titleBackgroundColor);
+        optionsPanel.setBackground(optionsBackgroundColor);
+        LowerRightContentPanel.setBackground(contentBackgroundColor);
+
+        // action listener
+        comboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                JComboBox<String> cb = (JComboBox<String>) event.getSource();
+                String selectedOption = (String) cb.getSelectedItem();
+                if(!selectedOption.equals("Select Vehicle")) {
+                    buildLowerRightContentPanel(selectedOption);
+                }
+            }
+        });
+
+    }
+
+    private void buildLowerRightContentPanel(String selectedOption) {
+
+        LowerRightContentPanel.removeAll();
+        LowerRightContentPanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        // set common properties for gbc
+        gbc.gridx = 0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+
+
+        String result = null;
+        try {
+            if(selectedOption.equals("Car")) {
+                EditCarTable ect = new EditCarTable();
+                Car car = ect.getMostPopularCar();
+                result = "Car:" + car.getVehicleId() + ", " + car.getModel() + " " + car.getBrand() + " " + car.getColor();
+            } else if(selectedOption.equals("MotorBike")) {
+                EditMotorBikeTable emt = new EditMotorBikeTable();
+                MotorBike motorBike = emt.getMostPopularMotorBike();
+                result = "Motorbike:" + motorBike.getVehicleId() + ", " + motorBike.getModel() + " " + motorBike.getBrand() + " " + motorBike.getColor();
+            } else if(selectedOption.equals("Bicycle")) {
+                EditBicycleTable ebt = new EditBicycleTable();
+                Bicycle bicycle = ebt.getMostPopularBicycle();
+                result = "Bicycle:" + bicycle.getVehicleId() + ", " + bicycle.getModel() + " " + bicycle.getBrand() + " " + bicycle.getColor();
+            } else if(selectedOption.equals("Scooter")) {
+                EditScooterTable est = new EditScooterTable();
+                Scooter scooter = est.getMostPopularScooter();
+                result = "Scooter:" + scooter.getVehicleId() + ", " + scooter.getModel() + " " + scooter.getBrand() + " " + scooter.getColor();
+            }
+
+            JLabel resultLabel = new JLabel(result);
+            resultLabel.setFont(new Font("Helvetica", Font.PLAIN, 16));
+            LowerRightContentPanel.add(resultLabel, gbc);
+
+            LowerRightContentPanel.revalidate();
+            LowerRightContentPanel.repaint();
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     JPanel CenterRightContentPanel; // Keep a reference to the content panel
 
     private void buildCenterRightPanel(JPanel lowerCenterRightPanel) {
+        lowerCenterRightPanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        // Title Panel with label
+        JPanel titlePanel = new JPanel(new GridBagLayout()); // Center title in its panel
+        JLabel titleLabel = new JLabel("View Repairs Cost");
+        titleLabel.setFont(new Font("Helvetica", Font.BOLD, 18));
+        GridBagConstraints titleGbc = new GridBagConstraints();
+        titleGbc.gridwidth = GridBagConstraints.REMAINDER;
+        titleGbc.anchor = GridBagConstraints.CENTER;
+        titlePanel.add(titleLabel, titleGbc); // Add the titleLabel to the titlePanel with constraints
+
+        // Options Panel with date
+        JPanel optionsPanel = new JPanel(new GridBagLayout()); // Use FlowLayout for side-by-side components
+
+        // Date
+        JButton dateButton = new JButton("Date");
+
+        // Add the components to the optionsPanel
+        optionsPanel.add(dateButton);
+
+        // Content Panel
+        CenterRightContentPanel = new JPanel(new GridBagLayout());
+        CenterLeftContentPanel.setLayout(new BoxLayout(CenterLeftContentPanel, BoxLayout.Y_AXIS));
+
+        // Set common properties for gbc
+        // Set common properties for gbc
+        gbc.gridx = 0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+
+        // Title Panel Constraints
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        gbc.weighty = 0.1; // Allocate 10% of the space to the title panel
+        lowerCenterRightPanel.add(titlePanel, gbc);
+
+        // Options Panel Constraints
+        gbc.gridy = 1;
+        gbc.weighty = 0.1; // Allocate 5% of the space to the options panel
+        lowerCenterRightPanel.add(optionsPanel, gbc);
+
+        // UpperLeftContentPanel Constraints
+        gbc.gridy = 2;
+        gbc.weighty = 0.8; // Allocate 80% of the space to the content panel
+        lowerCenterRightPanel.add(CenterRightContentPanel, gbc);
+
+        // Apply background colors
+        titlePanel.setBackground(titleBackgroundColor);
+        optionsPanel.setBackground(optionsBackgroundColor);
+        CenterRightContentPanel.setBackground(contentBackgroundColor);
+
+        // Add action listener
+        dateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                createViewRepairsCostDialog();
+            }
+        });
+    }
+
+    private void createViewRepairsCostDialog() {
+        JDialog dialog = new JDialog();
+        dialog.setTitle("View Repairs Cost");
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dialog.setLayout(new FlowLayout());
+
+        // Create combo boxes for year and month selection
+        JComboBox<Integer> yearComboBox = new JComboBox<>(getYearOptions());
+        JComboBox<Month> monthComboBox = new JComboBox<>(Month.values());
+
+        // Submit button
+        JButton submitButton = new JButton("Submit");
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedYear = (int) yearComboBox.getSelectedItem();
+                Month selectedMonth = (Month) monthComboBox.getSelectedItem();
+                LocalDate startDate = LocalDate.of(selectedYear, selectedMonth, 1);
+
+                System.out.println("startDate: " + startDate);
+
+                // Clear the content panel
+                CenterRightContentPanel.removeAll();
+
+                // Call your database query function with the selected type and date
+                EditRepairTable ert = new EditRepairTable();
+                ArrayList<Map<String,Integer>> results = null;
+                try {
+                    results = ert.calculateMonthlyCostsByTypeFromStartDate(startDate);
+
+
+                    // get "Maintenance" and "Crash" costs
+                    int maintenanceCost = results.get(0).get("Maintenance");
+                    int crashCost = results.get(0).get("Crash");
+
+                    // Create a new panel for the results
+                    JPanel resultsPanel = new JPanel(new GridBagLayout());
+                    resultsPanel.setBackground(contentBackgroundColor);
+
+                    // Create a label for the maintenance cost
+                    JLabel maintenanceLabel = new JLabel("Maintenance Cost: " + maintenanceCost);
+                    maintenanceLabel.setFont(new Font("Helvetica", Font.PLAIN, 16));
+                    GridBagConstraints maintenanceLabelGbc = new GridBagConstraints();
+                    maintenanceLabelGbc.gridwidth = GridBagConstraints.REMAINDER;
+                    maintenanceLabelGbc.anchor = GridBagConstraints.CENTER;
+                    resultsPanel.add(maintenanceLabel, maintenanceLabelGbc);
+
+                    // Create a label for the crash cost
+                    JLabel crashLabel = new JLabel("Crash Cost: " + crashCost);
+                    crashLabel.setFont(new Font("Helvetica", Font.PLAIN, 16));
+                    GridBagConstraints crashLabelGbc = new GridBagConstraints();
+                    crashLabelGbc.gridwidth = GridBagConstraints.REMAINDER;
+                    crashLabelGbc.anchor = GridBagConstraints.CENTER;
+                    resultsPanel.add(crashLabel, crashLabelGbc);
+
+                    // Add the results panel to the content panel
+                    CenterRightContentPanel.add(resultsPanel);
+
+                    // Refresh the content panel
+                    CenterRightContentPanel.revalidate();
+                    CenterRightContentPanel.repaint();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                } catch (ClassNotFoundException ex) {
+                    ex.printStackTrace();
+                }
+
+                dialog.dispose();
+            }
+        });
+
+        // Add components to the dialog
+        dialog.add(new JLabel("Year:"));
+        dialog.add(yearComboBox);
+        dialog.add(new JLabel("Month:"));
+        dialog.add(monthComboBox);
+        dialog.add(submitButton);
+
+        // Set dialog size and make it visible
+        dialog.pack();
+        dialog.setLocationRelativeTo(null);
+        dialog.setVisible(true);
 
     }
 
@@ -177,10 +438,13 @@ public class AdminPage extends JFrame {
         titlePanel.add(titleLabel, titleGbc); // Add the titleLabel to the titlePanel with constraints
 
         // Options Panel with dropdown AND date
-        JPanel optionsPanel = new JPanel(new FlowLayout()); // Use FlowLayout for side-by-side components
-
+        JPanel optionsPanel = new JPanel(new GridBagLayout()); // Use FlowLayout for side-by-side components
         String[] bookingOptions = {"Select Booking", "Car", "Motorbike", "Bicycle", "Scooter"};
+        GridBagConstraints optionsGbc = new GridBagConstraints();
+        optionsGbc.gridwidth = GridBagConstraints.REMAINDER;
+        optionsGbc.anchor = GridBagConstraints.CENTER;
         JComboBox<String> bookingComboBox = new JComboBox<>(bookingOptions);
+
         bookingComboBox.setSelectedIndex(0);
 
         // Date picker
@@ -207,7 +471,7 @@ public class AdminPage extends JFrame {
 
         // Options Panel Constraints
         gbc.gridy = 1;
-        gbc.weighty = 0.05; // Allocate 5% of the space to the options panel
+        gbc.weighty = 0.1; // Allocate 10% of the space to the options panel
         lowerCenterLeftPanel.add(optionsPanel, gbc);
 
         // UpperLeftContentPanel Constraints
@@ -274,12 +538,17 @@ public class AdminPage extends JFrame {
 
                 // Add the results to the content panel
                 for (Map<String,String> result : results) {
-                    JPanel resultPanel = new JPanel(new FlowLayout());
+                    JPanel resultPanel = new JPanel(new GridBagLayout());
                     resultPanel.setBackground(contentBackgroundColor);
+                    resultPanel.setFont(new Font("Helvetica", Font.PLAIN, 16));
+                    GridBagConstraints resultGbc = new GridBagConstraints();
+                    resultGbc.gridwidth = GridBagConstraints.REMAINDER;
+                    resultGbc.anchor = GridBagConstraints.CENTER;
                     // Create the string to be displayed
                     String resultString = "Total Revenue for " + CenterLeftType + "s: " + result.get("totalIncome");
                     System.out.println(resultString);
-                    resultPanel.add(new JLabel(resultString));
+                    resultPanel.add(new JLabel(resultString), resultGbc);
+
                     CenterLeftContentPanel.add(resultPanel);
                 }
 
@@ -316,7 +585,7 @@ public class AdminPage extends JFrame {
 
         // Title Panel with label
         JPanel titlePanel = new JPanel(new GridBagLayout()); // Center title in its panel
-        JLabel titleLabel = new JLabel("View Vehicles");
+        JLabel titleLabel = new JLabel("View Booking Duration");
         titleLabel.setFont(new Font("Helvetica", Font.BOLD, 18));
         GridBagConstraints titleGbc = new GridBagConstraints();
         titleGbc.gridwidth = GridBagConstraints.REMAINDER;
@@ -335,6 +604,9 @@ public class AdminPage extends JFrame {
         // UpperLeftContentPanel for content
         LowerLeftContentPanel = new JPanel();
         LowerLeftContentPanel.setLayout(new BoxLayout(LowerLeftContentPanel, BoxLayout.Y_AXIS));
+
+
+
 
         // Set common properties for gbc
         gbc.gridx = 0;
@@ -400,17 +672,26 @@ public class AdminPage extends JFrame {
 
         // Clear the existing content panel
         LowerLeftContentPanel.removeAll();
-        LowerLeftContentPanel.setLayout(new BoxLayout(LowerLeftContentPanel, BoxLayout.Y_AXIS));
+        LowerLeftContentPanel.setLayout(new GridBagLayout());
+        // Set common properties for gbc
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
 
         // Create panels for each statistic and add them to the content panel
         for (Map.Entry<String, String> entry : vehicleStats.entrySet()) {
-            JPanel statisticPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            JPanel statisticPanel = new JPanel(new GridBagLayout());
             statisticPanel.setBackground(contentBackgroundColor);
+            statisticPanel.setFont(new Font("Helvetica", Font.PLAIN, 16));
+            GridBagConstraints statisticGbc = new GridBagConstraints();
+            statisticGbc.gridwidth = GridBagConstraints.REMAINDER;
+            statisticGbc.anchor = GridBagConstraints.CENTER;
             JLabel keyLabel = new JLabel(entry.getKey() + ":");
             JLabel valueLabel = new JLabel(entry.getValue());
             statisticPanel.add(keyLabel);
             statisticPanel.add(valueLabel);
-            LowerLeftContentPanel.add(statisticPanel);
+            LowerLeftContentPanel.add(statisticPanel, gbc);
         }
 
         // Repaint the content panel to reflect changes
