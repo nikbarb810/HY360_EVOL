@@ -185,6 +185,7 @@ public class EditCustomerTable {
                 String licenceId = rs.getString("licenseID");
 
                 customer = new Customer(email, username, password, firstName, lastName, dob, numberCC, cvvCC, monthCC, yearCC, licenceId);
+
                 customer.setCustomerId(customerId);
             }
         } catch (SQLException | ClassNotFoundException e) {

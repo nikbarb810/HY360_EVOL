@@ -22,7 +22,7 @@ public class EditCarTable {
                 + "    mileage INT NOT NULL,\n"
                 + "    type VARCHAR(255) NOT NULL,\n"
                 + "    numPassengers INT NOT NULL,\n"
-                + "    regNumber VARCHAR(255) NOT NULL,\n"
+                + "    regNumber INT NOT NULL,\n"
                 + "    rentalPrice INT NOT NULL,\n"
                 + "    insurPrice INT NOT NULL,\n"
                 + "    status ENUM('Available', 'Rented', 'Maintenance', 'Crashed') NOT NULL\n"
@@ -31,6 +31,7 @@ public class EditCarTable {
         stmt.close();
         conn.close();
     }
+
     public void insertCarTable(Car toBeAdded) throws SQLException, ClassNotFoundException {
         Connection conn = DB_Connection.getConnection();
         Statement stmt = conn.createStatement();
@@ -50,6 +51,7 @@ public class EditCarTable {
         stmt.close();
         conn.close();
     }
+
     public ArrayList<Car> getAllCars() throws SQLException, ClassNotFoundException {
         Connection conn = DB_Connection.getConnection();
         Statement stmt = conn.createStatement();
@@ -76,32 +78,6 @@ public class EditCarTable {
         conn.close();
         return cars;
     }
-//    //get all available for renting cars
-//    public ArrayList<Car> getAllAvailableCars() throws SQLException, ClassNotFoundException {
-//        Connection conn = DB_Connection.getConnection();
-//        Statement stmt = conn.createStatement();
-//        String sql = "SELECT * FROM Car WHERE status = 'Available'";
-//        ResultSet rs = stmt.executeQuery(sql);
-//        ArrayList<Car> cars = new ArrayList<>();
-//        while (rs.next()) {
-//            // Create a Car object using the constructor with the correct order of parameters
-//            Car car = new Car(rs.getInt("vehicleID"),
-//                    rs.getString("brand"),
-//                    rs.getString("model"),
-//                    rs.getString("color"),
-//                    rs.getInt("rentalPrice"),
-//                    rs.getString("status"),
-//                    rs.getInt("insurPrice"),
-//                    rs.getInt("regNumber"),
-//                    rs.getString("type"),
-//                    rs.getInt("numPassengers"),
-//                    rs.getInt("mileage"));
-//            cars.add(car);
-//        }
-//        stmt.close();
-//        conn.close();
-//        return cars;
-//    }
 
     // Get all cars that are available or will be available by the booking date
     public ArrayList<Car> getAllAvailableCars(LocalDate bookingDate) throws SQLException, ClassNotFoundException {
@@ -234,5 +210,39 @@ public class EditCarTable {
         return car; // Return the car (null if no available cars)
     }
 
+
+    public Car getMostPopularCar() throws SQLException, ClassNotFoundException {
+        Car mostPopularCar = null;
+        String sql = "SELECT Car.*, COUNT(Booking.vehicleID) as bookingCount " +
+                "FROM Car " +
+                "JOIN Booking ON Car.vehicleID = Booking.vehicleID " +
+                "GROUP BY Car.vehicleID " +
+                "ORDER BY bookingCount DESC " +
+                "LIMIT 1;";
+
+        try (Connection conn = DB_Connection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            if (rs.next()) {
+                mostPopularCar = new Car(
+                        rs.getInt("vehicleID"),
+                        rs.getString("model"),
+                        rs.getString("brand"),
+                        rs.getString("color"),
+                        rs.getInt("regNumber"),
+                        rs.getString("status"),
+                        rs.getInt("rentalPrice"),
+                        rs.getInt("insurPrice"),
+                        rs.getString("type"),
+                        rs.getInt("numPassengers"),
+                        rs.getInt("mileage")
+                        // Include other Car attributes if necessary
+                );
+            }
+        }
+
+        return mostPopularCar;
+    }
 
 }

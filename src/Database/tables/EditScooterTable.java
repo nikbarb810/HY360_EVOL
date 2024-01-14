@@ -112,26 +112,6 @@ public class EditScooterTable {
         return scs;
     }
 
-    public ArrayList<Scooter> getAllAvailableScooters() throws SQLException, ClassNotFoundException {
-        Connection conn = DB_Connection.getConnection();
-        Statement stmt = conn.createStatement();
-        String sql = "SELECT * FROM Scooter WHERE status = 'Available'";
-        ArrayList<Scooter> scooters = new ArrayList<>();
-        ResultSet rs = stmt.executeQuery(sql);
-        while (rs.next()) {
-            int vehicleID = rs.getInt("vehicleID");
-            String model = rs.getString("model");
-            String brand = rs.getString("brand");
-            String color = rs.getString("color");
-            int mileage = rs.getInt("mileage");
-            int rentalPrice = rs.getInt("rentalPrice");
-            int insurPrice = rs.getInt("insurPrice");
-            String status = rs.getString("status");
-            Scooter sc = new Scooter(vehicleID, brand, model, color, rentalPrice, status, insurPrice, mileage);
-            scooters.add(sc);
-        }
-        return scooters;
-    }
 
     public void updateScooterStatus(int vehicleId, String status) throws SQLException, ClassNotFoundException {
         Connection conn = DB_Connection.getConnection();
@@ -162,7 +142,8 @@ public class EditScooterTable {
         conn.close();
         return sc;
     }
-    
+
+   
     public Scooter rentFirstAvailableScooter() throws SQLException, ClassNotFoundException {
         Scooter scooter = null;
 
@@ -214,4 +195,37 @@ public class EditScooterTable {
         return scooter; // Return the scooter (null if no available scooters)
     }
 
+
+    public Scooter getMostPopularScooter() throws SQLException, ClassNotFoundException {
+        Scooter mostPopularScooter = null;
+        String sql = "SELECT Scooter.*, COUNT(Booking.vehicleID) as bookingCount " +
+                "FROM Scooter " +
+                "JOIN Booking ON Scooter.vehicleID = Booking.vehicleID " +
+                "GROUP BY Scooter.vehicleID " +
+                "ORDER BY bookingCount DESC " +
+                "LIMIT 1;";
+
+        try (Connection conn = DB_Connection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            if (rs.next()) {
+                mostPopularScooter = new Scooter(
+                        rs.getInt("vehicleID"),
+                        rs.getString("model"),
+                        rs.getString("brand"),
+                        rs.getString("color"),
+                        rs.getInt("rentalPrice"),
+                        rs.getString("status"),
+                        rs.getInt("mileage"),
+                        rs.getInt("insurPrice")
+                        // Include other Scooter attributes if necessary
+                );
+            }
+        }
+
+        return mostPopularScooter;
+    }
+
 }
+

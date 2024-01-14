@@ -22,4 +22,9 @@ public class Bicycle extends Vehicle{
         conn.close();
     }
 
+	@Override
+	public String toString() {
+		return super.toString();
+	}
+
 }

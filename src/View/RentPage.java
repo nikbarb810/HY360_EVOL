@@ -549,6 +549,7 @@ public  class RentPage extends JFrame {
         // Add spacing between rows
         vehiclesPanel.add(Box.createRigidArea(new Dimension(0, 10)));
     }
+
     private ArrayList<Driver> getDriversList() {	
     	ArrayList<Driver> mama  = new ArrayList();
     	EditDriverTable edt = new EditDriverTable();

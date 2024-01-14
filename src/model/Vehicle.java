@@ -90,4 +90,9 @@ public class Vehicle {
 	public void setMileage(int mileage) {
 		this.mileage = mileage;
 	}
+
+	@Override
+	public String toString() {
+		return "ID: " + vehicleId + " | " + Brand + " " + Model + " , " + Color + " | Rental Price:" + RentalPrice + " | Status: " + Status + " | Insur Price: " + InsurPrice + " | Mileage: " + mileage;
+	}
 }

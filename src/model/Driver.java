@@ -7,6 +7,20 @@ public class Driver {
 	public String LastName;
 	public String LicenseId;
 
+    public Driver(int driverId, int customerId, String firstName, String lastName, String licenseId) {
+        DriverId = driverId;
+        CustomerId = customerId;
+        FirstName = firstName;
+        LastName = lastName;
+        LicenseId = licenseId;
+    }
+
+
+    public Driver() {
+        // TODO Auto-generated constructor stub
+    }
+
+
     public int getDriverId() {
         return DriverId;
     }
@@ -47,20 +61,9 @@ public class Driver {
         LicenseId = licenseId;
     }
 
-    public Driver(int driverId, int customerId, String firstName, String lastName, String licenseId) {
-        DriverId = driverId;
-        CustomerId = customerId;
-        FirstName = firstName;
-        LastName = lastName;
-        LicenseId = licenseId;
+
+    public String getSurname() {
+      // TODO Auto-generated method stub
+      return this.LastName;
     }
-
-	public Driver() {
-		// TODO Auto-generated constructor stub
-	}
-
-	public String getSurname() {
-		// TODO Auto-generated method stub
-		return this.LastName;
-	}
 }

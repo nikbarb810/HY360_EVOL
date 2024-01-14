@@ -37,4 +37,10 @@ public class Car extends Vehicle{
 	public void setNumPassengers(int numPassengers) {
 		NumPassengers = numPassengers;
 	}
+
+	@Override
+	public String toString() {
+		return "ID:" + vehicleId + " | " + Brand + " " + Model + " , " + Color +  " | RegNum: " + getRegNum() + " | " +
+				" Status: " + Status + " | Rental Price: " + RentalPrice + " | Mileage: " + mileage ;
+	}
 }

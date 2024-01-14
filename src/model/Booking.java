@@ -78,7 +78,14 @@ public class Booking {
         this.Status = status;
     }
 
-	public Booking() {
+
+	  public Booking() {
 		// TODO Auto-generated constructor stub
-	}
+	  }
+
+    @Override
+    public String toString() {
+        return "ID: " + BookingId + " | Order ID: " + OrderId + " | Vehicle ID: " + VehicleId + " | Driver ID: " + DriverId + " | Booking Cost: " + BookingCost + " | Covered Insurance: " + CoveredInsur + " | Status: " + Status;
+    }
+
 }

@@ -7,6 +7,8 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EditBookingTable {
 
@@ -31,27 +33,6 @@ public class EditBookingTable {
         conn.close();
     }
 
-//    public void insertBooking(Booking b) {
-//
-//        try {
-//            Connection conn = DB_Connection.getConnection();
-//            Statement stmt = conn.createStatement();
-//
-//            String sql = "INSERT INTO Booking (orderID, vehicleID, driverID, bookingCost, coveredInsur, status) VALUES (" + b.getOrderId() + ", " + b.getVehicleId() + ", " + b.getDriverId() + ", " + b.getBookingCost() + ", " + b.isCoveredInsur() + ", '" + b.getStatus() + "');";
-//
-//            stmt.executeUpdate(sql);
-//
-//            // update the order cost by the booking cost
-//            sql = "UPDATE `Order` SET cost = cost + " + b.getBookingCost() + " WHERE orderID = " + b.getOrderId() + ";";
-//            stmt.executeUpdate(sql);
-//
-//            stmt.close();
-//            conn.close();
-//
-//        } catch (SQLException | ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     public void insertBooking(Booking b) {
 
@@ -323,6 +304,75 @@ public class EditBookingTable {
 
         return updateSuccessful; // Return true if update was successful, false otherwise
     }
+
+
+    /**
+     * Calculates the total rental income for a specified vehicle type and time period.
+     * This method returns a list of maps, with each map representing a record of income data.
+     *
+     * @param vehicleType The type of vehicle for which income data is calculated (e.g., "Car", "Motorbike", "Scooter").
+     * @param startDate   The start date from which to calculate income. Only the year and month of this date are used.
+     * @return An {@code ArrayList<Map<String, String>>} where each {@code Map} contains the following key-value pairs:
+     *         <ul>
+     *             <li>"VehicleType": The type of the vehicle as specified in the {@code vehicleType} parameter.</li>
+     *             <li>"Year": The year for which the income data is calculated.</li>
+     *             <li>"Month": The month for which the income data is calculated.</li>
+     *             <li>"TotalIncome": The total income for the given vehicle type, month, and year. This income
+     *                 is the sum of the booking cost and, if applicable, the insurance price.</li>
+     *         </ul>
+     *         Each {@code Map} in the list represents income data for a distinct month and year.
+     * @throws SQLException             If a database access error occurs or the method is called on a closed connection.
+     * @throws ClassNotFoundException   If the JDBC driver class is not found.
+     */
+    public ArrayList<Map<String, String>> calculateRentalIncomeByCategoryAndTimePeriod(String vehicleType, LocalDate startDate) {
+        int startYear = startDate.getYear();
+        int startMonth = startDate.getMonthValue();
+
+//        String sql = "SELECT CONCAT(`Order`.startYear, '-', LPAD(`Order`.startMonth, 2, '0')) AS TimePeriod, " +
+//                "SUM(Booking.bookingCost + CASE WHEN Booking.coveredInsur THEN Vehicle.insurPrice ELSE 0 END) AS TotalIncome " +
+//                "FROM Booking " +
+//                "JOIN `Order` ON Booking.orderID = `Order`.orderID " +
+//                "JOIN " + vehicleType + " Vehicle ON Booking.vehicleID = Vehicle.vehicleID " +
+//                "WHERE `Order`.startYear = ? AND `Order`.startMonth = ? " +
+//                "GROUP BY TimePeriod";
+        String sql = "SELECT CONCAT(`Order`.startYear, '-', LPAD(`Order`.startMonth, 2, '0')) AS TimePeriod, " +
+                "SUM(Booking.bookingCost) AS TotalIncome " +
+                "FROM Booking " +
+                "JOIN `Order` ON Booking.orderID = `Order`.orderID " +
+                "JOIN " + vehicleType + " ON Booking.vehicleID = " + vehicleType + ".vehicleID " +
+                "WHERE `Order`.start" +
+                "Year = ? AND Order.startMonth = ? " +
+                "GROUP BY TimePeriod";
+        ArrayList<Map<String,String>> results = new ArrayList<>();
+
+        try (Connection conn = DB_Connection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, startYear);
+            pstmt.setInt(2, startMonth);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                String timePeriod = rs.getString("TimePeriod");
+                int totalIncome = rs.getInt("TotalIncome");
+                int year = startDate.getYear();
+                int month = startDate.getMonthValue();
+
+                Map<String,String> record = new HashMap<>();
+                record.put("vehicleType", vehicleType);
+                record.put("year", String.valueOf(year));
+                record.put("month", String.valueOf(month));
+                record.put("totalIncome", String.valueOf(totalIncome));
+                results.add(record);
+                System.out.println("Vehicle Type: " + vehicleType + ", Time Period: " + timePeriod + ", Total Income: " + totalIncome);
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return results;
+    }
+
 
 
 //    //function that updates the status of a booking and the vehicles availability

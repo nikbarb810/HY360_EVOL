@@ -111,28 +111,7 @@ public class EditBicycleTable {
     }
 
 
-    public ArrayList<Bicycle> getAllAvailableBicycles() throws SQLException, ClassNotFoundException {
-        Connection conn = DB_Connection.getConnection();
-        Statement stmt = conn.createStatement();
-        String sql = "SELECT * FROM Bicycle WHERE status = 'Available'";
-        ArrayList<Bicycle> bicycles = new ArrayList<>();
-        ResultSet rs = stmt.executeQuery(sql);
-        while (rs.next()) {
-            int vehicleID = rs.getInt("vehicleID");
-            String model = rs.getString("model");
-            String brand = rs.getString("brand");
-            String color = rs.getString("color");
-            int mileage = rs.getInt("mileage");
-            int rentalPrice = rs.getInt("rentalPrice");
-            int insurPrice = rs.getInt("insurPrice");
-            String status = rs.getString("status");
-            Bicycle bc = new Bicycle(vehicleID, brand, model, color, rentalPrice, status, insurPrice, mileage);
-            bicycles.add(bc);
-        }
-        stmt.close();
-        conn.close();
-        return bicycles;
-    }
+
 
     public void updateBicycleStatus(int vehicleId, String status) throws SQLException, ClassNotFoundException {
         Connection conn = DB_Connection.getConnection();
@@ -213,6 +192,38 @@ public class EditBicycleTable {
         }
 
         return bicycle; // Return the bicycle (null if no available bicycles)
+    }
+
+
+    public Bicycle getMostPopularBicycle() throws SQLException, ClassNotFoundException {
+        Bicycle mostPopularBicycle = null;
+        String sql = "SELECT Bicycle.*, COUNT(Booking.vehicleID) as bookingCount " +
+                "FROM Bicycle " +
+                "JOIN Booking ON Bicycle.vehicleID = Booking.vehicleID " +
+                "GROUP BY Bicycle.vehicleID " +
+                "ORDER BY bookingCount DESC " +
+                "LIMIT 1;";
+
+        try (Connection conn = DB_Connection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            if (rs.next()) {
+                mostPopularBicycle = new Bicycle(
+                        rs.getInt("vehicleID"),
+                        rs.getString("model"),
+                        rs.getString("brand"),
+                        rs.getString("color"),
+                        rs.getInt("rentalPrice"),
+                        rs.getString("status"),
+                        rs.getInt("insurPrice"),
+                        rs.getInt("mileage")
+                        // Include other Bicycle attributes if necessary
+                );
+            }
+        }
+
+        return mostPopularBicycle;
     }
 
 

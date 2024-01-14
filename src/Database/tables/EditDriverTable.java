@@ -46,6 +46,7 @@ public class EditDriverTable {
             e.printStackTrace();
         }
     }
+
     
     public ArrayList<Driver> getAllDrivers() throws SQLException, ClassNotFoundException {
         Connection conn = DB_Connection.getConnection();
@@ -63,6 +64,7 @@ public class EditDriverTable {
         conn.close();
         return drivers;
     }
+
     public ArrayList<Driver> getAvailableDrivers() throws SQLException, ClassNotFoundException {
         ArrayList<Driver> availableDrivers = new ArrayList<>();
         Connection conn = null;
@@ -101,4 +103,5 @@ public class EditDriverTable {
 
         return availableDrivers;
     }
+
 }
