@@ -97,14 +97,14 @@ public class EditBookingTable {
                 pstmtBooking.executeUpdate();
             }
 
-            if ("Finished".equals(status) || "Crashed".equals(status)) {
+            if ("Finished".equals(status) || "Crashed".equals(status) || "Maintenance".equals(status)) {
                 // Get the vehicleID from Booking
                 int vehicleId = getVehicleIdFromBooking(conn, bookingId);
 
                 // Determine the correct vehicle table and update the status
                 String vehicleTable = findVehicleTable(conn, vehicleId);
                 if (vehicleTable != null) {
-                    updateVehicleStatus(conn, vehicleTable, vehicleId, "Finished".equals(status) ? "Available" : "Crashed");
+                    updateVehicleStatus(conn, vehicleTable, vehicleId, status);
                 }
             }
 

@@ -237,13 +237,13 @@ public class Inventory extends JFrame{
 	            	EditBookingTable ebt = new EditBookingTable();
 	            	LocalDate ok = LocalDate.now();
 	            	Booking vast = ebt.getCustomerBookingWithVehicleID(Controller.customer.getCustomerId(), vid);
-	            	ebt.updateBookingStatus(vast.getBookingId(), "maintance");
-	            	ert.insertRepair(vast.getBookingId(),vast.getBookingCost(),"maintenance",ok.getDayOfMonth(),ok.getMonthValue(),ok.getYear(),skase);
+	            	ebt.updateBookingStatus(vast.getBookingId(), "Maintenance");
+	            	ert.insertRepair(vast.getBookingId(),vast.getBookingCost(),"Maintenance",ok.getDayOfMonth(),ok.getMonthValue(),ok.getYear(),skase);
 	            	if(type.equals("car")) {
 	            		EditCarTable ect = new  EditCarTable();
 	            		try {
 							Car lala = ect.rentFirstAvailableCar();
-							Booking bs = new Booking(0,vast.getOrderId(),lala.getVehicleId(),vast.getDriverId(),vast.getBookingCost(),vast.getCoveredInsur(),"Active");
+							Booking bs = new Booking(0,vast.getOrderId(),lala.getVehicleId(),vast.getDriverId(),0,vast.getCoveredInsur(),"Active");
 							ebt.insertBooking(bs);
 	            		} catch (ClassNotFoundException e1) {
 							// TODO Auto-generated catch block
@@ -256,7 +256,7 @@ public class Inventory extends JFrame{
 	            		EditMotorBikeTable ect = new  EditMotorBikeTable();
 	            		try {
 							MotorBike lala = ect.rentFirstAvailableMotorbike();
-							Booking bs = new Booking(0,vast.getOrderId(),lala.getVehicleId(),vast.getDriverId(),vast.getBookingCost(),vast.getCoveredInsur(),"Active");
+							Booking bs = new Booking(0,vast.getOrderId(),lala.getVehicleId(),vast.getDriverId(),0,vast.getCoveredInsur(),"Active");
 							ebt.insertBooking(bs);
 						} catch (ClassNotFoundException e1) {
 							// TODO Auto-generated catch block
@@ -269,7 +269,7 @@ public class Inventory extends JFrame{
 	            		EditBicycleTable ect = new  EditBicycleTable();
 	            		try {
 							Bicycle lala = ect.rentFirstAvailableBicycle();
-							Booking bs = new Booking(0,vast.getOrderId(),lala.getVehicleId(),vast.getDriverId(),vast.getBookingCost(),vast.getCoveredInsur(),"Active");
+							Booking bs = new Booking(0,vast.getOrderId(),lala.getVehicleId(),vast.getDriverId(),0,vast.getCoveredInsur(),"Active");
 							ebt.insertBooking(bs);						} catch (ClassNotFoundException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -281,7 +281,7 @@ public class Inventory extends JFrame{
 	            		EditScooterTable ect = new  EditScooterTable();
 	            		try {
 							Scooter lala = ect.rentFirstAvailableScooter();
-							Booking bs = new Booking(0,vast.getOrderId(),lala.getVehicleId(),vast.getDriverId(),vast.getBookingCost(),vast.getCoveredInsur(),"Active");
+							Booking bs = new Booking(0,vast.getOrderId(),lala.getVehicleId(),vast.getDriverId(),0,vast.getCoveredInsur(),"Active");
 							ebt.insertBooking(bs);	            		} catch (ClassNotFoundException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -298,12 +298,12 @@ public class Inventory extends JFrame{
 	            	Booking vast = ebt.getCustomerBookingWithVehicleID(Controller.customer.getCustomerId(), vid);
 	            	ebt.updateBookingStatus(vast.getBookingId(), "Crashed");
 	            	boolean checkInsur = vast.isCoveredInsur();
-	            	ert.insertRepair(vast.getBookingId(),vast.getBookingCost(),"Crashed",ok.getDayOfMonth(),ok.getMonthValue(),ok.getYear(),skase);
+	            	ert.insertRepair(vast.getBookingId(),vast.getBookingCost(),"Crash",ok.getDayOfMonth(),ok.getMonthValue(),ok.getYear(),skase);
 	            	if(type.equals("car")) {
 	            		EditCarTable ect = new  EditCarTable();
 	            		try {
 							Car lala = ect.rentFirstAvailableCar();
-							Booking bs = new Booking(0,vast.getOrderId(),lala.getVehicleId(),vast.getDriverId(),vast.getBookingCost(),vast.getCoveredInsur(),"Active");
+							Booking bs = new Booking(0,vast.getOrderId(),lala.getVehicleId(),vast.getDriverId(),0,vast.getCoveredInsur(),"Active");
 							ebt.insertBooking(bs);
 	            		} catch (ClassNotFoundException e1) {
 							// TODO Auto-generated catch block
@@ -316,7 +316,7 @@ public class Inventory extends JFrame{
 	            		EditMotorBikeTable ect = new  EditMotorBikeTable();
 	            		try {
 							MotorBike lala = ect.rentFirstAvailableMotorbike();
-							Booking bs = new Booking(0,vast.getOrderId(),lala.getVehicleId(),vast.getDriverId(),vast.getBookingCost(),vast.getCoveredInsur(),"Active");
+							Booking bs = new Booking(0,vast.getOrderId(),lala.getVehicleId(),vast.getDriverId(),0,vast.getCoveredInsur(),"Active");
 							ebt.insertBooking(bs);
 	            		} catch (ClassNotFoundException e1) {
 							// TODO Auto-generated catch block
@@ -329,7 +329,7 @@ public class Inventory extends JFrame{
 	            		EditBicycleTable ect = new  EditBicycleTable();
 	            		try {
 							Bicycle lala = ect.rentFirstAvailableBicycle();
-							Booking bs = new Booking(0,vast.getOrderId(),lala.getVehicleId(),vast.getDriverId(),vast.getBookingCost(),vast.getCoveredInsur(),"Active");
+							Booking bs = new Booking(0,vast.getOrderId(),lala.getVehicleId(),vast.getDriverId(),0,vast.getCoveredInsur(),"Active");
 							ebt.insertBooking(bs);
 	            		} catch (ClassNotFoundException e1) {
 							// TODO Auto-generated catch block
@@ -342,7 +342,7 @@ public class Inventory extends JFrame{
 	            		EditScooterTable ect = new  EditScooterTable();
 	            		try {
 							Scooter lala = ect.rentFirstAvailableScooter();
-							Booking bs = new Booking(0,vast.getOrderId(),lala.getVehicleId(),vast.getDriverId(),vast.getBookingCost(),vast.getCoveredInsur(),"Active");
+							Booking bs = new Booking(0,vast.getOrderId(),lala.getVehicleId(),vast.getDriverId(),0,vast.getCoveredInsur(),"Active");
 							ebt.insertBooking(bs);	            		} catch (ClassNotFoundException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -357,13 +357,13 @@ public class Inventory extends JFrame{
 	            		createExpenseDialog(extracost, vast.getOrderId(),"normal");
 	            	}
 	            }
-	            vehiclesPanel.removeAll();
-				 PrintCars();
-			     PrintMbikes();
-			     PrintBikes();
-			     PrintScooters();
-			     vehiclesPanel.revalidate();
-			     vehiclesPanel.repaint();
+				vehiclesPanel.removeAll();
+				PrintCars();
+				PrintMbikes();
+				PrintBikes();
+				PrintScooters();
+				vehiclesPanel.revalidate();
+				vehiclesPanel.repaint();
 	        }
 	    });
 	    contentPane.add(submitButton);

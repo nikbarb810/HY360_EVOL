@@ -137,7 +137,7 @@ public  class RentPage extends JFrame {
                         LocalDate today = LocalDate.now();
 
                      // Check if "from" date is before or equal to today
-                     if (from.isBefore(today) || from.isEqual(today)) {
+                     if (!from.isBefore(today) || from.isEqual(today)) {
                          // Set the "from" date
                          Controller.cart.setStartDate(from);
 
