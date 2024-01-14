@@ -17,7 +17,11 @@ public class Payment {
         this.Date = date;
     }
 
-    public int getPaymentId() {
+    public Payment() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public int getPaymentId() {
         return PaymentId;
     }
 

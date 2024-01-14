@@ -7,6 +7,7 @@ import model.Order;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -145,6 +146,50 @@ public class EditOrderTable {
 
         return bookings;
     }
+    
+    public Order getOrderById(int orderId) throws SQLException, ClassNotFoundException {
+        Order order = null;
+
+        String sql = "SELECT * FROM `Order` WHERE orderID = ?;";
+
+        try (Connection conn = DB_Connection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setInt(1, orderId);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                int customerID = rs.getInt("customerID");
+                int cost = rs.getInt("cost");
+                int startHour = rs.getInt("startHour");
+                int startDay = rs.getInt("startDay");
+                int startMonth = rs.getInt("startMonth");
+                int startYear = rs.getInt("startYear");
+                int endHour = rs.getInt("endHour");
+                int endDay = rs.getInt("endDay");
+                int endMonth = rs.getInt("endMonth");
+                int endYear = rs.getInt("endYear");
+
+                // Assuming the Order class has a constructor that matches these fields
+                order = new Order(
+                	    orderId, 
+                	    customerID, 
+                	    cost, 
+                	    LocalTime.of(startHour, 0),                 // Converts int hour to LocalTime (with 0 minutes)
+                	    LocalDate.of(startYear, startMonth, startDay), // Converts int year, month, day to LocalDate
+                	    LocalTime.of(endHour, 0),                    // Converts int hour to LocalTime (with 0 minutes)
+                	    LocalDate.of(endYear, endMonth, endDay)      // Converts int year, month, day to LocalDate
+                	);
+            }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return order;
+    }
+
 
     public ArrayList<Booking> getBookingsByDate(LocalDate startDate, LocalDate endDate) {
         ArrayList<Booking> bookings = new ArrayList<>();

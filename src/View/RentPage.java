@@ -4,13 +4,20 @@ import javax.swing.*;
 
 import Controller.Controller;
 import Database.tables.EditBicycleTable;
+import Database.tables.EditBookingTable;
 import Database.tables.EditCarTable;
+import Database.tables.EditDriverTable;
 import Database.tables.EditMotorBikeTable;
+import Database.tables.EditOrderTable;
+import Database.tables.EditPaymentTable;
 import Database.tables.EditScooterTable;
 import model.Bicycle;
+import model.Booking;
 import model.Car;
 import model.Driver;
 import model.MotorBike;
+import model.Order;
+import model.Payment;
 import model.Scooter;
 import model.Vehicle;
 
@@ -19,6 +26,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
 public  class RentPage extends JFrame {
@@ -31,13 +40,36 @@ public  class RentPage extends JFrame {
     boolean scooter = false;
     RentPage myself = this;
     boolean pickdate = false;
-    ArrayList<Vehicle>rentlist = new ArrayList();
+    boolean isAdult;
+    boolean CanRent;
+    int daysDifference;
+    int totalcost =0;
+    ArrayList<Integer>idlist = new ArrayList();
+    ArrayList<Integer>driverlist = new ArrayList();
     ArrayList<Car>carlist = new ArrayList();
     ArrayList<MotorBike>mbikelist = new ArrayList();
     ArrayList<Bicycle>bikelist = new ArrayList();
     ArrayList<Scooter>scooterlist = new ArrayList();
     public RentPage() {
+    	if(!Controller.Bookings.isEmpty()) {
+    		Controller.Bookings.clear();
+    		Controller.cart = new Order();    
+    		Controller.cart.setCustomerId(Controller.customer.getCustomerId());
+    		totalcost =0;
+    	}
         setTitle("Rent Page");
+        LocalDate birth = Controller.customer.getDob();
+        if(birth.getYear()>2004) {
+        	isAdult = false;
+        	if(birth.getYear()<2006) {
+        		CanRent = false;
+        	}else {
+        		CanRent = true;
+        	}
+        }else {
+        	isAdult = true;
+        	CanRent = true;
+        }
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(600, 600));
@@ -45,8 +77,8 @@ public  class RentPage extends JFrame {
         JPanel topPanel = new JPanel();
         carsCheckbox = new JCheckBox("Cars");
         scootersCheckbox = new JCheckBox("Scooter");
-        motorbikeCheckbox = new JCheckBox("Bicycle");
-        motorcycleCheckbox = new JCheckBox("Scooter");
+        motorbikeCheckbox = new JCheckBox("Motorbike");
+        motorcycleCheckbox = new JCheckBox("Bicycle");
         JButton date = new JButton("Dates");
         date.addActionListener(new ActionListener() {
             @Override
@@ -89,7 +121,6 @@ public  class RentPage extends JFrame {
                     public void actionPerformed(ActionEvent e) {
                         // Process payment information here
                         // Close the dialog
-                        dialog.dispose();
                         if(pickdate ==true) {
                         	try {
 								updateText(selectedTextArea);
@@ -103,9 +134,32 @@ public  class RentPage extends JFrame {
                         }
                         LocalDate from =  LocalDate.of((Integer)fromYear.getSelectedItem(),(Integer)fromMonth.getSelectedItem(),(Integer)fromDay.getSelectedItem());
                         LocalDate to =  LocalDate.of((Integer)toYear.getSelectedItem(),(Integer)toMonth.getSelectedItem(),(Integer)toDay.getSelectedItem());
-                        Controller.cart.setStartDate(from);
-                        Controller.cart.setEndDate(to);
-                        pickdate = true;
+                        LocalDate today = LocalDate.now();
+
+                     // Check if "from" date is before or equal to today
+                     if (from.isBefore(today) || from.isEqual(today)) {
+                         // Set the "from" date
+                         Controller.cart.setStartDate(from);
+
+                         // Check if "to" date is after "from" date
+                         if (to.isAfter(from)) {
+                             // Set the "to" date
+                        	 Controller.cart.setStartDate(from);
+                             Controller.cart.setEndDate(to);
+                             Controller.cart.setStartTime(LocalTime.of((Integer)fromHour.getSelectedItem(), 0));
+                             Controller.cart.setEndTime(LocalTime.of((Integer)toHour.getSelectedItem(), 0));
+                             pickdate = true;
+                             daysDifference = (int) ChronoUnit.DAYS.between(from, to);
+                             dialog.dispose();
+                         } else {
+                             // Handle the case where "to" date is before or equal to "from" date
+                             // You can display an error message or take appropriate action here
+                         }
+                     } else {
+                         // Handle the case where "from" date is after today
+                         // You can display an error message or take appropriate action here
+                     }
+                       
                     }
 					
                 });
@@ -169,6 +223,25 @@ public  class RentPage extends JFrame {
                         // Close the dialog
                         dialog.dispose();
                         myself.dispose();
+                        EditOrderTable eot = new EditOrderTable();
+                        EditBookingTable aids = new EditBookingTable();
+                        Controller.cart.setCost(0);
+                        int a = eot.insertOrder(Controller.cart);
+                        for(Booking bookings : Controller.Bookings) {
+                        	bookings.setOrderId(a);
+                        	bookings.setStatus("Active");
+                        	aids.insertBooking(bookings);
+                        	
+                        }
+                        Payment realting = new Payment();
+                        realting.setAmount(totalcost);
+                    	realting.setDate(Controller.cart.getStartDate());
+                    	realting.setOrderId(a);
+                    	realting.setType("Covered booking cost");
+                    	realting.setTime(Controller.cart.getStartTime());
+                    	EditPaymentTable ept = new EditPaymentTable();
+                    	ept.insertPayment(realting);
+                        Controller.LoadCustomerPage();
                     }
 					
                 });
@@ -189,7 +262,7 @@ public  class RentPage extends JFrame {
             @Override
             public void actionPerformed(ActionEvent event) {
                 JCheckBox cb = (JCheckBox) event.getSource();
-                if(pickdate ==true) {
+                if(pickdate ==true && isAdult ) {
                 if (cb.isSelected()) {
                 	cars = true;
                 	try {
@@ -227,7 +300,7 @@ public  class RentPage extends JFrame {
             public void actionPerformed(ActionEvent event) {
                 JCheckBox cb = (JCheckBox) event.getSource();
                 if(pickdate == true) {
-                if (cb.isSelected()) {
+                if (cb.isSelected() && isAdult) {
                 	mbikes = true;
                 	try {
 						updateText(selectedTextArea);
@@ -262,7 +335,7 @@ public  class RentPage extends JFrame {
             @Override
             public void actionPerformed(ActionEvent event) {
                 JCheckBox cb = (JCheckBox) event.getSource();
-                if(pickdate == true) {
+                if(pickdate == true && CanRent) {
                 if (cb.isSelected()) {
                 	bikes = true;
                 	try {
@@ -295,7 +368,7 @@ public  class RentPage extends JFrame {
             @Override
             public void actionPerformed(ActionEvent event) {
                 JCheckBox cb = (JCheckBox) event.getSource();
-                if(pickdate == true) {
+                if(pickdate == true && CanRent) {
                 if (cb.isSelected()) {
                 	scooter = true;
                 	try {
@@ -372,7 +445,7 @@ public  class RentPage extends JFrame {
         selectedLabel.setText(ok);
     }
 
-    private void addVehicleRow(String vehicleInfo) {
+    private void addVehicleRow(String vehicleInfo , int vehicleid, int cost,String type,int insur) {
     	JPanel row = new JPanel();
         row.setLayout(new BoxLayout(row, BoxLayout.X_AXIS));
         row.setBackground(Color.BLACK);
@@ -405,6 +478,7 @@ public  class RentPage extends JFrame {
                 ArrayList<Driver> drivers = getDriversList(); // You need to implement getDriversList
 
                 for (Driver driver : drivers) {
+                	if(!driverlist.contains(driver.getDriverId()) && ((type =="Car" || type == "MBike") && driver.getLicenseId() != null)) {
                     JPanel driverRow = new JPanel();
                     driverRow.setLayout(new FlowLayout());
 
@@ -417,6 +491,31 @@ public  class RentPage extends JFrame {
                         @Override
                         public void actionPerformed(ActionEvent e) {
                             dialog.dispose(); // Close the dialog when a checkbox is selected
+                            idlist.add(vehicleid);
+                            Booking book = new Booking();
+                            book.setCoveredInsur(InsurBox.isSelected());
+                            book.setDriverId(driver.getDriverId());
+                            book.setVehicleId(vehicleid);
+                            book.setBookingCost(daysDifference *cost);
+                            totalcost = totalcost + daysDifference *cost;
+			    if(InsurBox.isSelected()) {
+				    totalcost = totalcost + insur;
+				    book.setBookingCost(daysDifference *cost  + insur);
+			    }else 
+				    book.setBookingCost(daysDifference *cost);
+				  }
+                            Controller.Bookings.add(book);
+                            driverlist.add(driver.getDriverId());
+                            try {
+								updateText(selectedTextArea);
+							} catch (ClassNotFoundException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							} catch (SQLException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+                            
                         }
                     });
 
@@ -426,6 +525,7 @@ public  class RentPage extends JFrame {
                     driverRow.add(selectCheckbox);
 
                     dialogContentPane.add(driverRow);
+                }
                 }
 
                 // Set the dialog location relative to the parent window
@@ -449,13 +549,19 @@ public  class RentPage extends JFrame {
         // Add spacing between rows
         vehiclesPanel.add(Box.createRigidArea(new Dimension(0, 10)));
     }
-    private ArrayList<Driver> getDriversList() {
-    	Driver me = new Driver();
-    	me.FirstName = "Ilias";
-    	me.LastName = "Kapsis";
-    	me.LicenseId = "1833";
+
+    private ArrayList<Driver> getDriversList() {	
     	ArrayList<Driver> mama  = new ArrayList();
-    	mama.add(me);
+    	EditDriverTable edt = new EditDriverTable();
+    	try {
+			mama = edt.getAvailableDrivers();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generatfor(Driver )ed catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return mama;
     	
     }
@@ -487,37 +593,45 @@ public  class RentPage extends JFrame {
         	months[i-1] =  i;
         }
         return months;
-    }
+   }
     private void PrintCars() {
     	for (Car haha : carlist) {
+    		if(!idlist.contains(haha.getVehicleId())) {
         	String mama = haha.getBrand() +", " +haha.getModel() +", " +haha.getColor() +", Mileage: " +
         			haha.getMileage() +",RegNum : " +haha.getRegNum() +",Total Passengers" +haha.getNumPassengers() 
         			+",Insurance Cost: " +haha.getInsurPrice() +",Type : " +haha.getType();
-        	addVehicleRow(mama);
+        	addVehicleRow(mama, haha.getVehicleId(),haha.getRentalPrice(),"Car",haha.getInsurPrice());
+    		}
         }
     }
     private void PrintMbikes() {
     	for (MotorBike haha : mbikelist) {
+    		if(!idlist.contains(haha.getVehicleId())) {
         	String mama = haha.getBrand() +", " +haha.getModel() +", " +haha.getColor() +", Mileage: " +
         			haha.getMileage() +",RegNum : " +haha.getRegNum() + 
         			",Insurance Cost: " +haha.getInsurPrice() ;
-        	addVehicleRow(mama);
+        	addVehicleRow(mama, haha.getVehicleId(),haha.getRentalPrice(),"MBike",haha.getInsurPrice());
+    		}
         }
     }
     private void  PrintBikes() {
     	for (Bicycle haha : bikelist) {
+    		if(!idlist.contains(haha.getVehicleId())) {
         	String mama = haha.getBrand() +", " +haha.getModel() +", " +haha.getColor() +", Mileage: " +
         			haha.getMileage() + 
         			",Insurance Cost: " +haha.getInsurPrice() ;
-        	addVehicleRow(mama);
+        	addVehicleRow(mama, haha.getVehicleId(),haha.getRentalPrice(),"Bike",haha.getInsurPrice());
+    		}
         }
     }
     private void  PrintScooters() {
     	for (Scooter haha : scooterlist) {
+    		if(!idlist.contains(haha.getVehicleId())) {
         	String mama = haha.getBrand() +", " +haha.getModel() +", " +haha.getColor() +", Mileage: " +
         			haha.getMileage() + 
         			",Insurance Cost: " +haha.getInsurPrice() ;
-        	addVehicleRow(mama);
+        	addVehicleRow(mama, haha.getVehicleId(),haha.getRentalPrice(),"Scooter",haha.getInsurPrice());
+    		}
         }
     }
 }

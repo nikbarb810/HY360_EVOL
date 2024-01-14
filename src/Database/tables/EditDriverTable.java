@@ -1,6 +1,7 @@
 package Database.tables;
 
 import Database.DB_Connection;
+import model.Car;
 import model.Driver;
 
 import java.sql.Connection;
@@ -44,6 +45,24 @@ public class EditDriverTable {
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    
+    public ArrayList<Driver> getAllDrivers() throws SQLException, ClassNotFoundException {
+        Connection conn = DB_Connection.getConnection();
+        Statement stmt = conn.createStatement();
+        String sql = "SELECT * FROM Driver";
+        ResultSet rs = stmt.executeQuery(sql);
+        ArrayList<Driver> drivers = new ArrayList<>();
+        while (rs.next()) {
+            // Create a Car object using the constructor with the correct order of parameters
+            Driver driver = new Driver(rs.getInt("driverID"),rs.getInt("CustomerID"),rs.getString("firstName"),rs.getString("lastName"),rs.getString("licenseID"));
+            drivers.add(driver);
+        }
+        rs.close();
+        stmt.close();
+        conn.close();
+        return drivers;
     }
 
     public ArrayList<Driver> getAvailableDrivers() throws SQLException, ClassNotFoundException {

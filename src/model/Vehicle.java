@@ -22,6 +22,11 @@ public class Vehicle {
 	    this.mileage = mileage;
 	}
 
+	public Vehicle() {
+		// TODO Auto-generated constructor stub
+	}
+
+
 	public int getVehicleId() {
 		return vehicleId;
 	}

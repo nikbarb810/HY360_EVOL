@@ -156,6 +156,60 @@ public class EditCarTable {
         conn.close();
         return car;
     }
+    public Car rentFirstAvailableCar() throws SQLException, ClassNotFoundException {
+        Car car = null;
+
+        // SQL query to select the first available car
+        String selectSql = "SELECT * FROM Car WHERE status = 'Available' LIMIT 1;";
+
+        // SQL query to update the status of the car
+        String updateSql = "UPDATE Car SET status = 'Rented' WHERE vehicleID = ?;";
+
+        try (Connection conn = DB_Connection.getConnection()) {
+            // Start transaction
+            conn.setAutoCommit(false);
+
+            try (PreparedStatement selectStmt = conn.prepareStatement(selectSql);
+                 PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
+
+                // Select the first available car
+                ResultSet rs = selectStmt.executeQuery();
+                if (rs.next()) {
+                    int vehicleID = rs.getInt("vehicleID");
+
+                    car = new Car(
+                        vehicleID,
+                        rs.getString("brand"),
+                        rs.getString("model"),
+                        rs.getString("color"),
+                        rs.getInt("rentalPrice"),
+                        "Rented", // Setting the status as 'Rented' directly here
+                        rs.getInt("insurPrice"),
+                        rs.getInt("regNumber"),
+                        rs.getString("type"),
+                        rs.getInt("numPassengers"),
+                        rs.getInt("mileage")
+                    );
+
+                    // Update the status of the car to 'Rented'
+                    updateStmt.setInt(1, vehicleID);
+                    updateStmt.executeUpdate();
+                }
+
+                // Commit transaction
+                conn.commit();
+            } catch (SQLException e) {
+                // Rollback transaction in case of error
+                conn.rollback();
+                throw e;
+            } finally {
+                conn.setAutoCommit(true);
+            }
+        }
+
+        return car; // Return the car (null if no available cars)
+    }
+
 
     public Car getMostPopularCar() throws SQLException, ClassNotFoundException {
         Car mostPopularCar = null;

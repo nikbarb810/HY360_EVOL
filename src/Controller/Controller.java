@@ -20,7 +20,7 @@ public class Controller {
 
 	public Controller() {
 		this.cart =  new Order();
-		Bookings = null;
+		this.Bookings = new ArrayList();
 	}
 
 	public void signup(String Username, String password) {

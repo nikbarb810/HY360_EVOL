@@ -146,6 +146,67 @@ public class EditMotorBikeTable {
         conn.close();
         return mb;
     }
+    
+    public MotorBike rentFirstAvailableMotorbike() throws SQLException, ClassNotFoundException {
+        MotorBike motorbike = null;
+
+        // SQL query to select the first available motorbike
+        String selectSql = "SELECT * FROM Motorbike WHERE status = 'Available' LIMIT 1;";
+
+        // SQL query to update the status of the motorbike
+        String updateSql = "UPDATE Motorbike SET status = 'Rented' WHERE vehicleID = ?;";
+
+        try (Connection conn = DB_Connection.getConnection()) {
+            // Start transaction
+            conn.setAutoCommit(false);
+
+            try (PreparedStatement selectStmt = conn.prepareStatement(selectSql);
+                 PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
+
+                // Select the first available motorbike
+                ResultSet rs = selectStmt.executeQuery();
+                if (rs.next()) {
+                    int vehicleID = rs.getInt("vehicleID");
+
+                    motorbike =new MotorBike(
+                            rs.getInt("vehicleID"),
+                            rs.getString("brand"),
+                            rs.getString("model"),
+                            rs.getString("color"),
+                            rs.getInt("rentalPrice"),
+                            "Rented",
+                            rs.getInt("insurPrice"),
+                            rs.getInt("regNumber"),
+                            rs.getInt("mileage")
+                    );
+
+                    // Update the status of the motorbike to 'Rented'
+                    updateStmt.setInt(1, vehicleID);
+                    updateStmt.executeUpdate();
+                }
+
+                // Commit transaction
+                conn.commit();
+            } catch (SQLException e) {
+                // Rollback transaction in case of error
+                conn.rollback();
+                throw e;
+            } finally {
+                conn.setAutoCommit(true);
+            }
+        }
+
+        return motorbike; // Return the motorbike (null if no available motorbikes)
+    }
+    public void updateMotorbikeStatus(int vehicleID, String status) throws SQLException, ClassNotFoundException {
+        Connection conn = DB_Connection.getConnection();
+        Statement stmt = conn.createStatement();
+        String updateQuery = "UPDATE Motorbike SET status='"+status+"' WHERE vehicleID= '"+vehicleID+"'";
+        stmt.executeUpdate(updateQuery);
+        stmt.close();
+        conn.close();
+    }
+
 
     public MotorBike getMostPopularMotorBike() throws SQLException, ClassNotFoundException {
         MotorBike mostPopularMotorBike = null;

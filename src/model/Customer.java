@@ -128,4 +128,10 @@ public class Customer {
     public void setLicenceId(String licenceId) {
         LicenceId = licenceId;
     }
+
+	public void setCustomerId(int customerId2) {
+		// TODO Auto-generated method stub
+		this.CustomerId = customerId2;
+		
+	}
 }

@@ -129,6 +129,7 @@ public class LogInPage extends JFrame{
                      }else{
                     	 dispose();
                     	 Controller.SetCustomer(papa); 	
+                    	 Controller.cart.setCustomerId(papa.getCustomerId());
                      	 Controller.LoadCustomerPage();	 
                      }
                 }

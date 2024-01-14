@@ -5,6 +5,7 @@ import model.Booking;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -173,6 +174,70 @@ public class EditBookingTable {
         return bookings;
 
     }
+    
+    public Booking getCustomerBookingWithVehicleID(int customerId, int vehicleId) {
+        Booking booking = null; // Initialize booking to null
+
+        try {
+            Connection conn = DB_Connection.getConnection();
+            Statement stmt = conn.createStatement();
+
+            // Update SQL query to join Booking and Order tables and filter by customerID and vehicleID
+            String sql = "SELECT Booking.* FROM Booking " +
+                         "INNER JOIN `Order` ON Booking.orderID = `Order`.orderID " +
+                         "WHERE `Order`.customerID = " + customerId + " AND Booking.vehicleID = " + vehicleId + ";";
+
+            ResultSet rs = stmt.executeQuery(sql);
+
+            // Assuming that there's only one booking per customer and vehicle
+            if (rs.next()) {
+                int bookingId = rs.getInt("bookingID");
+                int orderId = rs.getInt("orderID");
+                int vehicleID = rs.getInt("vehicleID");
+                int driverId = rs.getInt("driverID");
+                int bookingCost = rs.getInt("bookingCost");
+                boolean coveredInsur = rs.getBoolean("coveredInsur");
+                String status = rs.getString("status");
+
+                booking = new Booking(bookingId, orderId, vehicleID, driverId, bookingCost, coveredInsur, status);
+            }
+
+            stmt.close();
+            conn.close();
+
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return booking; // Return the booking (null if not found)
+    }
+
+    public boolean finishBooking(int bookingId) {
+        boolean updateSuccessful = false;
+
+        // SQL statement to update only the status
+        String sql = "UPDATE Booking SET status = 'Finished' WHERE bookingID = ?;";
+
+        try (Connection conn = DB_Connection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            // Set the bookingID parameter
+            pstmt.setInt(1, bookingId);
+
+            // Execute the update
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected > 0) {
+                updateSuccessful = true;
+            }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return updateSuccessful; // Return true if update was successful, false otherwise
+    }
+
+
 
     //function that gets orderID from bookingID
     public int getOrderId(int bookingId) {
@@ -197,6 +262,49 @@ public class EditBookingTable {
 
         return orderId;
     }
+    
+    public boolean updateCustomerBookingWithNewVehicleID(int customerId, int oldVehicleId, int newVehicleId) {
+        boolean updateSuccessful = false;
+
+        String selectSql = "SELECT bookingID FROM Booking " +
+                           "INNER JOIN `Order` ON Booking.orderID = `Order`.orderID " +
+                           "WHERE `Order`.customerID = ? AND Booking.vehicleID = ? LIMIT 1;";
+
+        String updateSql = "UPDATE Booking SET vehicleID = ? WHERE bookingID = ?;";
+
+        try (Connection conn = DB_Connection.getConnection();
+             PreparedStatement selectStmt = conn.prepareStatement(selectSql);
+             PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
+            
+            // Set parameters for the select statement
+            selectStmt.setInt(1, customerId);
+            selectStmt.setInt(2, oldVehicleId);
+
+            // Execute the select query
+            ResultSet rs = selectStmt.executeQuery();
+
+            // Check if a booking is found
+            if (rs.next()) {
+                int bookingId = rs.getInt("bookingID");
+
+                // Set parameters for the update statement
+                updateStmt.setInt(1, newVehicleId);
+                updateStmt.setInt(2, bookingId);
+
+                // Execute the update query
+                int rowsAffected = updateStmt.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    updateSuccessful = true; // Update was successful
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return updateSuccessful; // Return true if update was successful, false otherwise
+    }
+
 
     /**
      * Calculates the total rental income for a specified vehicle type and time period.
