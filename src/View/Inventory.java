@@ -123,7 +123,7 @@ public class Inventory extends JFrame{
 					fin = isia.getOrderById(mine);
 					int diff = (int) calculateHoursSinceBooking(fin);
 					if(currentDateTime.toLocalDate().isAfter(fin.getEndDate()) ) {
-		        		createExpenseDialog(diff*10, fin.getOrderId());
+		        		createExpenseDialog(diff*10, fin.getOrderId(),"late");
 		        	}
 				} catch (ClassNotFoundException e1) {
 					// TODO Auto-generated catch block
@@ -354,7 +354,7 @@ public class Inventory extends JFrame{
 	        
 	            	if(!checkInsur) {
 	            		int  extracost = vast.getBookingCost()*3;
-	            		createExpenseDialog(extracost, vast.getOrderId());
+	            		createExpenseDialog(extracost, vast.getOrderId(),"normal");
 	            	}
 	            }
 	            vehiclesPanel.removeAll();
@@ -374,7 +374,7 @@ public class Inventory extends JFrame{
 	    // Make the dialog visible
 	    expenseDialog.setVisible(true);
 	}
-	private  void createExpenseDialog(int number, int vid ) {
+	private  void createExpenseDialog(int number, int vid, String string ) {
 		JDialog expenseDialog = new JDialog(this, "Add Expense");
 	    expenseDialog.setTitle("Add Expense");
 	    expenseDialog.setSize(400, 400);
@@ -396,10 +396,16 @@ public class Inventory extends JFrame{
             	expenseDialog.dispose();
             	Payment realting = new Payment();
                 realting.setAmount(number);
-            	realting.setDate(LocalDate.now());
+                if(string.equals("late")) {
+                	realting.setTime(currentDateTime.toLocalTime());
+                	realting.setDate(currentDateTime.toLocalDate());
+                	realting.setType("late return of vehicle");
+                }else {
+                	realting.setDate(LocalDate.now());
+                	realting.setTime(LocalTime.now());
+                	realting.setType("crashed the vehicle ");
+                }
             	realting.setOrderId(vid);
-            	realting.setType("");
-            	realting.setTime(LocalTime.now());
             	EditPaymentTable ept = new EditPaymentTable();
             	ept.insertPayment(realting);
             	
