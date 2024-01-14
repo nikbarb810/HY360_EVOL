@@ -129,9 +129,4 @@ public class Customer {
         LicenceId = licenceId;
     }
 
-	public void setCustomerId(int customerId2) {
-		// TODO Auto-generated method stub
-		this.CustomerId = customerId2;
-		
-	}
 }

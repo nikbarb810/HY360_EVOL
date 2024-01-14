@@ -501,7 +501,7 @@ public  class RentPage extends JFrame {
 			    if(InsurBox.isSelected()) {
 				    totalcost = totalcost + insur;
 				    book.setBookingCost(daysDifference *cost  + insur);
-			    }else 
+			    }else {
 				    book.setBookingCost(daysDifference *cost);
 				  }
                             Controller.Bookings.add(book);
