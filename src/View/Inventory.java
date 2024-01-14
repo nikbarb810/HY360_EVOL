@@ -52,7 +52,7 @@ import model.Order;
 public class Inventory extends JFrame{
 	private JPanel vehiclesPanel;
 	ArrayList<Vehicle> pap = new ArrayList();
-	
+	private LocalDateTime currentDateTime;
 	public Inventory() {
 		  setTitle("Inventory");
 	        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -113,6 +113,7 @@ public class Inventory extends JFrame{
 	        @Override
 	        public void actionPerformed(ActionEvent e) {
 	            //
+	        	DateReturn("Date of return");
 	        	EditBookingTable loser = new EditBookingTable();
 	        	Booking current = loser.getCustomerBookingWithVehicleID(Controller.customer.getCustomerId(), vid);
 	        	int mine = loser.getOrderId(current.getBookingId());
@@ -121,7 +122,7 @@ public class Inventory extends JFrame{
 				try {
 					fin = isia.getOrderById(mine);
 					int diff = (int) calculateHoursSinceBooking(fin);
-					if( diff> 0) {
+					if(currentDateTime.toLocalDate().isAfter(fin.getEndDate()) ) {
 		        		createExpenseDialog(diff*10, fin.getOrderId());
 		        	}
 				} catch (ClassNotFoundException e1) {
@@ -219,7 +220,7 @@ public class Inventory extends JFrame{
 	    contentPane.add(radioPanel);
 	    JPanel descriptionPanel = new JPanel();
 	    descriptionPanel.setLayout(new FlowLayout());
-	    descriptionPanel.add(new JLabel("Description:"));
+	    descriptionPanel.add(new JLabel("Description:"));	    
 	    JTextField descriptionField  = new JTextField(15);
 	    descriptionPanel.add(descriptionField);
 	    contentPane.add(descriptionPanel);
@@ -231,16 +232,19 @@ public class Inventory extends JFrame{
 	            // Close the dialog
 	            expenseDialog.dispose();
 	            if(maintenanceButton.isSelected()) {
+	            	String skase = descriptionField.getText();
 	            	EditRepairTable ert = new EditRepairTable();
 	            	EditBookingTable ebt = new EditBookingTable();
 	            	LocalDate ok = LocalDate.now();
 	            	Booking vast = ebt.getCustomerBookingWithVehicleID(Controller.customer.getCustomerId(), vid);
-	            	ert.insertRepair(vast.getBookingId(),vast.getBookingCost(),"maintenance",ok.getDayOfMonth(),ok.getMonthValue(),ok.getYear(),"maintenace");
+	            	ebt.updateBookingStatus(vast.getBookingId(), "maintance");
+	            	ert.insertRepair(vast.getBookingId(),vast.getBookingCost(),"maintenance",ok.getDayOfMonth(),ok.getMonthValue(),ok.getYear(),skase);
 	            	if(type.equals("car")) {
 	            		EditCarTable ect = new  EditCarTable();
 	            		try {
 							Car lala = ect.rentFirstAvailableCar();
-							ebt.updateCustomerBookingWithNewVehicleID(Controller.customer.getCustomerId(), vid, lala.getVehicleId());
+							Booking bs = new Booking(0,vast.getOrderId(),lala.getVehicleId(),vast.getDriverId(),vast.getBookingCost(),vast.getCoveredInsur(),"Active");
+							ebt.insertBooking(bs);
 	            		} catch (ClassNotFoundException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -252,7 +256,8 @@ public class Inventory extends JFrame{
 	            		EditMotorBikeTable ect = new  EditMotorBikeTable();
 	            		try {
 							MotorBike lala = ect.rentFirstAvailableMotorbike();
-							ebt.updateCustomerBookingWithNewVehicleID(Controller.customer.getCustomerId(), vid, lala.getVehicleId());
+							Booking bs = new Booking(0,vast.getOrderId(),lala.getVehicleId(),vast.getDriverId(),vast.getBookingCost(),vast.getCoveredInsur(),"Active");
+							ebt.insertBooking(bs);
 						} catch (ClassNotFoundException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -264,8 +269,8 @@ public class Inventory extends JFrame{
 	            		EditBicycleTable ect = new  EditBicycleTable();
 	            		try {
 							Bicycle lala = ect.rentFirstAvailableBicycle();
-							ebt.updateCustomerBookingWithNewVehicleID(Controller.customer.getCustomerId(), vid, lala.getVehicleId());
-						} catch (ClassNotFoundException e1) {
+							Booking bs = new Booking(0,vast.getOrderId(),lala.getVehicleId(),vast.getDriverId(),vast.getBookingCost(),vast.getCoveredInsur(),"Active");
+							ebt.insertBooking(bs);						} catch (ClassNotFoundException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						} catch (SQLException e1) {
@@ -276,8 +281,8 @@ public class Inventory extends JFrame{
 	            		EditScooterTable ect = new  EditScooterTable();
 	            		try {
 							Scooter lala = ect.rentFirstAvailableScooter();
-							ebt.updateCustomerBookingWithNewVehicleID(Controller.customer.getCustomerId(), vid, lala.getVehicleId());
-	            		} catch (ClassNotFoundException e1) {
+							Booking bs = new Booking(0,vast.getOrderId(),lala.getVehicleId(),vast.getDriverId(),vast.getBookingCost(),vast.getCoveredInsur(),"Active");
+							ebt.insertBooking(bs);	            		} catch (ClassNotFoundException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						} catch (SQLException e1) {
@@ -286,18 +291,20 @@ public class Inventory extends JFrame{
 						}
 	            	}
 	            }else if(crashButton.isSelected()){
+	            	String skase = descriptionField.getText();
 	            	EditRepairTable ert = new EditRepairTable();
 	            	EditBookingTable ebt = new EditBookingTable();
 	            	LocalDate ok = LocalDate.now();
 	            	Booking vast = ebt.getCustomerBookingWithVehicleID(Controller.customer.getCustomerId(), vid);
-	            	boolean checkInsur = vast.getCoveredInsur();
-	            	ert.insertRepair(vast.getBookingId(),vast.getBookingCost(),"crash",ok.getDayOfMonth(),ok.getMonthValue(),ok.getYear(),"crash");
+	            	ebt.updateBookingStatus(vast.getBookingId(), "Crashed");
+	            	boolean checkInsur = vast.isCoveredInsur();
+	            	ert.insertRepair(vast.getBookingId(),vast.getBookingCost(),"Crashed",ok.getDayOfMonth(),ok.getMonthValue(),ok.getYear(),skase);
 	            	if(type.equals("car")) {
 	            		EditCarTable ect = new  EditCarTable();
 	            		try {
 							Car lala = ect.rentFirstAvailableCar();
-							ebt.updateCustomerBookingWithNewVehicleID(Controller.customer.getCustomerId(), vid, lala.getVehicleId());
-
+							Booking bs = new Booking(0,vast.getOrderId(),lala.getVehicleId(),vast.getDriverId(),vast.getBookingCost(),vast.getCoveredInsur(),"Active");
+							ebt.insertBooking(bs);
 	            		} catch (ClassNotFoundException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -309,8 +316,8 @@ public class Inventory extends JFrame{
 	            		EditMotorBikeTable ect = new  EditMotorBikeTable();
 	            		try {
 							MotorBike lala = ect.rentFirstAvailableMotorbike();
-							ebt.updateCustomerBookingWithNewVehicleID(Controller.customer.getCustomerId(), vid, lala.getVehicleId());
-
+							Booking bs = new Booking(0,vast.getOrderId(),lala.getVehicleId(),vast.getDriverId(),vast.getBookingCost(),vast.getCoveredInsur(),"Active");
+							ebt.insertBooking(bs);
 	            		} catch (ClassNotFoundException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -322,8 +329,8 @@ public class Inventory extends JFrame{
 	            		EditBicycleTable ect = new  EditBicycleTable();
 	            		try {
 							Bicycle lala = ect.rentFirstAvailableBicycle();
-							ebt.updateCustomerBookingWithNewVehicleID(Controller.customer.getCustomerId(), vid, lala.getVehicleId());
-
+							Booking bs = new Booking(0,vast.getOrderId(),lala.getVehicleId(),vast.getDriverId(),vast.getBookingCost(),vast.getCoveredInsur(),"Active");
+							ebt.insertBooking(bs);
 	            		} catch (ClassNotFoundException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -335,8 +342,8 @@ public class Inventory extends JFrame{
 	            		EditScooterTable ect = new  EditScooterTable();
 	            		try {
 							Scooter lala = ect.rentFirstAvailableScooter();
-							ebt.updateCustomerBookingWithNewVehicleID(Controller.customer.getCustomerId(), vid, lala.getVehicleId());
-	            		} catch (ClassNotFoundException e1) {
+							Booking bs = new Booking(0,vast.getOrderId(),lala.getVehicleId(),vast.getDriverId(),vast.getBookingCost(),vast.getCoveredInsur(),"Active");
+							ebt.insertBooking(bs);	            		} catch (ClassNotFoundException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						} catch (SQLException e1) {
@@ -406,14 +413,7 @@ public class Inventory extends JFrame{
 	    
 	}
 	
-	private Integer [] getYearRange() {
-    	Integer[] years = new Integer[10];
-        int currentYear = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR);
-        for (int i = 0; i < years.length; i++) {
-            years[i] = currentYear + i;
-        }
-        return years;
-    }
+
 	private void PrintCars() {
 		ArrayList<Car>carlist = new ArrayList();
 		EditBookingTable ebt = new EditBookingTable();
@@ -529,20 +529,94 @@ public class Inventory extends JFrame{
     		}
     }
     public long calculateHoursSinceBooking(Order order) {
-    	
-        LocalDate startDate = order.getStartDate();
-        LocalTime startTime = order.getStartTime();
-        // Assuming the start date and time are properly set in the booking
-        LocalDateTime bookingDateTime = LocalDateTime.of(startDate, startTime);
+        LocalDate endDate = order.getEndDate();
+        LocalTime endTime = order.getEndTime();
 
-        // Current date and time
-        LocalDateTime currentDateTime = LocalDateTime.now();
+        // Combine endDate and endTime to get LocalDateTime
+        LocalDateTime bookingEndDateTime = LocalDateTime.of(endDate, endTime);
+
+        // Combine currentDate and currentTime to get LocalDateTime
 
         // Calculate duration
-        Duration duration = Duration.between(bookingDateTime, currentDateTime);
+        Duration duration = Duration.between(bookingEndDateTime, currentDateTime);
 
         // Return the duration in hours
         return duration.toHours();
+    }
+
+    public LocalDateTime DateReturn(String type) {
+    	 JDialog expenseDialog = new JDialog(this, "Add Date ", true);
+	    expenseDialog.setTitle("Add Date ");
+	    expenseDialog.setSize(400, 400);
+	    expenseDialog.setResizable(false);
+	    Container contentPane = expenseDialog.getContentPane();
+	    contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
+	    JPanel textPanel = new JPanel();
+	    JLabel text=new JLabel("Set date for "+type);
+	    textPanel.add(text);
+	    contentPane.add(textPanel);
+	    JPanel DatePanel = new JPanel();
+	    DatePanel.setLayout(new FlowLayout());
+	    JComboBox<Integer> Day = new JComboBox<>(getDays());
+        JComboBox<Integer> Month = new JComboBox<>(getMonths());
+        JComboBox<Integer> Year = new JComboBox<>(getYearRange());
+        JComboBox<Integer> hour = new JComboBox<>(getHours());
+        DatePanel.add(Day);
+        DatePanel.add(Month);
+        DatePanel.add(Year);
+        DatePanel.add(hour);
+	    contentPane.add(DatePanel);
+        // Submit button
+        JPanel submitButtonPanel = new JPanel();
+        JButton submitButton = new JButton("Confrirm Date");
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Process payment information here
+                // Close the dialog
+            	expenseDialog.dispose();
+               LocalDate selectedDate =  LocalDate.of((Integer)Year.getSelectedItem(),(Integer)Month.getSelectedItem(),(Integer)Day.getSelectedItem());
+               int mamacita  = (Integer) hour.getSelectedItem();
+               LocalTime pappi = LocalTime.of(mamacita, 0);
+               currentDateTime =LocalDateTime.of(selectedDate, pappi);
+            }
+			
+        });
+        submitButtonPanel.add(submitButton);
+        contentPane.add(submitButtonPanel);
+        contentPane.setVisible(true);
+        expenseDialog.setVisible(true);
+    	return currentDateTime;
+    }
+    
+    private Integer [] getYearRange() {
+    	Integer[] years = new Integer[10];
+        int currentYear = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR);
+        for (int i = 0; i < years.length; i++) {
+            years[i] = currentYear + i;
+        }
+        return years;
+    }
+    
+    private Integer [] getHours() {
+    	Integer[] days = new Integer[24];
+        for (int i = 0; i < days.length; i++) {
+            days[i] =  i+1;
+        }
+        return days;
+    }private Integer [] getDays() {
+    	Integer[] days = new Integer[30];
+        for (int i = 1; i < days.length; i++) {
+            days[i-1] =  i;
+        }
+        return days;
+    }
+    private Integer [] getMonths() {
+    	Integer[] months = new Integer[12];
+        for (int i = 1; i < months.length; i++) {
+        	months[i-1] =  i;
+        }
+        return months;
     }
 
 }
