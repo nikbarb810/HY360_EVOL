@@ -22,7 +22,7 @@ public class InitDatabase {
         init.initDatabase();
         init.initTables();
         init.addEntries();
-        performOtherActions(); // This is just for testing purposes
+//        performOtherActions(); // This is just for testing purposes
 //        init.dropDatabase();
 
     }
@@ -165,55 +165,55 @@ public class InitDatabase {
         editScooterTable.insertScooter(Resources.scooter4);
         editScooterTable.insertScooter(Resources.scooter5);
 
-        EditOrderTable editOrderTable = new EditOrderTable();
-        int order_id1 = editOrderTable.insertOrder(Resources.order2);
-        int order_id2 = editOrderTable.insertOrder(Resources.order3);
-        int order_id3 = editOrderTable.insertOrder(Resources.order4);
-
-        EditBookingTable editBookingTable = new EditBookingTable();
-        Booking booking1 = new Booking(0, order_id1, 1, 1, 150, true, "Active");
-        Booking booking2 = new Booking(0, order_id1, 14, 2, 200, false, "Active");
-        Booking booking3 = new Booking(0, order_id1, 8, 3, 250, true, "Active");
-
-        Booking booking4 = new Booking(0, order_id2, 2, 4, 150, true, "Active");
-        Booking booking5 = new Booking(0, order_id2, 15, 5, 200, false, "Active");
-        Booking booking6 = new Booking(0, order_id3, 9, 6, 250, true, "Active");
-
-        editBookingTable.insertBooking(booking1);
-        editBookingTable.insertBooking(booking2);
-        editBookingTable.insertBooking(booking3);
-        editBookingTable.insertBooking(booking4);
-        editBookingTable.insertBooking(booking5);
-        editBookingTable.insertBooking(booking6);
-
-
-        ArrayList<Booking> bookings = editBookingTable.getCustomerBookings(2);
-
-        EditRepairTable editRepairTable = new EditRepairTable();
-        editRepairTable.insertRepair(bookings.get(0).getBookingId(), 100, "Crash", 12, 9, 2024, "3 toympes ekane");
-
-        editRepairTable.insertRepair(bookings.get(1).getBookingId(), 200, "Maintenance", 14, 9, 2024, "mpouzi");
-
-        editOrderTable.calculateBicycleStatistics();
-        editOrderTable.calculateCarStatistics();
-        editOrderTable.calculateMotorBikeStatistics();
-        editOrderTable.calculateScooterStatistics();
-
-        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Car",LocalDate.of(2024, 9, 1));
-        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Car",LocalDate.of(2024, 3, 1));
-        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Car",LocalDate.of(2024, 5, 1));
-        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Motorbike",LocalDate.of(2024, 9, 1));
-        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Motorbike",LocalDate.of(2024, 3, 1));
-        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Motorbike",LocalDate.of(2024, 5, 1));
-        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Scooter",LocalDate.of(2024, 9, 1));
-        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Scooter",LocalDate.of(2024, 3, 1));
-        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Scooter",LocalDate.of(2024, 5, 1));
-        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Bicycle",LocalDate.of(2024, 9, 1));
-        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Bicycle",LocalDate.of(2024, 3, 1));
-        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Bicycle",LocalDate.of(2024, 5, 1));
-
-
-        editRepairTable. calculateMonthlyCostsByTypeFromStartDate(LocalDate.of(2024, 9, 1));
+//        EditOrderTable editOrderTable = new EditOrderTable();
+//        int order_id1 = editOrderTable.insertOrder(Resources.order2);
+//        int order_id2 = editOrderTable.insertOrder(Resources.order3);
+//        int order_id3 = editOrderTable.insertOrder(Resources.order4);
+//
+//        EditBookingTable editBookingTable = new EditBookingTable();
+//        Booking booking1 = new Booking(0, order_id1, 1, 1, 150, true, "Active");
+//        Booking booking2 = new Booking(0, order_id1, 14, 2, 200, false, "Active");
+//        Booking booking3 = new Booking(0, order_id1, 8, 3, 250, true, "Active");
+//
+//        Booking booking4 = new Booking(0, order_id2, 2, 4, 150, true, "Active");
+//        Booking booking5 = new Booking(0, order_id2, 15, 5, 200, false, "Active");
+//        Booking booking6 = new Booking(0, order_id3, 9, 6, 250, true, "Active");
+//
+//        editBookingTable.insertBooking(booking1);
+//        editBookingTable.insertBooking(booking2);
+//        editBookingTable.insertBooking(booking3);
+//        editBookingTable.insertBooking(booking4);
+//        editBookingTable.insertBooking(booking5);
+//        editBookingTable.insertBooking(booking6);
+//
+//
+//        ArrayList<Booking> bookings = editBookingTable.getCustomerBookings(2);
+//
+//        EditRepairTable editRepairTable = new EditRepairTable();
+//        editRepairTable.insertRepair(bookings.get(0).getBookingId(), 100, "Crash", 12, 9, 2024, "3 toympes ekane");
+//
+//        editRepairTable.insertRepair(bookings.get(1).getBookingId(), 200, "Maintenance", 14, 9, 2024, "mpouzi");
+//
+//        editOrderTable.calculateBicycleStatistics();
+//        editOrderTable.calculateCarStatistics();
+//        editOrderTable.calculateMotorBikeStatistics();
+//        editOrderTable.calculateScooterStatistics();
+//
+//        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Car",LocalDate.of(2024, 9, 1));
+//        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Car",LocalDate.of(2024, 3, 1));
+//        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Car",LocalDate.of(2024, 5, 1));
+//        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Motorbike",LocalDate.of(2024, 9, 1));
+//        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Motorbike",LocalDate.of(2024, 3, 1));
+//        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Motorbike",LocalDate.of(2024, 5, 1));
+//        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Scooter",LocalDate.of(2024, 9, 1));
+//        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Scooter",LocalDate.of(2024, 3, 1));
+//        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Scooter",LocalDate.of(2024, 5, 1));
+//        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Bicycle",LocalDate.of(2024, 9, 1));
+//        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Bicycle",LocalDate.of(2024, 3, 1));
+//        editBookingTable.calculateRentalIncomeByCategoryAndTimePeriod("Bicycle",LocalDate.of(2024, 5, 1));
+//
+//
+//        editRepairTable. calculateMonthlyCostsByTypeFromStartDate(LocalDate.of(2024, 9, 1));
     }
 
 }

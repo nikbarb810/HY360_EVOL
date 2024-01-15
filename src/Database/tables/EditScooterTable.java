@@ -74,7 +74,7 @@ public class EditScooterTable {
     public ArrayList<Scooter> getAllAvailableScooters(LocalDate bookingDate) throws SQLException, ClassNotFoundException {
         ArrayList<Scooter> scs = new ArrayList<>();
 
-        String sql = "SELECT Scooter.* FROM Scooter " +
+        String sql = "SELECT DISTINCT Scooter.* FROM Scooter " +
                 "LEFT JOIN Booking ON Scooter.vehicleID = Booking.vehicleID " +
                 "LEFT JOIN Repair ON Booking.bookingID = Repair.bookingID " +
                 "WHERE Scooter.status = 'Available' OR " +

@@ -72,7 +72,7 @@ public class EditBicycleTable {
     public ArrayList<Bicycle> getAllAvailableBicycles(LocalDate bookingDate) throws SQLException, ClassNotFoundException {
         ArrayList<Bicycle> bicycles = new ArrayList<>();
 
-        String sql = "SELECT Bicycle.* FROM Bicycle " +
+        String sql = "SELECT DISTINCT Bicycle.* FROM Bicycle " +
                 "LEFT JOIN Booking ON Bicycle.vehicleID = Booking.vehicleID " +
                 "LEFT JOIN Repair ON Booking.bookingID = Repair.bookingID " +
                 "WHERE Bicycle.status = 'Available' OR " +

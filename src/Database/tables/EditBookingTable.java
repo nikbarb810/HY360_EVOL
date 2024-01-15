@@ -104,7 +104,13 @@ public class EditBookingTable {
                 // Determine the correct vehicle table and update the status
                 String vehicleTable = findVehicleTable(conn, vehicleId);
                 if (vehicleTable != null) {
-                    updateVehicleStatus(conn, vehicleTable, vehicleId, status);
+                    if("Finished".equals(status)) {
+                        updateVehicleStatus(conn, vehicleTable, vehicleId, "Available");
+                    }else if("Crashed".equals(status)) {
+                        updateVehicleStatus(conn, vehicleTable, vehicleId, "Crashed");
+                    }else if("Maintenance".equals(status)) {
+                        updateVehicleStatus(conn, vehicleTable, vehicleId, "Maintenance");
+                    }
                 }
             }
 
@@ -185,7 +191,7 @@ public class EditBookingTable {
             // Update SQL query to join Booking and Order tables and filter by customerID and vehicleID
             String sql = "SELECT Booking.* FROM Booking " +
                          "INNER JOIN `Order` ON Booking.orderID = `Order`.orderID " +
-                         "WHERE `Order`.customerID = " + customerId + " AND Booking.vehicleID = " + vehicleId + ";";
+                         "WHERE `Order`.customerID = " + customerId + " AND Booking.vehicleID = " + vehicleId + " AND Booking.status = 'Active'" + ";";
 
             ResultSet rs = stmt.executeQuery(sql);
 

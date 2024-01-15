@@ -51,7 +51,7 @@ public class EditMotorBikeTable {
     // Get all cars that are available or will be available by the booking date
     public ArrayList<MotorBike> getAllAvailableMotorbikes(LocalDate bookingDate) throws SQLException, ClassNotFoundException {
         ArrayList<MotorBike> mtbs = new ArrayList<>();
-        String sql = "SELECT Motorbike.* FROM Motorbike " +
+        String sql = "SELECT DISTINCT Motorbike.* FROM Motorbike " +
                 "LEFT JOIN Booking ON Motorbike.vehicleID = Booking.vehicleID " +
                 "LEFT JOIN Repair ON Booking.bookingID = Repair.bookingID " +
                 "WHERE Motorbike.status = 'Available' OR " +

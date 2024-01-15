@@ -478,7 +478,7 @@ public  class RentPage extends JFrame {
                 ArrayList<Driver> drivers = getDriversList(); // You need to implement getDriversList
 
                 for (Driver driver : drivers) {
-                	if(!driverlist.contains(driver.getDriverId()) && ((type =="Car" || type == "MBike") && driver.getLicenseId() != null)) {
+                	if(!driverlist.contains(driver.getDriverId()) && (((type =="Car" || type == "MBike") && driver.getLicenseId() != null) || (type == "Bike" || type == "Scooter"))) {
                     JPanel driverRow = new JPanel();
                     driverRow.setLayout(new FlowLayout());
 
